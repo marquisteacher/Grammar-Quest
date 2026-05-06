@@ -3,310 +3,242 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Grammar Quest 🎮</title>
+<title>Grammar Quest</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0a0a1a; --panel:#12122a; --panel2:#1a1a38;
-  --accent:#f7c948; --accent2:#ff5f6d; --accent3:#43e97b; --accent4:#38f9d7;
-  --t1:#ff5f6d; --t2:#f7c948; --t3:#43e97b; --t4:#38f9d7;
-  --text:#f0f0ff; --dim:#888aaa; --border:rgba(255,255,255,0.08);
-}
+:root{--bg:#080816;--panel:#111128;--gold:#f7c948;--red:#ff5263;--green:#3de87a;--cyan:#38f9d7;--t1:#ff5263;--t2:#f7c948;--t3:#3de87a;--t4:#38f9d7;--text:#eeeeff;--dim:#7779aa;--border:rgba(255,255,255,0.07);}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
-
-/* ── STARS ── */
 #stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
-
-/* ── SCREENS ── */
-.screen{display:none;position:relative;z-index:1;}
-.screen.active{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px;}
-
-/* ── SIGN-IN ── */
-#signin-screen{justify-content:center;gap:24px;}
-.logo-wrap{text-align:center;}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,10vw,6rem);letter-spacing:4px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 0 30px rgba(247,201,72,.5));animation:glow 3s ease-in-out infinite;}
-@keyframes glow{0%,100%{filter:drop-shadow(0 0 20px rgba(247,201,72,.3))}50%{filter:drop-shadow(0 0 50px rgba(247,201,72,.7))}}
-.tagline{color:var(--dim);font-size:1rem;letter-spacing:3px;text-transform:uppercase;margin-top:6px;}
-
-.signin-card{background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:32px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
-.signin-card h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--accent);margin-bottom:20px;text-align:center;}
-.field-group{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;}
-.field-label{font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
-.field-input{width:100%;padding:14px 16px;background:rgba(255,255,255,.05);border:2px solid var(--border);
-  border-radius:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;
-  transition:border-color .2s;}
-.field-input:focus{outline:none;border-color:var(--accent);}
-.field-input::placeholder{color:var(--dim);font-weight:400;}
-.signin-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),#ff9a3c);border:none;
-  border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;
-  color:#000;cursor:pointer;transition:all .2s;box-shadow:0 8px 30px rgba(247,201,72,.3);}
-.signin-btn:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(247,201,72,.5);}
-.signin-btn:active{transform:translateY(0);}
-.field-err{color:var(--accent2);font-size:.85rem;display:none;}
-.field-err.show{display:block;}
-
-/* ── SETUP ── */
-#setup-screen{justify-content:center;gap:20px;}
-.player-badge{background:var(--panel);border:1px solid var(--border);border-radius:50px;
-  padding:8px 20px;font-size:.9rem;color:var(--dim);display:flex;align-items:center;gap:8px;}
-.player-badge strong{color:var(--accent);}
-.setup-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:700px;}
-.setup-card h3{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--accent);margin-bottom:16px;}
-.grade-row{display:flex;gap:12px;flex-wrap:wrap;}
-.grade-btn{flex:1;min-width:120px;padding:16px;border-radius:14px;border:2px solid var(--border);
-  background:rgba(255,255,255,.04);color:var(--text);font-family:'Bebas Neue',sans-serif;
-  font-size:1.3rem;letter-spacing:2px;cursor:pointer;transition:all .2s;}
-.grade-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
-.grade-btn.selected{background:var(--accent);color:#000;border-color:var(--accent);box-shadow:0 0 20px rgba(247,201,72,.4);}
-.teams-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.team-input-wrap{position:relative;}
-.team-dot{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;}
-.team-input{width:100%;padding:12px 12px 12px 36px;background:rgba(255,255,255,.06);border:2px solid var(--border);
-  border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;transition:border-color .2s;}
-.team-input:focus{outline:none;}
-.ti1 .team-dot{background:var(--t1);} .ti1 .team-input:focus{border-color:var(--t1);}
-.ti2 .team-dot{background:var(--t2);} .ti2 .team-input:focus{border-color:var(--t2);}
-.ti3 .team-dot{background:var(--t3);} .ti3 .team-input:focus{border-color:var(--t3);}
-.ti4 .team-dot{background:var(--t4);} .ti4 .team-input:focus{border-color:var(--t4);}
-.start-btn{width:100%;max-width:700px;padding:18px;background:linear-gradient(135deg,var(--accent),#ff9a3c);
-  border:none;border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:1.8rem;
-  letter-spacing:3px;color:#000;cursor:pointer;transition:all .2s;box-shadow:0 8px 30px rgba(247,201,72,.3);}
-.start-btn:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(247,201,72,.5);}
-
-/* ── GAME ── */
-#game-screen{gap:12px;padding:14px;}
-.scoreboard{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:900px;}
-.sc{border-radius:14px;padding:10px 8px;text-align:center;border:2px solid transparent;transition:all .3s;position:relative;}
+.screen{display:none;position:relative;z-index:1;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;align-items:center;}
+/* SIGNIN */
+#signin-screen{justify-content:center;padding:24px;gap:28px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,11vw,6rem);letter-spacing:5px;background:linear-gradient(135deg,var(--gold),var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 28px rgba(247,201,72,.45));animation:glo 3s ease-in-out infinite;text-align:center;}
+@keyframes glo{0%,100%{filter:drop-shadow(0 0 18px rgba(247,201,72,.3))}50%{filter:drop-shadow(0 0 50px rgba(247,201,72,.75))}}
+.tagline{color:var(--dim);font-size:.88rem;letter-spacing:3px;text-transform:uppercase;text-align:center;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:32px;width:100%;max-width:430px;box-shadow:0 24px 64px rgba(0,0,0,.55);}
+.card h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--gold);margin-bottom:6px;}
+.card p{color:var(--dim);font-size:.83rem;margin-bottom:20px;}
+.flabel{display:block;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:5px;}
+.finput{width:100%;padding:13px 16px;background:rgba(255,255,255,.05);border:2px solid var(--border);border-radius:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;transition:border-color .2s;margin-bottom:14px;}
+.finput:focus{outline:none;border-color:var(--gold);}
+.finput::placeholder{color:var(--dim);font-weight:400;}
+.si-hint{font-size:.75rem;color:var(--dim);margin:2px 0 14px;line-height:1.5;}
+.si-hint code{background:rgba(247,201,72,.12);padding:1px 6px;border-radius:4px;color:var(--gold);}
+.err{color:var(--red);font-size:.8rem;margin-bottom:10px;display:none;}
+.err.on{display:block;}
+.bigbtn{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#ff9a3c);border:none;border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;color:#000;cursor:pointer;transition:all .2s;box-shadow:0 8px 28px rgba(247,201,72,.32);}
+.bigbtn:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(247,201,72,.55);}
+/* SETUP */
+#setup-screen{justify-content:center;padding:20px;gap:16px;}
+.pbadge{background:var(--panel);border:1px solid var(--border);border-radius:50px;padding:7px 18px;font-size:.82rem;color:var(--dim);display:flex;align-items:center;gap:6px;}
+.pbadge strong{color:var(--gold);}
+.sbadge{background:rgba(56,249,215,.07);border:1px solid rgba(56,249,215,.2);border-radius:50px;padding:5px 16px;font-size:.75rem;color:var(--cyan);font-weight:700;}
+.scard{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:24px;width:100%;max-width:720px;}
+.scard h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--gold);margin-bottom:12px;}
+.grow{display:flex;gap:10px;flex-wrap:wrap;}
+.gbtn{flex:1;min-width:110px;padding:14px;border-radius:13px;border:2px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:all .2s;}
+.gbtn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);}
+.gbtn.sel{background:var(--gold);color:#000;border-color:var(--gold);box-shadow:0 0 22px rgba(247,201,72,.42);}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tiwrap{position:relative;}
+.tidot{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:9px;height:9px;border-radius:50%;}
+.tinput{width:100%;padding:11px 11px 11px 30px;background:rgba(255,255,255,.06);border:2px solid var(--border);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:700;transition:border-color .2s;}
+.tinput:focus{outline:none;}
+.w1 .tidot{background:var(--t1);}.w1 .tinput:focus{border-color:var(--t1);}
+.w2 .tidot{background:var(--t2);}.w2 .tinput:focus{border-color:var(--t2);}
+.w3 .tidot{background:var(--t3);}.w3 .tinput:focus{border-color:var(--t3);}
+.w4 .tidot{background:var(--t4);}.w4 .tinput:focus{border-color:var(--t4);}
+/* GAME */
+#game-screen{padding:12px;gap:10px;}
+.sb{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:940px;}
+.sc{border-radius:13px;padding:9px 7px;text-align:center;border:2px solid transparent;transition:all .3s;}
 .sc.at{transform:scale(1.05);}
-.sc1{background:rgba(255,95,109,.1);} .sc1.at{border-color:var(--t1);box-shadow:0 0 20px rgba(255,95,109,.35);}
-.sc2{background:rgba(247,201,72,.1);} .sc2.at{border-color:var(--t2);box-shadow:0 0 20px rgba(247,201,72,.35);}
-.sc3{background:rgba(67,233,123,.1);} .sc3.at{border-color:var(--t3);box-shadow:0 0 20px rgba(67,233,123,.35);}
-.sc4{background:rgba(56,249,215,.1);} .sc4.at{border-color:var(--t4);box-shadow:0 0 20px rgba(56,249,215,.35);}
-.sc-name{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.sc1 .sc-name{color:var(--t1);}.sc2 .sc-name{color:var(--t2);}.sc3 .sc-name{color:var(--t3);}.sc4 .sc-name{color:var(--t4);}
-.sc-pts{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;line-height:1;}
-.sc-lbl{font-size:.6rem;color:var(--dim);letter-spacing:1px;text-transform:uppercase;}
-
-.hud{display:flex;align-items:center;justify-content:space-between;background:var(--panel);
-  border-radius:12px;padding:9px 14px;border:1px solid var(--border);width:100%;max-width:900px;}
-.hud-grade{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:2px;color:var(--accent);}
-.hud-turn{font-size:.8rem;color:var(--dim);}
-.hud-turn b{color:var(--text);}
-.hud-qnum{font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:var(--dim);}
-
-.prog-wrap{background:rgba(255,255,255,.06);border-radius:99px;height:5px;overflow:hidden;width:100%;max-width:900px;}
-.prog-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .5s;}
-
-.q-card{background:var(--panel);border-radius:20px;padding:26px 22px;text-align:center;
-  border:1px solid var(--border);box-shadow:0 10px 40px rgba(0,0,0,.4);width:100%;max-width:900px;}
-.q-cat{font-family:'Bebas Neue',sans-serif;letter-spacing:3px;font-size:.8rem;color:var(--accent);margin-bottom:8px;}
-.q-text{font-size:clamp(1.05rem,3vw,1.45rem);font-weight:700;line-height:1.4;}
-.q-pts{margin-top:10px;display:inline-block;background:rgba(247,201,72,.15);color:var(--accent);
-  border-radius:20px;padding:3px 14px;font-family:'Bebas Neue',sans-serif;letter-spacing:2px;font-size:.85rem;}
-
-.ans-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:900px;}
-.ans-btn{padding:16px 12px;border-radius:14px;background:rgba(255,255,255,.05);border:2px solid var(--border);
-  color:var(--text);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;
-  transition:all .15s;text-align:left;display:flex;align-items:center;gap:10px;}
-.ans-btn:hover:not(:disabled){background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);transform:translateY(-2px);}
-.ans-btn:disabled{cursor:not-allowed;}
-.ans-btn.correct{background:rgba(67,233,123,.2);border-color:var(--accent3);color:var(--accent3);animation:pop .3s;}
-.ans-btn.wrong{background:rgba(255,95,109,.2);border-color:var(--t1);color:var(--t1);animation:shake .3s;}
-.ans-ltr{width:28px;height:28px;min-width:28px;background:rgba(255,255,255,.1);border-radius:6px;
-  display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;}
+.sc1{background:rgba(255,82,99,.1);border-color:rgba(255,82,99,.15);}
+.sc2{background:rgba(247,201,72,.1);border-color:rgba(247,201,72,.15);}
+.sc3{background:rgba(61,232,122,.1);border-color:rgba(61,232,122,.15);}
+.sc4{background:rgba(56,249,215,.1);border-color:rgba(56,249,215,.15);}
+.sc1.at{border-color:var(--t1);box-shadow:0 0 22px rgba(255,82,99,.35);}
+.sc2.at{border-color:var(--t2);box-shadow:0 0 22px rgba(247,201,72,.35);}
+.sc3.at{border-color:var(--t3);box-shadow:0 0 22px rgba(61,232,122,.35);}
+.sc4.at{border-color:var(--t4);box-shadow:0 0 22px rgba(56,249,215,.35);}
+.scn{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sc1 .scn{color:var(--t1);}.sc2 .scn{color:var(--t2);}.sc3 .scn{color:var(--t3);}.sc4 .scn{color:var(--t4);}
+.scp{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;line-height:1.1;transition:transform .2s;}
+.scp.bump{animation:ptsbump .25s;}
+@keyframes ptsbump{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+.scl{font-size:.57rem;color:var(--dim);letter-spacing:1px;text-transform:uppercase;}
+.hud{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-radius:12px;padding:8px 13px;border:1px solid var(--border);width:100%;max-width:940px;}
+.hudg{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:2px;color:var(--gold);}
+.hudt{font-size:.76rem;color:var(--dim);}
+.hudt b{color:var(--text);}
+.hudq{font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:var(--dim);}
+.pw{background:rgba(255,255,255,.06);border-radius:99px;height:5px;overflow:hidden;width:100%;max-width:940px;}
+.pb{height:100%;background:linear-gradient(90deg,var(--gold),var(--red));border-radius:99px;transition:width .5s;}
+.qcard{background:var(--panel);border-radius:18px;padding:24px 20px;text-align:center;border:1px solid var(--border);box-shadow:0 10px 40px rgba(0,0,0,.4);width:100%;max-width:940px;}
+.qcat{font-family:'Bebas Neue',sans-serif;letter-spacing:3px;font-size:.75rem;color:var(--gold);margin-bottom:7px;}
+.qtxt{font-size:clamp(1rem,2.7vw,1.4rem);font-weight:700;line-height:1.45;}
+.qptb{margin-top:9px;display:inline-block;background:rgba(247,201,72,.14);color:var(--gold);border-radius:20px;padding:2px 13px;font-family:'Bebas Neue',sans-serif;letter-spacing:2px;font-size:.8rem;}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:940px;}
+.abtn{padding:14px 11px;border-radius:13px;background:rgba(255,255,255,.05);border:2px solid var(--border);color:var(--text);font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s;text-align:left;display:flex;align-items:center;gap:9px;}
+.abtn:hover:not(:disabled){background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.27);transform:translateY(-2px);}
+.abtn:disabled{cursor:not-allowed;}
+.abtn.correct{background:rgba(61,232,122,.18);border-color:var(--green);color:var(--green);animation:pop .3s;}
+.abtn.wrong{background:rgba(255,82,99,.18);border-color:var(--red);color:var(--red);animation:shk .3s;}
+.altr{width:26px;height:26px;min-width:26px;background:rgba(255,255,255,.1);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.9rem;}
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}100%{transform:translateX(0)}}
-
-.next-btn{padding:13px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),#ff9a3c);
-  color:#000;font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:2px;cursor:pointer;
-  transition:all .2s;display:none;box-shadow:0 4px 20px rgba(247,201,72,.3);}
-.next-btn.vis{display:block;animation:fadeUp .3s;}
-.next-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(247,201,72,.5);}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── LEADERBOARD PANEL ── */
-.lb-panel{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px;
-  width:100%;max-width:900px;}
-.lb-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.lb-rows{display:flex;flex-direction:column;gap:7px;}
-.lb-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);
-  border-radius:10px;padding:8px 12px;animation:slideIn .3s;}
-@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
-.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--dim);width:24px;text-align:center;}
-.lb-name{font-weight:900;flex:1;font-size:.95rem;}
-.lb-class{font-size:.75rem;color:var(--dim);padding:2px 8px;background:rgba(255,255,255,.08);border-radius:20px;}
-.lb-score{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--accent);}
-.lb-empty{color:var(--dim);font-size:.9rem;text-align:center;padding:10px 0;}
-.lb-loading{color:var(--dim);font-size:.85rem;text-align:center;}
-
-/* ── FEEDBACK TOAST ── */
-.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);
-  background:var(--panel);border-radius:20px;padding:28px 36px;text-align:center;z-index:200;
-  transition:transform .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 20px 60px rgba(0,0,0,.7);
-  border:2px solid transparent;pointer-events:none;min-width:240px;}
+@keyframes shk{0%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}100%{transform:translateX(0)}}
+.nxtbtn{padding:11px 24px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gold),#ff9a3c);color:#000;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:2px;cursor:pointer;transition:all .2s;display:none;box-shadow:0 4px 18px rgba(247,201,72,.3);}
+.nxtbtn.vis{display:block;animation:fup .3s;}
+.nxtbtn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(247,201,72,.5);}
+@keyframes fup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* LEADERBOARD */
+.lbpanel{background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:15px 17px;width:100%;max-width:940px;}
+.lbhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.lbtitle{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:2px;color:var(--gold);}
+.lbsid{font-size:.7rem;color:var(--dim);}
+.lbsid code{color:var(--cyan);background:rgba(56,249,215,.09);padding:2px 7px;border-radius:5px;}
+.lbrows{display:flex;flex-direction:column;gap:5px;min-height:36px;}
+.lbrow{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.04);border-radius:9px;padding:7px 11px;animation:sli .3s;}
+@keyframes sli{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.lbrow.me{border:1px solid var(--gold);background:rgba(247,201,72,.06);}
+.lbrank{font-family:'Bebas Neue',sans-serif;font-size:1rem;width:20px;text-align:center;color:var(--dim);}
+.lbname{font-weight:900;flex:1;font-size:.88rem;}
+.lbcls{font-size:.68rem;color:var(--dim);background:rgba(255,255,255,.07);padding:2px 7px;border-radius:20px;}
+.lbscore{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);}
+.lbempty{color:var(--dim);font-size:.82rem;text-align:center;padding:8px 0;}
+/* TOAST */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:var(--panel);border-radius:22px;padding:25px 34px;text-align:center;z-index:300;transition:transform .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 24px 64px rgba(0,0,0,.7);border:2px solid transparent;pointer-events:none;min-width:210px;}
 .toast.show{transform:translate(-50%,-50%) scale(1);}
-.toast.tc{border-color:var(--accent3);}
-.toast.tw{border-color:var(--t1);}
-.t-icon{font-size:2.8rem;line-height:1;}
-.t-msg{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:2px;margin:6px 0 3px;}
-.t-sub{color:var(--dim);font-size:.85rem;}
-
-/* ── WINNER SCREEN ── */
-#winner-screen{justify-content:center;gap:18px;}
-.w-trophy{font-size:5rem;animation:bounce 1s ease infinite;}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
-.w-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,8vw,4rem);letter-spacing:4px;color:var(--accent);text-align:center;}
-.w-card{background:var(--panel);border-radius:20px;padding:28px;width:100%;max-width:500px;border:1px solid var(--border);}
-.final-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);}
-.final-row:last-child{border-bottom:none;}
-.final-rank{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--dim);width:30px;}
-.final-name{font-weight:900;flex:1;padding:0 12px;}
-.final-pts{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;}
-.w-lb{background:var(--panel);border-radius:20px;padding:24px;width:100%;max-width:500px;border:1px solid var(--border);}
-.w-lb h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--accent);margin-bottom:14px;}
-.play-again{padding:15px 36px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent),#ff9a3c);
-  color:#000;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;cursor:pointer;
-  transition:all .2s;box-shadow:0 8px 30px rgba(247,201,72,.3);}
-.play-again:hover{transform:translateY(-3px);}
-#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:50;}
-
-/* ── MOBILE ── */
-@media(max-width:520px){
-  .scoreboard{grid-template-columns:1fr 1fr;}
-  .ans-grid{grid-template-columns:1fr;}
-  .teams-grid{grid-template-columns:1fr;}
-}
+.toast.tc{border-color:var(--green);}
+.toast.tw{border-color:var(--red);}
+.ticon{font-size:2.7rem;line-height:1;}
+.tmsg{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;margin:5px 0 3px;}
+.tsub{color:var(--dim);font-size:.8rem;}
+/* WINNER */
+#winner-screen{justify-content:center;padding:20px;gap:15px;}
+.wtrophy{font-size:5rem;animation:bnc 1s ease infinite;}
+@keyframes bnc{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+.wtitle{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,8vw,4rem);letter-spacing:4px;color:var(--gold);text-align:center;}
+.wcard{background:var(--panel);border-radius:18px;padding:24px;width:100%;max-width:480px;border:1px solid var(--border);}
+.wcard h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--gold);margin-bottom:12px;}
+.frow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.frow:last-child{border-bottom:none;}
+.frank{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--dim);width:26px;}
+.fname{font-weight:900;flex:1;padding:0 9px;}
+.fpts{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;}
+.pagain{padding:13px 32px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--gold),#ff9a3c);color:#000;font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 8px 26px rgba(247,201,72,.3);}
+.pagain:hover{transform:translateY(-3px);}
+#cc{position:fixed;inset:0;pointer-events:none;z-index:50;}
+@media(max-width:520px){.sb{grid-template-columns:1fr 1fr;}.agrid{grid-template-columns:1fr;}.tgrid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
-<canvas id="confetti-canvas"></canvas>
+<canvas id="cc"></canvas>
 
-<!-- ══ SIGN-IN ══════════════════════════════════════════════ -->
 <div id="signin-screen" class="screen active">
-  <div class="logo-wrap">
-    <div class="logo">🎮 Grammar Quest</div>
-    <div class="tagline">The Ultimate Classroom Quiz Show</div>
-  </div>
-  <div class="signin-card">
-    <h2>👋 Sign In to Play</h2>
-    <div class="field-group">
-      <div>
-        <div class="field-label">Your Name</div>
-        <input class="field-input" id="si-name" placeholder="Enter your name" maxlength="24" />
-      </div>
-      <div>
-        <div class="field-label">Class Number</div>
-        <input class="field-input" id="si-class" placeholder="e.g. 301, 7B, Period 2" maxlength="12" />
-      </div>
-    </div>
-    <div class="field-err" id="si-err">Please enter your name and class number.</div>
-    <button class="signin-btn" onclick="doSignIn()">🚀 Let's Play!</button>
+  <div class="logo">Grammar Quest</div>
+  <div class="tagline">The Ultimate Classroom Quiz Show</div>
+  <div class="card">
+    <h2>Sign In to Play</h2>
+    <p>Enter your name and class to join the live leaderboard.</p>
+    <label class="flabel" for="sin">Your Name</label>
+    <input class="finput" id="sin" placeholder="e.g. Alex Johnson" maxlength="28" autocomplete="off"/>
+    <label class="flabel" for="sicls">Class Number</label>
+    <input class="finput" id="sicls" placeholder="e.g. 301 or Period 4" maxlength="14" autocomplete="off"/>
+    <p class="si-hint">Whole class playing together? Everyone type the same <code>Session ID</code> below to share one leaderboard. Leave blank to start a new session.</p>
+    <label class="flabel" for="sisid">Session ID <span style="color:var(--dim);font-size:.68rem;">(optional)</span></label>
+    <input class="finput" id="sisid" placeholder="e.g. ROOM1 — or leave blank" maxlength="12" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;"/>
+    <div class="err" id="sierr">Please enter your name and class number.</div>
+    <button class="bigbtn" onclick="doSignIn()">Let's Play!</button>
   </div>
 </div>
 
-<!-- ══ SETUP ══════════════════════════════════════════════════ -->
 <div id="setup-screen" class="screen">
-  <div class="player-badge">👤 Playing as: <strong id="badge-name"></strong> · Class <strong id="badge-class"></strong></div>
-  <div class="logo-wrap" style="text-align:center"><div class="logo" style="font-size:clamp(2rem,6vw,3.5rem)">🎮 Grammar Quest</div></div>
-
-  <div class="setup-card">
-    <h3>📚 Select Grade Level</h3>
-    <div class="grade-row">
-      <button class="grade-btn" onclick="selectGrade(5,this)">5th Grade</button>
-      <button class="grade-btn" onclick="selectGrade(6,this)">6th Grade</button>
-      <button class="grade-btn" onclick="selectGrade(7,this)">7th Grade</button>
+  <div class="pbadge">Playing as <strong id="bn"></strong> · Class <strong id="bc"></strong></div>
+  <div class="sbadge">Session: <span id="bsid"></span></div>
+  <div class="logo" style="font-size:clamp(1.8rem,5vw,2.8rem);">Grammar Quest</div>
+  <div class="scard">
+    <h3>Select Grade Level</h3>
+    <div class="grow">
+      <button class="gbtn" onclick="selGrade(5,this)">5th Grade</button>
+      <button class="gbtn" onclick="selGrade(6,this)">6th Grade</button>
+      <button class="gbtn" onclick="selGrade(7,this)">7th Grade</button>
     </div>
   </div>
-
-  <div class="setup-card">
-    <h3>🏆 Team Names</h3>
-    <div class="teams-grid">
-      <div class="team-input-wrap ti1"><span class="team-dot"></span><input class="team-input" id="t1n" maxlength="14" value="Team Red"/></div>
-      <div class="team-input-wrap ti2"><span class="team-dot"></span><input class="team-input" id="t2n" maxlength="14" value="Team Gold"/></div>
-      <div class="team-input-wrap ti3"><span class="team-dot"></span><input class="team-input" id="t3n" maxlength="14" value="Team Green"/></div>
-      <div class="team-input-wrap ti4"><span class="team-dot"></span><input class="team-input" id="t4n" maxlength="14" value="Team Cyan"/></div>
+  <div class="scard">
+    <h3>Team Names</h3>
+    <div class="tgrid">
+      <div class="tiwrap w1"><span class="tidot"></span><input class="tinput" id="t1n" maxlength="14" value="Team Red"/></div>
+      <div class="tiwrap w2"><span class="tidot"></span><input class="tinput" id="t2n" maxlength="14" value="Team Gold"/></div>
+      <div class="tiwrap w3"><span class="tidot"></span><input class="tinput" id="t3n" maxlength="14" value="Team Green"/></div>
+      <div class="tiwrap w4"><span class="tidot"></span><input class="tinput" id="t4n" maxlength="14" value="Team Cyan"/></div>
     </div>
   </div>
-
-  <button class="start-btn" onclick="startGame()">🚀 Start the Show!</button>
+  <button class="bigbtn" style="max-width:720px;" onclick="startGame()">Start the Show!</button>
 </div>
 
-<!-- ══ GAME ══════════════════════════════════════════════════ -->
 <div id="game-screen" class="screen">
-  <div class="scoreboard" id="scoreboard"></div>
-  <div class="hud" style="width:100%;max-width:900px;">
-    <span class="hud-grade" id="hud-grade"></span>
-    <span class="hud-turn">🎤 <b id="hud-team"></b>'s Turn</span>
-    <span class="hud-qnum" id="hud-qnum"></span>
+  <div class="sb" id="sb"></div>
+  <div class="hud">
+    <span class="hudg" id="hudg"></span>
+    <span class="hudt">🎤 <b id="hudt"></b>'s Turn</span>
+    <span class="hudq" id="hudq"></span>
   </div>
-  <div class="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
-  <div class="q-card">
-    <div class="q-cat" id="q-cat"></div>
-    <div class="q-text" id="q-text"></div>
-    <div class="q-pts" id="q-pts"></div>
+  <div class="pw"><div class="pb" id="pb"></div></div>
+  <div class="qcard">
+    <div class="qcat" id="qcat"></div>
+    <div class="qtxt" id="qtxt"></div>
+    <div class="qptb" id="qpts"></div>
   </div>
-  <div class="ans-grid" id="ans-grid"></div>
-  <button class="next-btn" id="next-btn" onclick="nextTurn()">NEXT QUESTION ▶</button>
-
-  <!-- Live leaderboard -->
-  <div class="lb-panel">
-    <div class="lb-title">🏅 Live Leaderboard — Top 5</div>
-    <div class="lb-rows" id="lb-rows"><div class="lb-loading">Loading...</div></div>
+  <div class="agrid" id="ag"></div>
+  <button class="nxtbtn" id="nxtbtn" onclick="nextTurn()">NEXT QUESTION ▶</button>
+  <div class="lbpanel">
+    <div class="lbhdr">
+      <span class="lbtitle">Live Leaderboard — Top 5</span>
+      <span class="lbsid">Session: <code id="lbsid"></code></span>
+    </div>
+    <div class="lbrows" id="lbr"><div class="lbempty">Scores appear as you play…</div></div>
   </div>
 </div>
 
-<!-- ══ WINNER ══════════════════════════════════════════════ -->
 <div id="winner-screen" class="screen">
-  <div class="w-trophy">🏆</div>
-  <div class="w-title" id="w-title"></div>
-  <div class="w-card" id="w-scores"></div>
-  <div class="w-lb">
-    <h3>🌍 All-Time Top 5</h3>
-    <div class="lb-rows" id="w-lb-rows"><div class="lb-loading">Loading...</div></div>
+  <div class="wtrophy">🏆</div>
+  <div class="wtitle" id="wtitle"></div>
+  <div class="wcard"><h3>Team Scores</h3><div id="wts"></div></div>
+  <div class="wcard">
+    <h3>Session Leaderboard — Top 5</h3>
+    <div class="lbrows" id="wlbr"><div class="lbempty">Loading…</div></div>
   </div>
-  <button class="play-again" onclick="resetGame()">🔄 Play Again</button>
+  <button class="pagain" onclick="resetGame()">Play Again</button>
 </div>
 
-<!-- Feedback toast -->
 <div class="toast" id="toast">
-  <div class="t-icon" id="t-icon"></div>
-  <div class="t-msg" id="t-msg"></div>
-  <div class="t-sub" id="t-sub"></div>
+  <div class="ticon" id="tico"></div>
+  <div class="tmsg" id="tmsg"></div>
+  <div class="tsub" id="tsub"></div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════
-// CONFIG — Replace with your Render backend URL after deploy
-// ══════════════════════════════════════════════════════════
-const API = 'https://YOUR-RENDER-APP.onrender.com'; // ← update this
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const API = 'https://YOUR-RENDER-APP.onrender.com'; // update after Render deploy
 
-// ══════════════════════════════════════════════════════════
-// STARS
-// ══════════════════════════════════════════════════════════
-const SC = document.getElementById('stars'), SCX = SC.getContext('2d');
-function drawStars() {
-  SC.width = innerWidth; SC.height = innerHeight; SCX.clearRect(0,0,SC.width,SC.height);
-  for(let i=0;i<160;i++){const x=Math.random()*SC.width,y=Math.random()*SC.height,r=Math.random()*1.6;
-    SCX.beginPath();SCX.arc(x,y,r,0,Math.PI*2);SCX.fillStyle=`rgba(255,255,255,${Math.random()*.6+.1})`;SCX.fill();}
-}
-window.addEventListener('resize', drawStars); drawStars();
+// ── STARS ─────────────────────────────────────────────────────────────────────
+const SC=document.getElementById('stars'),SCX=SC.getContext('2d');
+function drawStars(){SC.width=innerWidth;SC.height=innerHeight;SCX.clearRect(0,0,SC.width,SC.height);for(let i=0;i<170;i++){const x=Math.random()*SC.width,y=Math.random()*SC.height,r=Math.random()*1.7;SCX.beginPath();SCX.arc(x,y,r,0,Math.PI*2);SCX.fillStyle=`rgba(255,255,255,${Math.random()*.65+.08})`;SCX.fill();}}
+window.addEventListener('resize',drawStars);drawStars();
 
-// ══════════════════════════════════════════════════════════
-// QUESTION BANK — 25 per grade
-// ══════════════════════════════════════════════════════════
-const QB = {
+// ── QUESTIONS (25 per grade) ───────────────────────────────────────────────────
+const QB={
   5:[
     {q:"She baked a cake. What is the direct object?",a:["She","baked","cake","a"],c:2,cat:"Sentence Parts",pts:100},
     {q:"They ___ going to school.",a:["is","are","was","be"],c:1,cat:"Subject-Verb Agreement",pts:100},
     {q:"The book is ___ the table.",a:["run","on","fast","jump"],c:1,cat:"Prepositions",pts:100},
     {q:"Fix the capitalization: 'i like pizza'",a:["I like pizza.","i like pizza","I Like pizza","I like Pizza"],c:0,cat:"Capitalization",pts:100},
     {q:"Which sentence uses a comma correctly?",a:["Yes I like it","Yes, I like it","Yes I, like it","Yes I like, it"],c:1,cat:"Punctuation",pts:100},
-    {q:"Which word is an adjective in: 'The tiny blue bird sang.'",a:["bird","sang","tiny","The"],c:2,cat:"Parts of Speech",pts:100},
+    {q:"Which word is an adjective? 'The tiny blue bird sang.'",a:["bird","sang","tiny","The"],c:2,cat:"Parts of Speech",pts:100},
     {q:"Which is a complete sentence?",a:["Running fast.","The dog barked loudly.","Because it rained.","After school."],c:1,cat:"Sentence Structure",pts:150},
     {q:"Which word is a noun? 'The happy puppy ran quickly.'",a:["happy","ran","quickly","puppy"],c:3,cat:"Parts of Speech",pts:100},
     {q:"What punctuation ends a question?",a:["Period (.)","Exclamation (!)","Question mark (?)","Comma (,)"],c:2,cat:"Punctuation",pts:100},
@@ -320,12 +252,12 @@ const QB = {
     {q:"He doesn't have ___ money.",a:["no","any","none","nothing"],c:1,cat:"Double Negatives",pts:150},
     {q:"Which sentence is a question?",a:["She went home.","Go home now.","Where did she go?","She must go home."],c:2,cat:"Sentence Types",pts:100},
     {q:"What is the plural of 'child'?",a:["childs","childrens","children","childes"],c:2,cat:"Plural Nouns",pts:100},
-    {q:"Which joining word makes this a compound sentence? 'I was tired ___ I kept reading.'",a:["because","so","that","which"],c:1,cat:"Conjunctions",pts:150},
-    {q:"'The sun is a giant ball of fire.' This sentence is ___.",a:["A question","A statement","An exclamation","A command"],c:1,cat:"Sentence Types",pts:100},
-    {q:"Which word correctly completes: 'She is ___ than her brother.'",a:["taller","more taller","tallest","most tall"],c:0,cat:"Comparatives",pts:150},
+    {q:"Which word makes this compound? 'I was tired ___ I kept reading.'",a:["because","so","that","which"],c:1,cat:"Conjunctions",pts:150},
+    {q:"Which is a command sentence?",a:["She runs fast.","Do your homework.","Are you ready?","He likes pizza."],c:1,cat:"Sentence Types",pts:100},
+    {q:"Which correctly completes: 'She is ___ than her brother.'",a:["taller","more taller","tallest","most tall"],c:0,cat:"Comparatives",pts:150},
     {q:"Which contraction is correct for 'do not'?",a:["do'nt","dont'","don't","d'ont"],c:2,cat:"Contractions",pts:100},
     {q:"What does the suffix '-ful' mean?",a:["without","full of","before","again"],c:1,cat:"Word Parts",pts:100},
-    {q:"Which word is a preposition? 'The cat sat under the table.'",a:["cat","sat","under","table"],c:2,cat:"Prepositions",pts:100},
+    {q:"Which word is a preposition? 'The cat sat under the table.'",a:["cat","sat","under","table"],c:2,cat:"Prepositions",pts:100}
   ],
   6:[
     {q:"Identify the appositive: 'My dog, a golden retriever, loves water.'",a:["My dog","loves water","a golden retriever","retriever"],c:2,cat:"Appositives",pts:100},
@@ -341,7 +273,7 @@ const QB = {
     {q:"Which sentence uses quotation marks correctly?",a:['"Come here", she said.',"She said, 'come here'.",'She said, "Come here."',"She said, come here."],c:2,cat:"Punctuation",pts:150},
     {q:"Which word is an interjection?",a:["run","happy","wow","slowly"],c:2,cat:"Parts of Speech",pts:100},
     {q:"'All the world's a stage.' This is a ___.",a:["Simile","Metaphor","Hyperbole","Personification"],c:1,cat:"Figurative Language",pts:150},
-    {q:"Which sentence correctly uses 'their/there/they're'?",a:["Their going home.","There going home.","They're going home.","Theyre going home."],c:2,cat:"Homophones",pts:150},
+    {q:"Which uses 'their/there/they're' correctly?",a:["Their going home.","There going home.","They're going home.","Theyre going home."],c:2,cat:"Homophones",pts:150},
     {q:"An independent clause ___.",a:["cannot stand alone","always starts with 'because'","can stand alone as a sentence","needs a conjunction"],c:2,cat:"Clauses",pts:150},
     {q:"Which word has a negative connotation?",a:["confident","thrifty","assertive","stubborn"],c:3,cat:"Connotation",pts:150},
     {q:"Which is an example of alliteration?",a:["She sells sea shells","The moon was a ghost","Life is a rollercoaster","Stars twinkle brightly"],c:0,cat:"Figurative Language",pts:150},
@@ -351,14 +283,14 @@ const QB = {
     {q:"Which sentence uses 'who' correctly?",a:["The man who I saw left.","The man whom left early.","The man who left early waved.","The man who him I know."],c:2,cat:"Pronouns",pts:150},
     {q:"'She has a heart of gold.' This means she is ___.",a:["rich","very kind","literal gold","cold-hearted"],c:1,cat:"Figurative Language",pts:150},
     {q:"Which sentence is compound-complex?",a:["She ran.","She ran, and he walked.","Although she was tired, she ran, and he walked.","She ran because she was late."],c:2,cat:"Sentence Types",pts:200},
-    {q:"What does 'context clues' mean?",a:["A reading strategy using nearby words to find meaning","Looking up words in a dictionary","Asking the teacher","Using word parts"],c:0,cat:"Reading Strategies",pts:100},
-    {q:"Which shows correct apostrophe use for possession?",a:["the dogs' bone (one dog)","the dog's bone (one dog)","the dogs bone","the dog' bone"],c:1,cat:"Apostrophes",pts:150},
+    {q:"What does 'context clues' mean?",a:["Using nearby words to find meaning","Looking up words in a dictionary","Asking the teacher","Using word parts only"],c:0,cat:"Reading Strategies",pts:100},
+    {q:"Which shows correct apostrophe use for possession (one dog)?",a:["the dogs' bone","the dog's bone","the dogs bone","the dog' bone"],c:1,cat:"Apostrophes",pts:150}
   ],
   7:[
     {q:"Which sentence contains a misplaced modifier?",a:["Running fast, he caught the bus.","She almost drove her children to school every day.","Barking loudly, the dog chased the cat.","He fixed the broken window quickly."],c:1,cat:"Modifiers",pts:200},
     {q:"Identify the gerund: 'Swimming is my favorite sport.'",a:["is","favorite","Swimming","sport"],c:2,cat:"Verbals",pts:150},
     {q:"Which uses the subjunctive mood correctly?",a:["If I was you, I'd leave.","I wish I was taller.","If I were you, I'd leave.","She acts as if she was the boss."],c:2,cat:"Verb Moods",pts:200},
-    {q:"'Breaking the vase, she apologized.' The phrase 'Breaking the vase' is a ___.",a:["Gerund phrase","Infinitive phrase","Participial phrase","Prepositional phrase"],c:2,cat:"Phrases",pts:200},
+    {q:"'Breaking the vase, she apologized.' The phrase is a ___.",a:["Gerund phrase","Infinitive phrase","Participial phrase","Prepositional phrase"],c:2,cat:"Phrases",pts:200},
     {q:"Which correctly uses an em dash?",a:["I love—pizza","My sister—the one with red hair—is a doctor.","She ran—fast","He ate—his lunch"],c:1,cat:"Punctuation",pts:200},
     {q:"What type of irony: 'A fire station burns down'?",a:["Verbal irony","Dramatic irony","Situational irony","Cosmic irony"],c:2,cat:"Figurative Language",pts:150},
     {q:"Which sentence avoids a dangling modifier?",a:["Walking home, the rain started.","Walking home, she got caught in the rain.","Having eaten, the table was cleared.","To succeed, hard work is needed."],c:1,cat:"Modifiers",pts:200},
@@ -368,282 +300,149 @@ const QB = {
     {q:"Which sentence uses a colon correctly?",a:["She needed: milk.","She needed milk: badly.","She needed three things: milk, eggs, and bread.","She: needed milk."],c:2,cat:"Punctuation",pts:200},
     {q:"What is an oxymoron?",a:["A comparison using 'like' or 'as'","Two contradictory terms used together","An extreme exaggeration","Words that sound like what they describe"],c:1,cat:"Figurative Language",pts:150},
     {q:"Which sentence uses the past perfect tense?",a:["She runs to school.","She ran to school.","She had run to school before it started.","She will run to school."],c:2,cat:"Verb Tenses",pts:200},
-    {q:"'The wind whispered through the trees.' This is an example of ___.",a:["Simile","Metaphor","Personification","Alliteration"],c:2,cat:"Figurative Language",pts:150},
+    {q:"'The wind whispered through the trees.' This is ___.",a:["Simile","Metaphor","Personification","Alliteration"],c:2,cat:"Figurative Language",pts:150},
     {q:"Which best defines 'syntax'?",a:["The study of word meanings","The arrangement of words to form sentences","The study of sounds","The origin of words"],c:1,cat:"Grammar Concepts",pts:200},
-    {q:"Which sentence is written in third-person omniscient point of view?",a:["I walked slowly.","You should go now.","She knew what everyone was thinking.","We all went together."],c:2,cat:"Point of View",pts:200},
+    {q:"Which sentence is third-person omniscient POV?",a:["I walked slowly.","You should go now.","She knew what everyone was thinking.","We all went together."],c:2,cat:"Point of View",pts:200},
     {q:"Identify the absolute phrase: 'Her heart racing, she opened the envelope.'",a:["she opened the envelope","Her heart racing","opened the envelope","Her heart"],c:1,cat:"Phrases",pts:200},
-    {q:"Which word is an example of onomatopoeia?",a:["beautiful","sizzle","quickly","because"],c:1,cat:"Figurative Language",pts:150},
-    {q:"Which correctly shows a restrictive clause (no commas)?",a:["The book, that I read, was good.","The book that I borrowed is good.","The book, which is mine, is good.","The dog, that barked, ran away."],c:1,cat:"Clauses",pts:200},
-    {q:"What is the effect of varying sentence length in writing?",a:["It confuses the reader","It creates rhythm and emphasis","It makes writing incorrect","It avoids punctuation"],c:1,cat:"Writing Style",pts:200},
+    {q:"Which word is onomatopoeia?",a:["beautiful","sizzle","quickly","because"],c:1,cat:"Figurative Language",pts:150},
+    {q:"Which correctly shows a restrictive clause?",a:["The book, that I read, was good.","The book that I borrowed is good.","The book, which is mine, is good.","The dog, that barked, ran away."],c:1,cat:"Clauses",pts:200},
+    {q:"What is the effect of varying sentence length?",a:["It confuses the reader","It creates rhythm and emphasis","It makes writing incorrect","It avoids punctuation"],c:1,cat:"Writing Style",pts:200},
     {q:"Which demonstrates correct use of 'whom'?",a:["Whom is coming to the party?","To whom should I address this?","Whom did it?","Whom is the teacher?"],c:1,cat:"Pronouns",pts:200},
     {q:"An appositive phrase ___.",a:["shows action","renames or explains a nearby noun","shows time","modifies a verb"],c:1,cat:"Phrases",pts:150},
-    {q:"Which is an example of a zeugma?",a:["She ran fast","She broke his car and his heart.","The wind blew cold","Stars shine bright"],c:1,cat:"Figurative Language",pts:200},
-    {q:"Which sentence uses 'lie/lay' correctly?",a:["Lay down for a nap.","I lie the book on the table.","Please lay the book on the table.","She lays down every afternoon."],c:2,cat:"Commonly Confused Words",pts:200},
-    {q:"What is the purpose of a thesis statement?",a:["To summarize every paragraph","To introduce the topic and state the main argument","To list all evidence","To conclude the essay"],c:1,cat:"Writing Structure",pts:150},
+    {q:"Which is a zeugma?",a:["She ran fast","She broke his car and his heart.","The wind blew cold","Stars shine bright"],c:1,cat:"Figurative Language",pts:200},
+    {q:"Which uses 'lie/lay' correctly?",a:["Lay down for a nap.","I lie the book on the table.","Please lay the book on the table.","She lays down every afternoon."],c:2,cat:"Commonly Confused Words",pts:200},
+    {q:"What is the purpose of a thesis statement?",a:["To summarize every paragraph","To introduce the topic and state the main argument","To list all evidence","To conclude the essay"],c:1,cat:"Writing Structure",pts:150}
   ]
 };
 
-// ══════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════
-let player = null; // { playerId, name, classNumber }
-let selectedGrade = null;
-let teams = [], scores = [], currentTeam = 0, currentQ = 0;
-let questions = [], answered = false;
-let lbInterval = null;
-const LETTERS = ['A','B','C','D'];
-const TC = ['--t1','--t2','--t3','--t4'];
-const SC_CLS = ['sc1','sc2','sc3','sc4'];
-const MEDALS = ['🥇','🥈','🥉','4️⃣'];
-const TC_VAR = ['var(--t1)','var(--t2)','var(--t3)','var(--t4)'];
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let player=null,grade=null,teams=[],pts=[],curT=0,curQ=0,qs=[],done=false,lbt=null;
+const L=['A','B','C','D'],TC=['--t1','--t2','--t3','--t4'],SCC=['sc1','sc2','sc3','sc4'],MED=['🥇','🥈','🥉','4️⃣','5️⃣'],TCV=['var(--t1)','var(--t2)','var(--t3)','var(--t4)'];
 
-// ══════════════════════════════════════════════════════════
-// SIGN-IN
-// ══════════════════════════════════════════════════════════
-async function doSignIn() {
-  const name = document.getElementById('si-name').value.trim();
-  const cls  = document.getElementById('si-class').value.trim();
-  const err  = document.getElementById('si-err');
-  if (!name || !cls) { err.classList.add('show'); return; }
-  err.classList.remove('show');
-
-  try {
-    const res = await fetch(`${API}/api/signin`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ name, classNumber: cls })
-    });
-    const data = await res.json();
-    player = { playerId: data.playerId, name: data.name, classNumber: data.classNumber };
-  } catch {
-    // Offline fallback — still let them play
-    player = { playerId: `${name}-${cls}`, name, classNumber: cls };
+// ── SIGN-IN ───────────────────────────────────────────────────────────────────
+async function doSignIn(){
+  const name=document.getElementById('sin').value.trim();
+  const cls=document.getElementById('sicls').value.trim();
+  const sid=document.getElementById('sisid').value.trim().toUpperCase()||undefined;
+  const err=document.getElementById('sierr');
+  if(!name||!cls){err.classList.add('on');return;}
+  err.classList.remove('on');
+  try{
+    const r=await fetch(`${API}/api/signin`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,classNumber:cls,sessionId:sid})});
+    const d=await r.json();
+    if(d.error)throw new Error(d.error);
+    player={playerId:d.playerId,sessionId:d.sessionId,name:d.name,classNumber:d.classNumber};
+  }catch{
+    const fid=sid||Math.random().toString(36).slice(2,6).toUpperCase();
+    player={playerId:`${name.toLowerCase().replace(/\s+/g,'-')}-${cls}`,sessionId:fid,name,classNumber:cls};
   }
-
-  document.getElementById('badge-name').textContent = player.name;
-  document.getElementById('badge-class').textContent = player.classNumber;
-  showScreen('setup-screen');
+  document.getElementById('bn').textContent=player.name;
+  document.getElementById('bc').textContent=player.classNumber;
+  document.getElementById('bsid').textContent=player.sessionId;
+  go('setup-screen');
 }
 
-// ══════════════════════════════════════════════════════════
-// SETUP
-// ══════════════════════════════════════════════════════════
-function selectGrade(g, btn) {
-  selectedGrade = g;
-  document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
+// ── SETUP ─────────────────────────────────────────────────────────────────────
+function selGrade(g,btn){grade=g;document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
+
+function startGame(){
+  if(!grade){alert('Please select a grade level!');return;}
+  teams=['t1n','t2n','t3n','t4n'].map((id,i)=>document.getElementById(id).value||`Team ${['Red','Gold','Green','Cyan'][i]}`);
+  pts=[0,0,0,0];curT=0;curQ=0;done=false;
+  qs=shuffle([...QB[grade]]);
+  document.getElementById('lbsid').textContent=player?.sessionId||'—';
+  go('game-screen');renderSB();loadQ();fetchLB();
+  lbt=setInterval(fetchLB,12000);
 }
 
-function startGame() {
-  if (!selectedGrade) { alert('Please select a grade level!'); return; }
-  teams = [
-    document.getElementById('t1n').value || 'Team Red',
-    document.getElementById('t2n').value || 'Team Gold',
-    document.getElementById('t3n').value || 'Team Green',
-    document.getElementById('t4n').value || 'Team Cyan',
-  ];
-  scores = [0,0,0,0];
-  currentTeam = 0; currentQ = 0; answered = false;
-  questions = shuffle([...QB[selectedGrade]]);
-  showScreen('game-screen');
-  renderScoreboard();
-  loadQuestion();
-  fetchLeaderboard();
-  lbInterval = setInterval(fetchLeaderboard, 15000);
+// ── GAME ──────────────────────────────────────────────────────────────────────
+function renderSB(){
+  document.getElementById('sb').innerHTML=teams.map((t,i)=>`<div class="sc ${SCC[i]} ${i===curT?'at':''}" id="sc${i}"><div class="scn">${t}</div><div class="scp" id="p${i}">${pts[i]}</div><div class="scl">pts</div></div>`).join('');
+}
+function updSB(){teams.forEach((_,i)=>{document.getElementById(`p${i}`).textContent=pts[i];document.getElementById(`sc${i}`).className=`sc ${SCC[i]} ${i===curT?'at':''}`;});}
+function bump(i){const e=document.getElementById(`p${i}`);e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump');}
+
+function loadQ(){
+  if(curQ>=qs.length){endGame();return;}
+  done=false;
+  const q=qs[curQ];
+  document.getElementById('hudg').textContent=`${grade}TH GRADE`;
+  const ht=document.getElementById('hudt');ht.textContent=teams[curT];ht.style.color=`var(${TC[curT]})`;
+  document.getElementById('hudq').textContent=`Q ${curQ+1}/${qs.length}`;
+  document.getElementById('pb').style.width=(curQ/qs.length*100)+'%';
+  document.getElementById('qcat').textContent=q.cat;
+  document.getElementById('qtxt').textContent=q.q;
+  document.getElementById('qpts').textContent=`+${q.pts} pts`;
+  document.getElementById('ag').innerHTML=q.a.map((ans,i)=>`<button class="abtn" onclick="checkAns(${i})" id="ab${i}"><span class="altr">${L[i]}</span>${ans}</button>`).join('');
+  document.getElementById('nxtbtn').classList.remove('vis');
 }
 
-// ══════════════════════════════════════════════════════════
-// GAME LOOP
-// ══════════════════════════════════════════════════════════
-function renderScoreboard() {
-  document.getElementById('scoreboard').innerHTML = teams.map((t,i) => `
-    <div class="sc ${SC_CLS[i]} ${i===currentTeam?'at':''}" id="sc${i}">
-      <div class="sc-name">${t}</div>
-      <div class="sc-pts" id="pts${i}">${scores[i]}</div>
-      <div class="sc-lbl">pts</div>
-    </div>`).join('');
-}
-
-function updateScoreboard() {
-  teams.forEach((_,i) => {
-    document.getElementById(`pts${i}`).textContent = scores[i];
-    document.getElementById(`sc${i}`).className = `sc ${SC_CLS[i]} ${i===currentTeam?'at':''}`;
-  });
-}
-
-function loadQuestion() {
-  if (currentQ >= questions.length) { endGame(); return; }
-  answered = false;
-  const q = questions[currentQ];
-  document.getElementById('hud-grade').textContent = `${selectedGrade}TH GRADE`;
-  const ht = document.getElementById('hud-team');
-  ht.textContent = teams[currentTeam];
-  ht.style.color = `var(${TC[currentTeam]})`;
-  document.getElementById('hud-qnum').textContent = `Q ${currentQ+1}/${questions.length}`;
-  document.getElementById('prog-bar').style.width = (currentQ/questions.length*100)+'%';
-  document.getElementById('q-cat').textContent = q.cat;
-  document.getElementById('q-text').textContent = q.q;
-  document.getElementById('q-pts').textContent = `+${q.pts} pts`;
-
-  document.getElementById('ans-grid').innerHTML = q.a.map((ans,i) => `
-    <button class="ans-btn" onclick="checkAnswer(${i})" id="ab${i}">
-      <span class="ans-ltr">${LETTERS[i]}</span>${ans}
-    </button>`).join('');
-  document.getElementById('next-btn').classList.remove('vis');
-}
-
-function checkAnswer(idx) {
-  if (answered) return;
-  answered = true;
-  const q = questions[currentQ];
-  document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+function checkAns(idx){
+  if(done)return;done=true;
+  const q=qs[curQ];
+  document.querySelectorAll('.abtn').forEach(b=>b.disabled=true);
   document.getElementById(`ab${q.c}`).classList.add('correct');
-  if (idx === q.c) {
-    scores[currentTeam] += q.pts;
-    updateScoreboard();
-    showToast(true, q.pts);
-    submitScore(q.pts);
-  } else {
-    document.getElementById(`ab${idx}`).classList.add('wrong');
-    showToast(false, q.pts);
-  }
-  document.getElementById('next-btn').classList.add('vis');
-  // refresh leaderboard after every answer
-  setTimeout(fetchLeaderboard, 800);
+  if(idx===q.c){pts[curT]+=q.pts;updSB();bump(curT);showToast(true,q.pts);postScore(q.pts);}
+  else{document.getElementById(`ab${idx}`).classList.add('wrong');showToast(false,q.pts);}
+  document.getElementById('nxtbtn').classList.add('vis');
+  setTimeout(fetchLB,900);
 }
 
-function nextTurn() {
-  currentQ++;
-  currentTeam = (currentTeam+1) % 4;
-  updateScoreboard();
-  loadQuestion();
+function nextTurn(){curQ++;curT=(curT+1)%4;updSB();loadQ();}
+
+// ── LEADERBOARD ───────────────────────────────────────────────────────────────
+async function fetchLB(tid='lbr'){
+  if(!player?.sessionId)return;
+  try{
+    const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
+    const d=await r.json();
+    renderLB(Array.isArray(d)?d.slice(0,5):[],tid);
+  }catch{document.getElementById(tid).innerHTML='<div class="lbempty">Leaderboard offline — connect backend to enable.</div>';}
+}
+function renderLB(leaders,tid='lbr'){
+  const el=document.getElementById(tid);
+  if(!leaders.length){el.innerHTML='<div class="lbempty">No scores yet — answer correctly to appear here!</div>';return;}
+  el.innerHTML=leaders.map((l,i)=>{const me=l.playerId===player?.playerId;return`<div class="lbrow${me?' me':''}"><span class="lbrank">${MED[i]}</span><span class="lbname">${l.name}${me?' ⭐':''}</span><span class="lbcls">Class ${l.classNumber}</span><span class="lbscore">${l.score}</span></div>`;}).join('');
 }
 
-// ══════════════════════════════════════════════════════════
-// LEADERBOARD
-// ══════════════════════════════════════════════════════════
-async function fetchLeaderboard(targetId = 'lb-rows') {
-  try {
-    const res = await fetch(`${API}/api/leaderboard`);
-    const data = await res.json();
-    renderLeaderboard(data.slice(0,5), targetId);
-  } catch {
-    document.getElementById(targetId).innerHTML = '<div class="lb-empty">Leaderboard offline</div>';
-  }
+async function postScore(p){
+  if(!player)return;
+  try{await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:p})});}catch{}
 }
 
-function renderLeaderboard(leaders, targetId = 'lb-rows') {
-  const el = document.getElementById(targetId);
-  if (!leaders.length) { el.innerHTML = '<div class="lb-empty">No scores yet — be the first!</div>'; return; }
-  const rankEmoji = ['🥇','🥈','🥉','4️⃣','5️⃣'];
-  el.innerHTML = leaders.map((l,i) => `
-    <div class="lb-row">
-      <span class="lb-rank">${rankEmoji[i]||i+1}</span>
-      <span class="lb-name">${l.name}</span>
-      <span class="lb-class">Class ${l.classNumber}</span>
-      <span class="lb-score">${l.allTimeScore}</span>
-    </div>`).join('');
+// ── END GAME ──────────────────────────────────────────────────────────────────
+function endGame(){
+  clearInterval(lbt);
+  const s=teams.map((t,i)=>({name:t,pts:pts[i],i})).sort((a,b)=>b.pts-a.pts);
+  document.getElementById('wtitle').textContent=`🏆 ${s[0].name} Wins!`;
+  document.getElementById('wts').innerHTML=s.map((t,r)=>`<div class="frow"><span class="frank">${MED[r]}</span><span class="fname" style="color:${TCV[t.i]}">${t.name}</span><span class="fpts" style="color:${TCV[t.i]}">${t.pts} pts</span></div>`).join('');
+  go('winner-screen');fetchLB('wlbr');launchC();
+}
+function resetGame(){stopC();go('signin-screen');}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+const CM=['Correct!','Nailed It!','Outstanding!','Brilliant!','Excellent!'],WM=['Oops!','Not Quite!','Almost!','Keep Going!'];
+function showToast(ok,p){
+  const t=document.getElementById('toast');
+  document.getElementById('tico').textContent=ok?['🎉','⭐','🔥','💥','✨'][Math.floor(Math.random()*5)]:['😬','😅','🙈','💀'][Math.floor(Math.random()*4)];
+  document.getElementById('tmsg').textContent=ok?CM[Math.floor(Math.random()*5)]:WM[Math.floor(Math.random()*4)];
+  document.getElementById('tmsg').style.color=ok?'var(--green)':'var(--red)';
+  document.getElementById('tsub').textContent=ok?`+${p} points for ${teams[curT]}!`:'No points this round.';
+  t.className=`toast show ${ok?'tc':'tw'}`;
+  setTimeout(()=>t.className='toast',1600);
 }
 
-// ══════════════════════════════════════════════════════════
-// SCORE SUBMISSION
-// ══════════════════════════════════════════════════════════
-let sessionTotal = 0;
-async function submitScore(pts) {
-  if (!player) return;
-  sessionTotal += pts;
-  try {
-    await fetch(`${API}/api/score`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        playerId: player.playerId,
-        name: player.name,
-        classNumber: player.classNumber,
-        sessionScore: pts,
-        grade: selectedGrade
-      })
-    });
-  } catch { /* offline — silent fail */ }
-}
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-// ══════════════════════════════════════════════════════════
-// END GAME
-// ══════════════════════════════════════════════════════════
-function endGame() {
-  clearInterval(lbInterval);
-  const sorted = teams.map((t,i) => ({name:t,pts:scores[i],i})).sort((a,b)=>b.pts-a.pts);
-  document.getElementById('w-title').textContent = `🏆 ${sorted[0].name} Wins!`;
-  document.getElementById('w-scores').innerHTML = sorted.map((t,r) => `
-    <div class="final-row">
-      <span class="final-rank">${MEDALS[r]}</span>
-      <span class="final-name" style="color:${TC_VAR[t.i]}">${t.name}</span>
-      <span class="final-pts" style="color:${TC_VAR[t.i]}">${t.pts} pts</span>
-    </div>`).join('');
-  showScreen('winner-screen');
-  fetchLeaderboard('w-lb-rows');
-  launchConfetti();
-}
+// ── CONFETTI ──────────────────────────────────────────────────────────────────
+const CC=document.getElementById('cc'),CCX=CC.getContext('2d');let cp=[],craf;
+function launchC(){CC.width=innerWidth;CC.height=innerHeight;cp=Array.from({length:140},()=>({x:Math.random()*CC.width,y:-20,r:Math.random()*8+4,dx:(Math.random()-.5)*4,dy:Math.random()*4+2,rot:Math.random()*360,rv:(Math.random()-.5)*6,c:['#f7c948','#ff5263','#3de87a','#38f9d7','#fff'][Math.floor(Math.random()*5)]}));animC();}
+function animC(){CCX.clearRect(0,0,CC.width,CC.height);cp.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.rot+=p.rv;CCX.save();CCX.translate(p.x,p.y);CCX.rotate(p.rot*Math.PI/180);CCX.fillStyle=p.c;CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);CCX.restore();});cp=cp.filter(p=>p.y<CC.height+20);if(cp.length)craf=requestAnimationFrame(animC);}
+function stopC(){cancelAnimationFrame(craf);CCX.clearRect(0,0,CC.width,CC.height);}
 
-function resetGame() {
-  stopConfetti(); sessionTotal = 0;
-  showScreen('signin-screen');
-}
-
-// ══════════════════════════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════════════════════════
-const CORRECT_MSG = ['Correct!','Nailed it!','Outstanding!','Brilliant!','Excellent!'];
-const WRONG_MSG   = ['Oops!','Not quite!','Almost!','Keep going!'];
-function showToast(ok, pts) {
-  const toast = document.getElementById('toast');
-  document.getElementById('t-icon').textContent = ok ? ['🎉','⭐','🔥','💥','✨'][Math.floor(Math.random()*5)] : ['😬','😅','🙈','💀'][Math.floor(Math.random()*4)];
-  document.getElementById('t-msg').textContent  = ok ? CORRECT_MSG[Math.floor(Math.random()*5)] : WRONG_MSG[Math.floor(Math.random()*4)];
-  document.getElementById('t-msg').style.color  = ok ? 'var(--accent3)' : 'var(--t1)';
-  document.getElementById('t-sub').textContent  = ok ? `+${pts} points for ${teams[currentTeam]}!` : 'No points this round.';
-  toast.className = `toast show ${ok?'tc':'tw'}`;
-  setTimeout(() => toast.className='toast', 1500);
-}
-
-// ══════════════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════════════
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-function shuffle(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
-
-// ══════════════════════════════════════════════════════════
-// CONFETTI
-// ══════════════════════════════════════════════════════════
-const CC = document.getElementById('confetti-canvas'), CCX = CC.getContext('2d');
-let confettiParts = [], confettiRAF;
-function launchConfetti() {
-  CC.width = innerWidth; CC.height = innerHeight;
-  confettiParts = Array.from({length:130},()=>({
-    x:Math.random()*CC.width, y:-20, r:Math.random()*8+4,
-    dx:(Math.random()-.5)*4, dy:Math.random()*4+2,
-    rot:Math.random()*360, rv:(Math.random()-.5)*6,
-    c:['#f7c948','#ff5f6d','#43e97b','#38f9d7','#fff'][Math.floor(Math.random()*5)]
-  }));
-  animateConfetti();
-}
-function animateConfetti() {
-  CCX.clearRect(0,0,CC.width,CC.height);
-  confettiParts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.rot+=p.rv;
-    CCX.save();CCX.translate(p.x,p.y);CCX.rotate(p.rot*Math.PI/180);
-    CCX.fillStyle=p.c;CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);CCX.restore();});
-  confettiParts=confettiParts.filter(p=>p.y<CC.height+20);
-  if(confettiParts.length) confettiRAF=requestAnimationFrame(animateConfetti);
-}
-function stopConfetti(){cancelAnimationFrame(confettiRAF);CCX.clearRect(0,0,CC.width,CC.height);}
-
-// Enter key support
-document.addEventListener('keydown', e => {
-  if (e.key==='Enter') {
-    const active = document.querySelector('.screen.active');
-    if (active?.id==='signin-screen') doSignIn();
-  }
-});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('signin-screen').classList.contains('active'))doSignIn();});
 </script>
 </body>
 </html>
