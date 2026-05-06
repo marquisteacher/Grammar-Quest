@@ -1,0 +1,15 @@
+# Node
+node_modules/
+.env
+
+# Firebase service account — NEVER commit this
+*service-account*.json
+*firebase-adminsdk*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
