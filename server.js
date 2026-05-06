@@ -8,7 +8,23 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // ── Firebase Admin Init ───────────────────────────────────────────────────────
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  console.error('\n❌  FIREBASE_SERVICE_ACCOUNT environment variable is not set.');
+  console.error('   Go to Render → your service → Environment → Add FIREBASE_SERVICE_ACCOUNT');
+  console.error('   Paste the full JSON content of your Firebase service account key file.\n');
+  process.exit(1);
+}
+
+let serviceAccount;
+try {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} catch (e) {
+  console.error('\n❌  FIREBASE_SERVICE_ACCOUNT is set but is not valid JSON.');
+  console.error('   Make sure you pasted the entire .json file contents as a single value.');
+  console.error('   Do not wrap it in quotes. Do not add extra characters.\n');
+  process.exit(1);
+}
+
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 const db = admin.firestore();
 
