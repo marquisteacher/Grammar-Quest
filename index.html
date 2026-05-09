@@ -137,7 +137,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
 <body>
 <canvas id="stars"></canvas>
 <canvas id="cc"></canvas>
- 
+
 <div id="signin-screen" class="screen active">
   <div class="logo">Grammar Quest</div>
   <div class="tagline">The Ultimate Classroom Quiz Show</div>
@@ -155,7 +155,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
     <button class="bigbtn" onclick="doSignIn()">Let's Play!</button>
   </div>
 </div>
- 
+
 <div id="setup-screen" class="screen">
   <div class="pbadge">Playing as <strong id="bn"></strong> · Class <strong id="bc"></strong></div>
   <div class="sbadge">Session: <span id="bsid"></span></div>
@@ -179,7 +179,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   </div>
   <button class="bigbtn" style="max-width:720px;" onclick="startGame()">Start the Show!</button>
 </div>
- 
+
 <div id="game-screen" class="screen">
   <div class="sb" id="sb"></div>
   <div class="hud">
@@ -203,7 +203,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
     <div class="lbrows" id="lbr"><div class="lbempty">Scores appear as you play…</div></div>
   </div>
 </div>
- 
+
 <div id="winner-screen" class="screen">
   <div class="wtrophy">🏆</div>
   <div class="wtitle" id="wtitle"></div>
@@ -214,22 +214,22 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   </div>
   <button class="pagain" onclick="resetGame()">Play Again</button>
 </div>
- 
+
 <div class="toast" id="toast">
   <div class="ticon" id="tico"></div>
   <div class="tmsg" id="tmsg"></div>
   <div class="tsub" id="tsub"></div>
 </div>
- 
+
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 const API = 'https://YOUR-RENDER-APP.onrender.com'; // update after Render deploy
- 
+
 // ── STARS ─────────────────────────────────────────────────────────────────────
 const SC=document.getElementById('stars'),SCX=SC.getContext('2d');
 function drawStars(){SC.width=innerWidth;SC.height=innerHeight;SCX.clearRect(0,0,SC.width,SC.height);for(let i=0;i<170;i++){const x=Math.random()*SC.width,y=Math.random()*SC.height,r=Math.random()*1.7;SCX.beginPath();SCX.arc(x,y,r,0,Math.PI*2);SCX.fillStyle=`rgba(255,255,255,${Math.random()*.65+.08})`;SCX.fill();}}
 window.addEventListener('resize',drawStars);drawStars();
- 
+
 // ── QUESTIONS (25 per grade) ───────────────────────────────────────────────────
 const QB={
   5:[
@@ -342,10 +342,11 @@ const QB={
     {q:"Which sentence is in the correct order?",a:["Beautiful is she very.","She is very beautiful.","Very beautiful she is.","Is she very beautiful."],c:1,cat:"Sentence Structure",pts:200},
   ]
 };
+
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let player=null,grade=null,teams=[],pts=[],curT=0,curQ=0,qs=[],done=false,lbt=null;
 const L=['A','B','C','D'],TC=['--t1','--t2','--t3','--t4'],SCC=['sc1','sc2','sc3','sc4'],MED=['🥇','🥈','🥉','4️⃣','5️⃣'],TCV=['var(--t1)','var(--t2)','var(--t3)','var(--t4)'];
- 
+
 // ── SIGN-IN ───────────────────────────────────────────────────────────────────
 async function doSignIn(){
   const name=document.getElementById('sin').value.trim();
@@ -368,10 +369,10 @@ async function doSignIn(){
   document.getElementById('bsid').textContent=player.sessionId;
   go('setup-screen');
 }
- 
+
 // ── SETUP ─────────────────────────────────────────────────────────────────────
 function selGrade(g,btn){grade=g;document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
- 
+
 function startGame(){
   if(!grade){alert('Please select a grade level!');return;}
   teams=['t1n','t2n','t3n','t4n'].map((id,i)=>document.getElementById(id).value||`Team ${['Red','Gold','Green','Cyan'][i]}`);
@@ -381,14 +382,14 @@ function startGame(){
   go('game-screen');renderSB();loadQ();fetchLB();
   lbt=setInterval(fetchLB,12000);
 }
- 
+
 // ── GAME ──────────────────────────────────────────────────────────────────────
 function renderSB(){
   document.getElementById('sb').innerHTML=teams.map((t,i)=>`<div class="sc ${SCC[i]} ${i===curT?'at':''}" id="sc${i}"><div class="scn">${t}</div><div class="scp" id="p${i}">${pts[i]}</div><div class="scl">pts</div></div>`).join('');
 }
 function updSB(){teams.forEach((_,i)=>{document.getElementById(`p${i}`).textContent=pts[i];document.getElementById(`sc${i}`).className=`sc ${SCC[i]} ${i===curT?'at':''}`;});}
 function bump(i){const e=document.getElementById(`p${i}`);e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump');}
- 
+
 function loadQ(){
   if(curQ>=qs.length){endGame();return;}
   done=false;
@@ -403,7 +404,7 @@ function loadQ(){
   document.getElementById('ag').innerHTML=q.a.map((ans,i)=>`<button class="abtn" onclick="checkAns(${i})" id="ab${i}"><span class="altr">${L[i]}</span>${ans}</button>`).join('');
   document.getElementById('nxtbtn').classList.remove('vis');
 }
- 
+
 function checkAns(idx){
   if(done)return;done=true;
   const q=qs[curQ];
@@ -414,9 +415,9 @@ function checkAns(idx){
   document.getElementById('nxtbtn').classList.add('vis');
   setTimeout(fetchLB,900);
 }
- 
+
 function nextTurn(){curQ++;curT=(curT+1)%4;updSB();loadQ();}
- 
+
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
 async function fetchLB(tid='lbr'){
   if(!player?.sessionId)return;
@@ -424,18 +425,52 @@ async function fetchLB(tid='lbr'){
     const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
     const d=await r.json();
     renderLB(Array.isArray(d)?d.slice(0,5):[],tid);
-  }catch{document.getElementById(tid).innerHTML='<div class="lbempty">Leaderboard offline — connect backend to enable.</div>';}
+  }catch{document.getElementById(tid).innerHTML='<div class="lbempty">Leaderboard offline.</div>';}
 }
 function renderLB(leaders,tid='lbr'){
   const el=document.getElementById(tid);
   if(!leaders.length){el.innerHTML='<div class="lbempty">No scores yet — answer correctly to appear here!</div>';return;}
   el.innerHTML=leaders.map((l,i)=>{const me=l.playerId===player?.playerId;return`<div class="lbrow${me?' me':''}"><span class="lbrank">${MED[i]}</span><span class="lbname">${l.name}${me?' ⭐':''}</span><span class="lbcls">Class ${l.classNumber}</span><span class="lbscore">${l.score}</span></div>`;}).join('');
 }
- 
+
 async function postScore(p){
   if(!player)return;
   try{await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:p})});}catch{}
 }
- 
+
 // ── END GAME ──────────────────────────────────────────────────────────────────
-  
+function endGame(){
+  clearInterval(lbt);
+  const s=teams.map((t,i)=>({name:t,pts:pts[i],i})).sort((a,b)=>b.pts-a.pts);
+  document.getElementById('wtitle').textContent=`🏆 ${s[0].name} Wins!`;
+  document.getElementById('wts').innerHTML=s.map((t,r)=>`<div class="frow"><span class="frank">${MED[r]}</span><span class="fname" style="color:${TCV[t.i]}">${t.name}</span><span class="fpts" style="color:${TCV[t.i]}">${t.pts} pts</span></div>`).join('');
+  go('winner-screen');fetchLB('wlbr');launchC();
+}
+function resetGame(){stopC();go('signin-screen');}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+const CM=['Correct!','Nailed It!','Outstanding!','Brilliant!','Excellent!'],WM=['Oops!','Not Quite!','Almost!','Keep Going!'];
+function showToast(ok,p){
+  const t=document.getElementById('toast');
+  document.getElementById('tico').textContent=ok?['🎉','⭐','🔥','💥','✨'][Math.floor(Math.random()*5)]:['😬','😅','🙈','💀'][Math.floor(Math.random()*4)];
+  document.getElementById('tmsg').textContent=ok?CM[Math.floor(Math.random()*5)]:WM[Math.floor(Math.random()*4)];
+  document.getElementById('tmsg').style.color=ok?'var(--green)':'var(--red)';
+  document.getElementById('tsub').textContent=ok?`+${p} points for ${teams[curT]}!`:'No points this round.';
+  t.className=`toast show ${ok?'tc':'tw'}`;
+  setTimeout(()=>t.className='toast',1600);
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// ── CONFETTI ──────────────────────────────────────────────────────────────────
+const CC=document.getElementById('cc'),CCX=CC.getContext('2d');let cp=[],craf;
+function launchC(){CC.width=innerWidth;CC.height=innerHeight;cp=Array.from({length:140},()=>({x:Math.random()*CC.width,y:-20,r:Math.random()*8+4,dx:(Math.random()-.5)*4,dy:Math.random()*4+2,rot:Math.random()*360,rv:(Math.random()-.5)*6,c:['#f7c948','#ff5263','#3de87a','#38f9d7','#fff'][Math.floor(Math.random()*5)]}));animC();}
+function animC(){CCX.clearRect(0,0,CC.width,CC.height);cp.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.rot+=p.rv;CCX.save();CCX.translate(p.x,p.y);CCX.rotate(p.rot*Math.PI/180);CCX.fillStyle=p.c;CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);CCX.restore();});cp=cp.filter(p=>p.y<CC.height+20);if(cp.length)craf=requestAnimationFrame(animC);}
+function stopC(){cancelAnimationFrame(craf);CCX.clearRect(0,0,CC.width,CC.height);}
+
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('signin-screen').classList.contains('active'))doSignIn();});
+</script>
+</body>
+</html>
