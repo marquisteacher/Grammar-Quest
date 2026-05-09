@@ -137,7 +137,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
 <body>
 <canvas id="stars"></canvas>
 <canvas id="cc"></canvas>
-
+ 
 <div id="signin-screen" class="screen active">
   <div class="logo">Grammar Quest</div>
   <div class="tagline">The Ultimate Classroom Quiz Show</div>
@@ -155,7 +155,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
     <button class="bigbtn" onclick="doSignIn()">Let's Play!</button>
   </div>
 </div>
-
+ 
 <div id="setup-screen" class="screen">
   <div class="pbadge">Playing as <strong id="bn"></strong> · Class <strong id="bc"></strong></div>
   <div class="sbadge">Session: <span id="bsid"></span></div>
@@ -179,7 +179,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   </div>
   <button class="bigbtn" style="max-width:720px;" onclick="startGame()">Start the Show!</button>
 </div>
-
+ 
 <div id="game-screen" class="screen">
   <div class="sb" id="sb"></div>
   <div class="hud">
@@ -203,7 +203,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
     <div class="lbrows" id="lbr"><div class="lbempty">Scores appear as you play…</div></div>
   </div>
 </div>
-
+ 
 <div id="winner-screen" class="screen">
   <div class="wtrophy">🏆</div>
   <div class="wtitle" id="wtitle"></div>
@@ -214,111 +214,138 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   </div>
   <button class="pagain" onclick="resetGame()">Play Again</button>
 </div>
-
+ 
 <div class="toast" id="toast">
   <div class="ticon" id="tico"></div>
   <div class="tmsg" id="tmsg"></div>
   <div class="tsub" id="tsub"></div>
 </div>
-
+ 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const API = 'https://grammar-quest.onrender.com';
-
+const API = 'https://YOUR-RENDER-APP.onrender.com'; // update after Render deploy
+ 
 // ── STARS ─────────────────────────────────────────────────────────────────────
 const SC=document.getElementById('stars'),SCX=SC.getContext('2d');
 function drawStars(){SC.width=innerWidth;SC.height=innerHeight;SCX.clearRect(0,0,SC.width,SC.height);for(let i=0;i<170;i++){const x=Math.random()*SC.width,y=Math.random()*SC.height,r=Math.random()*1.7;SCX.beginPath();SCX.arc(x,y,r,0,Math.PI*2);SCX.fillStyle=`rgba(255,255,255,${Math.random()*.65+.08})`;SCX.fill();}}
 window.addEventListener('resize',drawStars);drawStars();
-
+ 
 // ── QUESTIONS (25 per grade) ───────────────────────────────────────────────────
 const QB={
   5:[
-    {q:"She baked a cake. What is the direct object?",a:["She","baked","cake","a"],c:2,cat:"Sentence Parts",pts:100},
-    {q:"They ___ going to school.",a:["is","are","was","be"],c:1,cat:"Subject-Verb Agreement",pts:100},
-    {q:"The book is ___ the table.",a:["run","on","fast","jump"],c:1,cat:"Prepositions",pts:100},
-    {q:"Fix the capitalization: 'i like pizza'",a:["I like pizza.","i like pizza","I Like pizza","I like Pizza"],c:0,cat:"Capitalization",pts:100},
-    {q:"Which sentence uses a comma correctly?",a:["Yes I like it","Yes, I like it","Yes I, like it","Yes I like, it"],c:1,cat:"Punctuation",pts:100},
-    {q:"Which word is an adjective? 'The tiny blue bird sang.'",a:["bird","sang","tiny","The"],c:2,cat:"Parts of Speech",pts:100},
-    {q:"Which is a complete sentence?",a:["Running fast.","The dog barked loudly.","Because it rained.","After school."],c:1,cat:"Sentence Structure",pts:150},
-    {q:"Which word is a noun? 'The happy puppy ran quickly.'",a:["happy","ran","quickly","puppy"],c:3,cat:"Parts of Speech",pts:100},
-    {q:"What punctuation ends a question?",a:["Period (.)","Exclamation (!)","Question mark (?)","Comma (,)"],c:2,cat:"Punctuation",pts:100},
-    {q:"'I went to the store, and I bought milk.' This is a ___.",a:["Simple sentence","Compound sentence","Fragment","Run-on"],c:1,cat:"Sentence Types",pts:150},
-    {q:"Which word is a verb? 'The cat quietly sleeps all day.'",a:["cat","quietly","sleeps","all"],c:2,cat:"Parts of Speech",pts:100},
-    {q:"Choose the correct spelling.",a:["freind","friend","frend","freiend"],c:1,cat:"Spelling",pts:100},
-    {q:"Which sentence has correct end punctuation?",a:["Where are you going.","Stop right there!","Can you help me","She is happy?"],c:1,cat:"Punctuation",pts:100},
-    {q:"What does the prefix 'un-' mean?",a:["again","not","before","after"],c:1,cat:"Word Parts",pts:100},
-    {q:"Which word is an adverb? 'She ran quickly to the store.'",a:["ran","quickly","store","She"],c:1,cat:"Parts of Speech",pts:100},
-    {q:"Which is a proper noun?",a:["city","park","London","river"],c:2,cat:"Nouns",pts:100},
-    {q:"He doesn't have ___ money.",a:["no","any","none","nothing"],c:1,cat:"Double Negatives",pts:150},
-    {q:"Which sentence is a question?",a:["She went home.","Go home now.","Where did she go?","She must go home."],c:2,cat:"Sentence Types",pts:100},
-    {q:"What is the plural of 'child'?",a:["childs","childrens","children","childes"],c:2,cat:"Plural Nouns",pts:100},
-    {q:"Which word makes this compound? 'I was tired ___ I kept reading.'",a:["because","so","that","which"],c:1,cat:"Conjunctions",pts:150},
-    {q:"Which is a command sentence?",a:["She runs fast.","Do your homework.","Are you ready?","He likes pizza."],c:1,cat:"Sentence Types",pts:100},
-    {q:"Which correctly completes: 'She is ___ than her brother.'",a:["taller","more taller","tallest","most tall"],c:0,cat:"Comparatives",pts:150},
-    {q:"Which contraction is correct for 'do not'?",a:["do'nt","dont'","don't","d'ont"],c:2,cat:"Contractions",pts:100},
-    {q:"What does the suffix '-ful' mean?",a:["without","full of","before","again"],c:1,cat:"Word Parts",pts:100},
-    {q:"Which word is a preposition? 'The cat sat under the table.'",a:["cat","sat","under","table"],c:2,cat:"Prepositions",pts:100}
+    // NOUNS
+    {q:"Which word is a NOUN? A noun is a person, place, or thing.",a:["apple","run","happy","slowly"],c:0,cat:"Nouns",pts:100},
+    {q:"Which word is a NOUN?\n'The dog is big.'",a:["The","dog","is","big"],c:1,cat:"Nouns",pts:100},
+    {q:"Which word is a NOUN?\n'She reads a book.'",a:["She","reads","a","book"],c:3,cat:"Nouns",pts:100},
+    {q:"Which of these is a NOUN?",a:["jump","school","fast","eat"],c:1,cat:"Nouns",pts:100},
+    {q:"Which of these is NOT a noun?",a:["cat","teacher","run","pencil"],c:2,cat:"Nouns",pts:100},
+    // VERBS
+    {q:"Which word is a VERB? A verb is an action word.",a:["cat","happy","runs","big"],c:2,cat:"Verbs",pts:100},
+    {q:"Which word is a VERB?\n'The boy eats lunch.'",a:["The","boy","eats","lunch"],c:2,cat:"Verbs",pts:100},
+    {q:"Which word is a VERB?\n'She plays football every day.'",a:["She","plays","football","every"],c:1,cat:"Verbs",pts:100},
+    {q:"Which of these is a VERB?",a:["school","blue","swim","pencil"],c:2,cat:"Verbs",pts:100},
+    {q:"Fill in the blank: 'Every morning, I ___ breakfast.'\nWhich verb is correct?",a:["eat","eating","ate","eats"],c:0,cat:"Verbs",pts:100},
+    // ADJECTIVES
+    {q:"Which word is an ADJECTIVE? An adjective describes a noun.",a:["run","tall","school","eat"],c:1,cat:"Adjectives",pts:100},
+    {q:"Which word is an ADJECTIVE?\n'The big dog is sleeping.'",a:["The","big","dog","sleeping"],c:1,cat:"Adjectives",pts:100},
+    {q:"Which word describes the noun?\n'She has a red bag.'",a:["She","has","red","bag"],c:2,cat:"Adjectives",pts:100},
+    // PLURALS
+    {q:"What is the plural of 'cat'?",a:["cates","cats","cat","catts"],c:1,cat:"Plurals",pts:100},
+    {q:"What is the plural of 'book'?",a:["books","bookes","book","bookies"],c:0,cat:"Plurals",pts:100},
+    {q:"What is the plural of 'box'?",a:["boxs","box","boxes","boxies"],c:2,cat:"Plurals",pts:150},
+    // PUNCTUATION
+    {q:"Which sentence ends correctly?",a:["I like cats","I like cats.","i like cats.","I like cats,"],c:1,cat:"Punctuation",pts:100},
+    {q:"Which sentence is a question?",a:["I am happy.","Come here!","Where is the dog?","She runs fast."],c:2,cat:"Punctuation",pts:100},
+    {q:"Which sentence needs a question mark?",a:["I like pizza","She is tall","What is your name","He runs fast"],c:2,cat:"Punctuation",pts:100},
+    // CAPITALIZATION
+    {q:"Which sentence has correct capital letters?",a:["i like school.","I like school.","I Like School.","i Like school."],c:1,cat:"Capitalization",pts:100},
+    {q:"Which word should always start with a capital letter?",a:["dog","happy","monday","run"],c:2,cat:"Capitalization",pts:100},
+    // ARTICLES
+    {q:"Fill in the blank: 'I have ___ apple.'\n(apple starts with a vowel sound)",a:["a","an","the","—"],c:1,cat:"Articles",pts:150},
+    {q:"Fill in the blank: 'She has ___ dog.'",a:["an","the","a","—"],c:2,cat:"Articles",pts:100},
+    // PREPOSITIONS
+    {q:"Fill in the blank: 'The book is ___ the table.'\n(The book is on top.)",a:["under","on","in","next"],c:1,cat:"Prepositions",pts:100},
+    {q:"Fill in the blank: 'The cat is ___ the box.'\n(The cat is inside.)",a:["on","behind","in","above"],c:2,cat:"Prepositions",pts:100},
   ],
   6:[
-    {q:"Identify the appositive: 'My dog, a golden retriever, loves water.'",a:["My dog","loves water","a golden retriever","retriever"],c:2,cat:"Appositives",pts:100},
-    {q:"Which sentence is in passive voice?",a:["She ate the pie.","The pie was eaten by her.","She loves pie.","She bakes pies."],c:1,cat:"Active vs Passive",pts:150},
-    {q:"Choose the correct pronoun: '___ and I went to the mall.'",a:["Him","Her","Them","She"],c:3,cat:"Pronouns",pts:100},
-    {q:"What is the prefix in 'prehistoric'?",a:["pre","his","toric","historic"],c:0,cat:"Word Parts",pts:100},
-    {q:"Which sentence has a subject-verb error?",a:["She doesn't know.","They doesn't care.","He doesn't mind.","It doesn't matter."],c:1,cat:"Subject-Verb Agreement",pts:150},
-    {q:"'The clouds rolled in like dark waves.' This is a ___.",a:["Metaphor","Hyperbole","Simile","Alliteration"],c:2,cat:"Figurative Language",pts:150},
-    {q:"Which word is a conjunction? 'I like cats, but my sister prefers dogs.'",a:["like","sister","but","prefers"],c:2,cat:"Parts of Speech",pts:100},
-    {q:"What is the root word of 'unhappiness'?",a:["un","unhappy","happy","ness"],c:2,cat:"Word Parts",pts:100},
-    {q:"Which sentence uses a semicolon correctly?",a:["I like pizza; it's delicious.","I like; pizza.","I; like pizza.","I like pizza;"],c:0,cat:"Punctuation",pts:150},
-    {q:"Identify the dependent clause: 'Although it rained, we played outside.'",a:["we played outside","Although it rained","it rained","Although it"],c:1,cat:"Clauses",pts:200},
-    {q:"Which sentence uses quotation marks correctly?",a:['"Come here", she said.',"She said, 'come here'.",'She said, "Come here."',"She said, come here."],c:2,cat:"Punctuation",pts:150},
-    {q:"Which word is an interjection?",a:["run","happy","wow","slowly"],c:2,cat:"Parts of Speech",pts:100},
-    {q:"'All the world's a stage.' This is a ___.",a:["Simile","Metaphor","Hyperbole","Personification"],c:1,cat:"Figurative Language",pts:150},
-    {q:"Which uses 'their/there/they're' correctly?",a:["Their going home.","There going home.","They're going home.","Theyre going home."],c:2,cat:"Homophones",pts:150},
-    {q:"An independent clause ___.",a:["cannot stand alone","always starts with 'because'","can stand alone as a sentence","needs a conjunction"],c:2,cat:"Clauses",pts:150},
-    {q:"Which word has a negative connotation?",a:["confident","thrifty","assertive","stubborn"],c:3,cat:"Connotation",pts:150},
-    {q:"Which is an example of alliteration?",a:["She sells sea shells","The moon was a ghost","Life is a rollercoaster","Stars twinkle brightly"],c:0,cat:"Figurative Language",pts:150},
-    {q:"What type of sentence is: 'Please close the door.'",a:["Declarative","Interrogative","Imperative","Exclamatory"],c:2,cat:"Sentence Types",pts:100},
-    {q:"Which correctly completes: 'Neither the students nor the teacher ___ ready.'",a:["were","are","is","be"],c:2,cat:"Subject-Verb Agreement",pts:200},
-    {q:"What is the function of a topic sentence?",a:["Summarizes the whole essay","Introduces the main idea of a paragraph","Provides examples","Concludes the paragraph"],c:1,cat:"Writing Structure",pts:150},
-    {q:"Which sentence uses 'who' correctly?",a:["The man who I saw left.","The man whom left early.","The man who left early waved.","The man who him I know."],c:2,cat:"Pronouns",pts:150},
-    {q:"'She has a heart of gold.' This means she is ___.",a:["rich","very kind","literal gold","cold-hearted"],c:1,cat:"Figurative Language",pts:150},
-    {q:"Which sentence is compound-complex?",a:["She ran.","She ran, and he walked.","Although she was tired, she ran, and he walked.","She ran because she was late."],c:2,cat:"Sentence Types",pts:200},
-    {q:"What does 'context clues' mean?",a:["Using nearby words to find meaning","Looking up words in a dictionary","Asking the teacher","Using word parts only"],c:0,cat:"Reading Strategies",pts:100},
-    {q:"Which shows correct apostrophe use for possession (one dog)?",a:["the dogs' bone","the dog's bone","the dogs bone","the dog' bone"],c:1,cat:"Apostrophes",pts:150}
+    // NOUNS — types
+    {q:"Which word is a PROPER noun? A proper noun is the name of a specific place or person.",a:["city","school","London","teacher"],c:2,cat:"Proper Nouns",pts:100},
+    {q:"Which of these is a proper noun?",a:["dog","park","Monday","book"],c:2,cat:"Proper Nouns",pts:100},
+    {q:"'My friend lives in Turkey.' Which word is a proper noun?",a:["My","friend","lives","Turkey"],c:3,cat:"Proper Nouns",pts:100},
+    // VERBS — tenses
+    {q:"Which sentence talks about RIGHT NOW (present)?",a:["She played football.","She plays football.","She will play football.","She played yesterday."],c:1,cat:"Verb Tenses",pts:100},
+    {q:"Which sentence talks about the PAST?",a:["I eat lunch now.","I will eat lunch.","I ate lunch yesterday.","I am eating lunch."],c:2,cat:"Verb Tenses",pts:100},
+    {q:"Fill in the blank: 'Yesterday, she ___ to school.'",a:["walk","walks","walked","walking"],c:2,cat:"Verb Tenses",pts:150},
+    {q:"Fill in the blank: 'Every day, he ___ his homework.'",a:["did","does","doing","do"],c:1,cat:"Verb Tenses",pts:100},
+    // ADJECTIVES — comparatives
+    {q:"Which sentence compares two things correctly?",a:["She is more tall than him.","She is taller than him.","She is tallest than him.","She is tall than him."],c:1,cat:"Comparatives",pts:150},
+    {q:"Fill in the blank: 'This test is ___ than the last one.'",a:["easy","more easier","easier","easiest"],c:2,cat:"Comparatives",pts:150},
+    // SUBJECT & VERB AGREEMENT
+    {q:"Which sentence is correct?",a:["She go to school.","She goes to school.","She going to school.","She gone to school."],c:1,cat:"Subject-Verb Agreement",pts:100},
+    {q:"Which sentence is correct?",a:["They is happy.","They are happy.","They am happy.","They be happy."],c:1,cat:"Subject-Verb Agreement",pts:100},
+    {q:"Which sentence is correct?",a:["He play football.","He plays football.","He playing football.","He played football every day."],c:1,cat:"Subject-Verb Agreement",pts:100},
+    // PRONOUNS
+    {q:"Which word can replace 'Maria' in this sentence?\n'Maria likes cats.'",a:["He","They","She","It"],c:2,cat:"Pronouns",pts:100},
+    {q:"Which word can replace 'the book'?\n'The book is on the table.'",a:["He","She","They","It"],c:3,cat:"Pronouns",pts:100},
+    {q:"Fill in the blank: '___ are my friends.'",a:["He","She","They","It"],c:2,cat:"Pronouns",pts:100},
+    // PUNCTUATION
+    {q:"Which sentence uses a comma correctly?",a:["I like cats dogs and fish.","I like cats, dogs, and fish.","I like, cats dogs and fish.","I, like cats dogs and fish."],c:1,cat:"Punctuation",pts:150},
+    {q:"Which sentence is correct?",a:["Where are you going","Where are you going?","where are you going?","Where are you going!"],c:1,cat:"Punctuation",pts:100},
+    // CONJUNCTIONS
+    {q:"Which word joins two sentences?\n'I like cats. I like dogs.' → 'I like cats ___ dogs.'",a:["but","and","so","because"],c:1,cat:"Conjunctions",pts:100},
+    {q:"Fill in the blank: 'I want to sleep ___ I am very tired.'",a:["and","but","because","or"],c:2,cat:"Conjunctions",pts:150},
+    {q:"Fill in the blank: 'I like tea ___ I do not like coffee.'",a:["and","because","or","but"],c:3,cat:"Conjunctions",pts:150},
+    // SENTENCE TYPES
+    {q:"Which is a COMPLETE sentence?",a:["The big dog.","Running fast.","The dog runs fast.","In the park."],c:2,cat:"Sentence Structure",pts:100},
+    {q:"Which is NOT a complete sentence?",a:["She eats lunch.","The boy runs.","My blue pencil.","We go to school."],c:2,cat:"Sentence Structure",pts:100},
+    // PREPOSITIONS
+    {q:"Fill in the blank: 'She sits ___ her friend in class.'\n(They are side by side.)",a:["behind","above","next to","inside"],c:2,cat:"Prepositions",pts:100},
+    {q:"Fill in the blank: 'The school is ___ the park and the library.'",a:["inside","between","above","under"],c:1,cat:"Prepositions",pts:150},
+    // CONTRACTIONS
+    {q:"What does 'don't' mean?",a:["do not","does not","did not","will not"],c:0,cat:"Contractions",pts:100},
   ],
   7:[
-    {q:"Which sentence contains a misplaced modifier?",a:["Running fast, he caught the bus.","She almost drove her children to school every day.","Barking loudly, the dog chased the cat.","He fixed the broken window quickly."],c:1,cat:"Modifiers",pts:200},
-    {q:"Identify the gerund: 'Swimming is my favorite sport.'",a:["is","favorite","Swimming","sport"],c:2,cat:"Verbals",pts:150},
-    {q:"Which uses the subjunctive mood correctly?",a:["If I was you, I'd leave.","I wish I was taller.","If I were you, I'd leave.","She acts as if she was the boss."],c:2,cat:"Verb Moods",pts:200},
-    {q:"'Breaking the vase, she apologized.' The phrase is a ___.",a:["Gerund phrase","Infinitive phrase","Participial phrase","Prepositional phrase"],c:2,cat:"Phrases",pts:200},
-    {q:"Which correctly uses an em dash?",a:["I love—pizza","My sister—the one with red hair—is a doctor.","She ran—fast","He ate—his lunch"],c:1,cat:"Punctuation",pts:200},
-    {q:"What type of irony: 'A fire station burns down'?",a:["Verbal irony","Dramatic irony","Situational irony","Cosmic irony"],c:2,cat:"Figurative Language",pts:150},
-    {q:"Which sentence avoids a dangling modifier?",a:["Walking home, the rain started.","Walking home, she got caught in the rain.","Having eaten, the table was cleared.","To succeed, hard work is needed."],c:1,cat:"Modifiers",pts:200},
-    {q:"Identify the infinitive phrase: 'She wants to become a scientist.'",a:["She wants","become a scientist","to become a scientist","a scientist"],c:2,cat:"Verbals",pts:150},
-    {q:"Which is an example of parallelism?",a:["She likes to run, swimming, and biking.","She likes running, to swim, and bike.","She likes running, swimming, and biking.","She likes run, swim, and to bike."],c:2,cat:"Syntax",pts:200},
-    {q:"What is the antecedent? 'Maria lost her keys.'",a:["lost","her","keys","Maria"],c:3,cat:"Pronouns",pts:150},
-    {q:"Which sentence uses a colon correctly?",a:["She needed: milk.","She needed milk: badly.","She needed three things: milk, eggs, and bread.","She: needed milk."],c:2,cat:"Punctuation",pts:200},
-    {q:"What is an oxymoron?",a:["A comparison using 'like' or 'as'","Two contradictory terms used together","An extreme exaggeration","Words that sound like what they describe"],c:1,cat:"Figurative Language",pts:150},
-    {q:"Which sentence uses the past perfect tense?",a:["She runs to school.","She ran to school.","She had run to school before it started.","She will run to school."],c:2,cat:"Verb Tenses",pts:200},
-    {q:"'The wind whispered through the trees.' This is ___.",a:["Simile","Metaphor","Personification","Alliteration"],c:2,cat:"Figurative Language",pts:150},
-    {q:"Which best defines 'syntax'?",a:["The study of word meanings","The arrangement of words to form sentences","The study of sounds","The origin of words"],c:1,cat:"Grammar Concepts",pts:200},
-    {q:"Which sentence is third-person omniscient POV?",a:["I walked slowly.","You should go now.","She knew what everyone was thinking.","We all went together."],c:2,cat:"Point of View",pts:200},
-    {q:"Identify the absolute phrase: 'Her heart racing, she opened the envelope.'",a:["she opened the envelope","Her heart racing","opened the envelope","Her heart"],c:1,cat:"Phrases",pts:200},
-    {q:"Which word is onomatopoeia?",a:["beautiful","sizzle","quickly","because"],c:1,cat:"Figurative Language",pts:150},
-    {q:"Which correctly shows a restrictive clause?",a:["The book, that I read, was good.","The book that I borrowed is good.","The book, which is mine, is good.","The dog, that barked, ran away."],c:1,cat:"Clauses",pts:200},
-    {q:"What is the effect of varying sentence length?",a:["It confuses the reader","It creates rhythm and emphasis","It makes writing incorrect","It avoids punctuation"],c:1,cat:"Writing Style",pts:200},
-    {q:"Which demonstrates correct use of 'whom'?",a:["Whom is coming to the party?","To whom should I address this?","Whom did it?","Whom is the teacher?"],c:1,cat:"Pronouns",pts:200},
-    {q:"An appositive phrase ___.",a:["shows action","renames or explains a nearby noun","shows time","modifies a verb"],c:1,cat:"Phrases",pts:150},
-    {q:"Which is a zeugma?",a:["She ran fast","She broke his car and his heart.","The wind blew cold","Stars shine bright"],c:1,cat:"Figurative Language",pts:200},
-    {q:"Which uses 'lie/lay' correctly?",a:["Lay down for a nap.","I lie the book on the table.","Please lay the book on the table.","She lays down every afternoon."],c:2,cat:"Commonly Confused Words",pts:200},
-    {q:"What is the purpose of a thesis statement?",a:["To summarize every paragraph","To introduce the topic and state the main argument","To list all evidence","To conclude the essay"],c:1,cat:"Writing Structure",pts:150}
+    // VERB TENSES — expanded
+    {q:"Which sentence is in the FUTURE tense?",a:["She ate lunch.","She eats lunch.","She will eat lunch.","She is eating lunch."],c:2,cat:"Verb Tenses",pts:100},
+    {q:"Which sentence is in the PRESENT CONTINUOUS tense?\n(Something happening right now)",a:["She walked to school.","She walks to school.","She is walking to school.","She will walk to school."],c:2,cat:"Verb Tenses",pts:150},
+    {q:"Fill in the blank: 'Look! The dog ___ in the garden right now.'",a:["run","runs","is running","ran"],c:2,cat:"Verb Tenses",pts:150},
+    {q:"Fill in the blank: 'Last week, we ___ a movie.'",a:["watch","watches","are watching","watched"],c:3,cat:"Verb Tenses",pts:100},
+    // SUBJECT & VERB AGREEMENT — advanced
+    {q:"Which sentence is correct?",a:["The students was late.","The students were late.","The students are late yesterday.","The students be late."],c:1,cat:"Subject-Verb Agreement",pts:150},
+    {q:"Which sentence is correct?",a:["Everyone like pizza.","Everyone likes pizza.","Everyone liking pizza.","Everyone liked pizza always."],c:1,cat:"Subject-Verb Agreement",pts:150},
+    // ADJECTIVES & ADVERBS
+    {q:"Which word is an ADVERB? An adverb describes a verb.",a:["happy","slowly","big","school"],c:1,cat:"Adverbs",pts:100},
+    {q:"Which word is an ADVERB?\n'She sings beautifully.'",a:["She","sings","beautifully","—"],c:2,cat:"Adverbs",pts:100},
+    {q:"Which sentence uses an adverb?",a:["She is a fast runner.","She runs fast.","She has fast legs.","She is fast."],c:1,cat:"Adverbs",pts:150},
+    // PRONOUNS — object pronouns
+    {q:"Which is correct?\n'She gave the book to ___.'",a:["I","he","him","they"],c:2,cat:"Pronouns",pts:150},
+    {q:"Which is correct?\n'The teacher helped ___.'",a:["we","they","I","us"],c:3,cat:"Pronouns",pts:150},
+    {q:"Which is correct?\n'Between you and ___, this is a secret.'",a:["I","me","my","mine"],c:1,cat:"Pronouns",pts:200},
+    // CONJUNCTIONS — contrast
+    {q:"Fill in the blank: 'She studied hard ___ she failed the test.'\n(Surprising result)",a:["and","because","but","so"],c:2,cat:"Conjunctions",pts:150},
+    {q:"Fill in the blank: 'He was tired, ___ he kept working.'",a:["because","so","but","and"],c:2,cat:"Conjunctions",pts:150},
+    // QUESTIONS — forming
+    {q:"Which is the correct question form?",a:["Where she is going?","Where is she going?","Where going she is?","She is going where?"],c:1,cat:"Question Forms",pts:150},
+    {q:"Which is the correct question form?",a:["What you like to eat?","What do you like to eat?","What you do like to eat?","Do what you like to eat?"],c:1,cat:"Question Forms",pts:150},
+    // COUNTABLE & UNCOUNTABLE
+    {q:"Which sentence is correct?",a:["I have many homeworks.","I have much homeworks.","I have a lot of homework.","I have many homework."],c:2,cat:"Countable Nouns",pts:200},
+    {q:"Which sentence is correct?",a:["She drinks many water.","She drinks much waters.","She drinks a lot of water.","She drinks many waters."],c:2,cat:"Countable Nouns",pts:200},
+    // POSSESSIVES
+    {q:"Which sentence shows possession correctly?",a:["The bag of Maria.","Marias bag.","Maria's bag.","The bag Maria."],c:2,cat:"Possessives",pts:150},
+    {q:"Which sentence shows possession correctly?",a:["The book of the teacher.","The teachers book.","The teacher's book.","The book teacher's."],c:2,cat:"Possessives",pts:150},
+    // PREPOSITIONS — time
+    {q:"Fill in the blank: 'I go to school ___ Monday.'",a:["in","at","on","by"],c:2,cat:"Prepositions",pts:150},
+    {q:"Fill in the blank: School starts ___ 8 oclock.",a:["on","in","by","at"],c:3,cat:"Prepositions",pts:150},
+    {q:"Fill in the blank: 'We have a holiday ___ summer.'",a:["on","at","in","by"],c:2,cat:"Prepositions",pts:150},
+    // SENTENCE BUILDING
+    {q:"Which sentence is in the correct order?",a:["Lunch eats she every day.","She every day eats lunch.","She eats lunch every day.","Every day she lunch eats."],c:2,cat:"Sentence Structure",pts:200},
+    {q:"Which sentence is in the correct order?",a:["Beautiful is she very.","She is very beautiful.","Very beautiful she is.","Is she very beautiful."],c:1,cat:"Sentence Structure",pts:200},
   ]
 };
-
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let player=null,grade=null,teams=[],pts=[],curT=0,curQ=0,qs=[],done=false,lbt=null;
 const L=['A','B','C','D'],TC=['--t1','--t2','--t3','--t4'],SCC=['sc1','sc2','sc3','sc4'],MED=['🥇','🥈','🥉','4️⃣','5️⃣'],TCV=['var(--t1)','var(--t2)','var(--t3)','var(--t4)'];
-
+ 
 // ── SIGN-IN ───────────────────────────────────────────────────────────────────
 async function doSignIn(){
   const name=document.getElementById('sin').value.trim();
@@ -341,10 +368,10 @@ async function doSignIn(){
   document.getElementById('bsid').textContent=player.sessionId;
   go('setup-screen');
 }
-
+ 
 // ── SETUP ─────────────────────────────────────────────────────────────────────
 function selGrade(g,btn){grade=g;document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
-
+ 
 function startGame(){
   if(!grade){alert('Please select a grade level!');return;}
   teams=['t1n','t2n','t3n','t4n'].map((id,i)=>document.getElementById(id).value||`Team ${['Red','Gold','Green','Cyan'][i]}`);
@@ -354,14 +381,14 @@ function startGame(){
   go('game-screen');renderSB();loadQ();fetchLB();
   lbt=setInterval(fetchLB,12000);
 }
-
+ 
 // ── GAME ──────────────────────────────────────────────────────────────────────
 function renderSB(){
   document.getElementById('sb').innerHTML=teams.map((t,i)=>`<div class="sc ${SCC[i]} ${i===curT?'at':''}" id="sc${i}"><div class="scn">${t}</div><div class="scp" id="p${i}">${pts[i]}</div><div class="scl">pts</div></div>`).join('');
 }
 function updSB(){teams.forEach((_,i)=>{document.getElementById(`p${i}`).textContent=pts[i];document.getElementById(`sc${i}`).className=`sc ${SCC[i]} ${i===curT?'at':''}`;});}
 function bump(i){const e=document.getElementById(`p${i}`);e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump');}
-
+ 
 function loadQ(){
   if(curQ>=qs.length){endGame();return;}
   done=false;
@@ -376,7 +403,7 @@ function loadQ(){
   document.getElementById('ag').innerHTML=q.a.map((ans,i)=>`<button class="abtn" onclick="checkAns(${i})" id="ab${i}"><span class="altr">${L[i]}</span>${ans}</button>`).join('');
   document.getElementById('nxtbtn').classList.remove('vis');
 }
-
+ 
 function checkAns(idx){
   if(done)return;done=true;
   const q=qs[curQ];
@@ -387,9 +414,9 @@ function checkAns(idx){
   document.getElementById('nxtbtn').classList.add('vis');
   setTimeout(fetchLB,900);
 }
-
+ 
 function nextTurn(){curQ++;curT=(curT+1)%4;updSB();loadQ();}
-
+ 
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
 async function fetchLB(tid='lbr'){
   if(!player?.sessionId)return;
@@ -404,45 +431,11 @@ function renderLB(leaders,tid='lbr'){
   if(!leaders.length){el.innerHTML='<div class="lbempty">No scores yet — answer correctly to appear here!</div>';return;}
   el.innerHTML=leaders.map((l,i)=>{const me=l.playerId===player?.playerId;return`<div class="lbrow${me?' me':''}"><span class="lbrank">${MED[i]}</span><span class="lbname">${l.name}${me?' ⭐':''}</span><span class="lbcls">Class ${l.classNumber}</span><span class="lbscore">${l.score}</span></div>`;}).join('');
 }
-
+ 
 async function postScore(p){
   if(!player)return;
   try{await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:p})});}catch{}
 }
-
+ 
 // ── END GAME ──────────────────────────────────────────────────────────────────
-function endGame(){
-  clearInterval(lbt);
-  const s=teams.map((t,i)=>({name:t,pts:pts[i],i})).sort((a,b)=>b.pts-a.pts);
-  document.getElementById('wtitle').textContent=`🏆 ${s[0].name} Wins!`;
-  document.getElementById('wts').innerHTML=s.map((t,r)=>`<div class="frow"><span class="frank">${MED[r]}</span><span class="fname" style="color:${TCV[t.i]}">${t.name}</span><span class="fpts" style="color:${TCV[t.i]}">${t.pts} pts</span></div>`).join('');
-  go('winner-screen');fetchLB('wlbr');launchC();
-}
-function resetGame(){stopC();go('signin-screen');}
-
-// ── TOAST ─────────────────────────────────────────────────────────────────────
-const CM=['Correct!','Nailed It!','Outstanding!','Brilliant!','Excellent!'],WM=['Oops!','Not Quite!','Almost!','Keep Going!'];
-function showToast(ok,p){
-  const t=document.getElementById('toast');
-  document.getElementById('tico').textContent=ok?['🎉','⭐','🔥','💥','✨'][Math.floor(Math.random()*5)]:['😬','😅','🙈','💀'][Math.floor(Math.random()*4)];
-  document.getElementById('tmsg').textContent=ok?CM[Math.floor(Math.random()*5)]:WM[Math.floor(Math.random()*4)];
-  document.getElementById('tmsg').style.color=ok?'var(--green)':'var(--red)';
-  document.getElementById('tsub').textContent=ok?`+${p} points for ${teams[curT]}!`:'No points this round.';
-  t.className=`toast show ${ok?'tc':'tw'}`;
-  setTimeout(()=>t.className='toast',1600);
-}
-
-// ── UTILS ─────────────────────────────────────────────────────────────────────
-function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-
-// ── CONFETTI ──────────────────────────────────────────────────────────────────
-const CC=document.getElementById('cc'),CCX=CC.getContext('2d');let cp=[],craf;
-function launchC(){CC.width=innerWidth;CC.height=innerHeight;cp=Array.from({length:140},()=>({x:Math.random()*CC.width,y:-20,r:Math.random()*8+4,dx:(Math.random()-.5)*4,dy:Math.random()*4+2,rot:Math.random()*360,rv:(Math.random()-.5)*6,c:['#f7c948','#ff5263','#3de87a','#38f9d7','#fff'][Math.floor(Math.random()*5)]}));animC();}
-function animC(){CCX.clearRect(0,0,CC.width,CC.height);cp.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.rot+=p.rv;CCX.save();CCX.translate(p.x,p.y);CCX.rotate(p.rot*Math.PI/180);CCX.fillStyle=p.c;CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);CCX.restore();});cp=cp.filter(p=>p.y<CC.height+20);if(cp.length)craf=requestAnimationFrame(animC);}
-function stopC(){cancelAnimationFrame(craf);CCX.clearRect(0,0,CC.width,CC.height);}
-
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('signin-screen').classList.contains('active'))doSignIn();});
-</script>
-</body>
-</html>
+  
