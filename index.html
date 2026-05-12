@@ -500,10 +500,10 @@ function selMode(mode,btn){
     document.getElementById('class-card').style.display='none';
     document.getElementById('start-btn').style.display='none';
   } else {
-    // Team or Crowd — hide passcode, show class selection
+    // Team or Crowd — set mode immediately, hide passcode, show class selection
+    playerMode=mode;
     document.getElementById('host-passcode-wrap').style.display='none';
     document.getElementById('class-card').style.display='block';
-    // Populate class buttons for current grade
     document.getElementById('class-btns').innerHTML=CLASSES[grade].map(cls=>
       `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
     ).join('');
