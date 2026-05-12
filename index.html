@@ -222,19 +222,24 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
       <button class="gbtn" onclick="selGrade(7,this)">7th Grade</button>
     </div>
   </div>
-  <div class="scard" id="class-card" style="display:none;">
-    <h3>Step 2 — Select Your Class</h3>
-    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Your class is your team. All classmates' points combine!</p>
-    <div class="grow" id="class-btns"></div>
-  </div>
   <div class="scard" id="mode-card" style="display:none;">
-    <h3>Step 3 — Your Role</h3>
-    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Are you on the main team device or in the crowd?</p>
+    <h3>Step 2 — Your Role</h3>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Teachers enter a passcode. Students pick Team or Crowd.</p>
     <div class="grow">
       <button class="gbtn" onclick="selMode('host',this)" id="mbtn-host">🎤 Host / Teacher</button>
       <button class="gbtn" onclick="selMode('team',this)" id="mbtn-team">🏆 Main Team</button>
       <button class="gbtn" onclick="selMode('crowd',this)" id="mbtn-crowd">👥 Crowd</button>
     </div>
+    <div id="host-passcode-wrap" style="display:none;margin-top:14px;">
+      <label class="flabel">Teacher Passcode</label>
+      <input class="finput" id="host-passcode" type="password" placeholder="Enter passcode" maxlength="4" autocomplete="off"/>
+      <div class="err" id="passcode-err">Incorrect passcode. Try again.</div>
+    </div>
+  </div>
+  <div class="scard" id="class-card" style="display:none;">
+    <h3>Step 3 — Select Your Class</h3>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Your class is your team. All classmates' points combine!</p>
+    <div class="grow" id="class-btns"></div>
   </div>
   <button class="bigbtn" style="max-width:720px;display:none;" id="start-btn" onclick="startGame()">🚀 Let's Play!</button>
 </div>
@@ -471,14 +476,56 @@ function selGrade(g,btn){
   grade=g;
   document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  const cc=document.getElementById('class-card');
-  cc.style.display='block';
-  document.getElementById('class-btns').innerHTML=CLASSES[g].map(cls=>
-    `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
-  ).join('');
+  // Show role selection (Step 2) — class selection comes after for non-hosts
+  document.getElementById('mode-card').style.display='block';
+  document.getElementById('class-card').style.display='none';
   playerClass=null; playerMode=null;
-  document.getElementById('mode-card').style.display='none';
   document.getElementById('start-btn').style.display='none';
+  document.getElementById('host-passcode-wrap').style.display='none';
+  document.getElementById('passcode-err').classList.remove('on');
+}
+
+// ── MODE ──────────────────────────────────────────────────────────────────────
+function selMode(mode,btn){
+  document.querySelectorAll('#mode-card .gbtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  playerMode=null;
+  document.getElementById('passcode-err').classList.remove('on');
+
+  if(mode==='host'){
+    // Show passcode input — do not advance until correct code entered
+    document.getElementById('host-passcode-wrap').style.display='block';
+    document.getElementById('host-passcode').value='';
+    document.getElementById('host-passcode').focus();
+    document.getElementById('class-card').style.display='none';
+    document.getElementById('start-btn').style.display='none';
+  } else {
+    // Team or Crowd — hide passcode, show class selection
+    document.getElementById('host-passcode-wrap').style.display='none';
+    document.getElementById('class-card').style.display='block';
+    // Populate class buttons for current grade
+    document.getElementById('class-btns').innerHTML=CLASSES[grade].map(cls=>
+      `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
+    ).join('');
+    playerClass=null;
+    document.getElementById('start-btn').style.display='none';
+  }
+}
+
+// ── PASSCODE CHECK ────────────────────────────────────────────────────────────
+function checkPasscode(){
+  const code=document.getElementById('host-passcode').value.trim();
+  const err=document.getElementById('passcode-err');
+  if(code==='0110'){
+    err.classList.remove('on');
+    playerMode='host';
+    playerClass=null; // Host has no class
+    document.getElementById('class-card').style.display='none';
+    document.getElementById('start-btn').style.display='block';
+  } else {
+    err.classList.add('on');
+    document.getElementById('start-btn').style.display='none';
+  }
 }
 
 // ── CLASS ─────────────────────────────────────────────────────────────────────
@@ -486,23 +533,14 @@ function selClass(cls,btn){
   playerClass=cls;
   document.querySelectorAll('#class-btns .gbtn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  document.getElementById('mode-card').style.display='block';
-  playerMode=null;
-  document.getElementById('start-btn').style.display='none';
-}
-
-// ── MODE ──────────────────────────────────────────────────────────────────────
-function selMode(mode,btn){
-  playerMode=mode;
-  document.querySelectorAll('#mode-card .gbtn').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');
-  document.getElementById('start-btn').style.display='block';
+  if(playerMode) document.getElementById('start-btn').style.display='block';
 }
 
 // ── START ─────────────────────────────────────────────────────────────────────
 async function startGame(){
-  if(!grade||!playerClass||!playerMode){alert('Please complete all steps!');return;}
-  player.classNumber=playerClass;
+  if(!grade||!playerMode){alert('Please complete all steps!');return;}
+  if(playerMode!=='host'&&!playerClass){alert('Please select your class!');return;}
+  player.classNumber=playerClass||'Host';
   player.mode=playerMode;
   player.playerId=`${player.name.toLowerCase().replace(/\s+/g,'-')}-${playerClass}`;
   try{
@@ -847,7 +885,18 @@ function launchC(){CC.width=innerWidth;CC.height=innerHeight;cp=Array.from({leng
 function animC(){CCX.clearRect(0,0,CC.width,CC.height);cp.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.rot+=p.rv;CCX.save();CCX.translate(p.x,p.y);CCX.rotate(p.rot*Math.PI/180);CCX.fillStyle=p.c;CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);CCX.restore();});cp=cp.filter(p=>p.y<CC.height+20);if(cp.length)craf=requestAnimationFrame(animC);}
 function stopC(){cancelAnimationFrame(craf);CCX.clearRect(0,0,CC.width,CC.height);}
 
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('signin-screen').classList.contains('active'))doSignIn();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('signin-screen').classList.contains('active'))doSignIn();
+  if(e.key==='Enter'&&document.getElementById('setup-screen').classList.contains('active')){
+    const pw=document.getElementById('host-passcode-wrap');
+    if(pw&&pw.style.display!=='none') checkPasscode();
+  }
+});
+// Passcode input live check
+document.addEventListener('DOMContentLoaded',()=>{
+  const pi=document.getElementById('host-passcode');
+  if(pi) pi.addEventListener('input', checkPasscode);
+});
 </script>
 </body>
 </html>
