@@ -143,41 +143,38 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   <div class="tagline">The Ultimate Classroom Quiz Show</div>
   <div class="card">
     <h2>Sign In to Play</h2>
-    <p>Enter your name and class to join the live leaderboard.</p>
+    <p>Enter your name to join the live leaderboard.</p>
     <label class="flabel" for="sin">Your Name</label>
     <input class="finput" id="sin" placeholder="e.g. Alex Johnson" maxlength="28" autocomplete="off"/>
-    <label class="flabel" for="sicls">Class Number</label>
-    <input class="finput" id="sicls" placeholder="e.g. 301 or Period 4" maxlength="14" autocomplete="off"/>
-    <p class="si-hint">Whole class playing together? Everyone type the same <code>Session ID</code> below to share one leaderboard. Leave blank to start a new session.</p>
+    <p class="si-hint">Playing with your whole class? Everyone use the same <code>Session ID</code> to share one leaderboard. Leave blank to start fresh.</p>
     <label class="flabel" for="sisid">Session ID <span style="color:var(--dim);font-size:.68rem;">(optional)</span></label>
     <input class="finput" id="sisid" placeholder="e.g. ROOM1 — or leave blank" maxlength="12" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;"/>
-    <div class="err" id="sierr">Please enter your name and class number.</div>
-    <button class="bigbtn" onclick="doSignIn()">Let's Play!</button>
+    <div class="err" id="sierr">Please enter your name.</div>
+    <button class="bigbtn" onclick="doSignIn()">Next →</button>
   </div>
 </div>
 
 <div id="setup-screen" class="screen">
-  <div class="pbadge">Playing as <strong id="bn"></strong> · Class <strong id="bc"></strong></div>
+  <div class="pbadge">👤 <strong id="bn"></strong></div>
   <div class="sbadge">Session: <span id="bsid"></span></div>
   <div class="logo" style="font-size:clamp(1.8rem,5vw,2.8rem);">Grammar Quest</div>
+
   <div class="scard">
-    <h3>Select Grade Level</h3>
+    <h3>Step 1 — Select Your Grade</h3>
     <div class="grow">
       <button class="gbtn" onclick="selGrade(5,this)">5th Grade</button>
       <button class="gbtn" onclick="selGrade(6,this)">6th Grade</button>
       <button class="gbtn" onclick="selGrade(7,this)">7th Grade</button>
     </div>
   </div>
-  <div class="scard">
-    <h3>Team Names</h3>
-    <div class="tgrid">
-      <div class="tiwrap w1"><span class="tidot"></span><input class="tinput" id="t1n" maxlength="14" value="Team Red"/></div>
-      <div class="tiwrap w2"><span class="tidot"></span><input class="tinput" id="t2n" maxlength="14" value="Team Gold"/></div>
-      <div class="tiwrap w3"><span class="tidot"></span><input class="tinput" id="t3n" maxlength="14" value="Team Green"/></div>
-      <div class="tiwrap w4"><span class="tidot"></span><input class="tinput" id="t4n" maxlength="14" value="Team Cyan"/></div>
-    </div>
+
+  <div class="scard" id="class-card" style="display:none;">
+    <h3>Step 2 — Select Your Class</h3>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">This is your team. All students in the same class compete together.</p>
+    <div class="grow" id="class-btns"></div>
   </div>
-  <button class="bigbtn" style="max-width:720px;" onclick="startGame()">Start the Show!</button>
+
+  <button class="bigbtn" style="max-width:720px;display:none;" id="start-btn" onclick="startGame()">🚀 Start the Show!</button>
 </div>
 
 <div id="game-screen" class="screen">
@@ -197,7 +194,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   <button class="nxtbtn" id="nxtbtn" onclick="nextTurn()">NEXT QUESTION ▶</button>
   <div class="lbpanel">
     <div class="lbhdr">
-      <span class="lbtitle">Live Leaderboard — Top 5</span>
+      <span class="lbtitle">🏅 Live Leaderboard — Top 5</span>
       <span class="lbsid">Session: <code id="lbsid"></code></span>
     </div>
     <div class="lbrows" id="lbr"><div class="lbempty">Scores appear as you play…</div></div>
@@ -207,12 +204,12 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
 <div id="winner-screen" class="screen">
   <div class="wtrophy">🏆</div>
   <div class="wtitle" id="wtitle"></div>
-  <div class="wcard"><h3>Team Scores</h3><div id="wts"></div></div>
+  <div class="wcard"><h3>Class Scores</h3><div id="wts"></div></div>
   <div class="wcard">
-    <h3>Session Leaderboard — Top 5</h3>
+    <h3>🏅 Session Leaderboard — Top 5</h3>
     <div class="lbrows" id="wlbr"><div class="lbempty">Loading…</div></div>
   </div>
-  <button class="pagain" onclick="resetGame()">Play Again</button>
+  <button class="pagain" onclick="resetGame()">🔄 Play Again</button>
 </div>
 
 <div class="toast" id="toast">
@@ -221,16 +218,6 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   <div class="tsub" id="tsub"></div>
 </div>
 
-<script>
-// ── CONFIG ────────────────────────────────────────────────────────────────────
-const API = 'https://grammar-quest.onrender.com';
-
-// ── STARS ─────────────────────────────────────────────────────────────────────
-const SC=document.getElementById('stars'),SCX=SC.getContext('2d');
-function drawStars(){SC.width=innerWidth;SC.height=innerHeight;SCX.clearRect(0,0,SC.width,SC.height);for(let i=0;i<170;i++){const x=Math.random()*SC.width,y=Math.random()*SC.height,r=Math.random()*1.7;SCX.beginPath();SCX.arc(x,y,r,0,Math.PI*2);SCX.fillStyle=`rgba(255,255,255,${Math.random()*.65+.08})`;SCX.fill();}}
-window.addEventListener('resize',drawStars);drawStars();
-
-// ── QUESTIONS (25 per grade) ───────────────────────────────────────────────────
 const QB={
   5:[
     // NOUNS
@@ -343,134 +330,287 @@ const QB={
   ]
 };
 
+// ── CLASS MAP — grade → ordered classes (= teams) ────────────────────────────
+const CLASSES = {
+  5: ['5A','5B','5C','5D'],
+  6: ['6A','6B','6C'],
+  7: ['7A','7B','7C']
+};
+
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let player=null,grade=null,teams=[],pts=[],curT=0,curQ=0,qs=[],done=false,lbt=null;
-const L=['A','B','C','D'],TC=['--t1','--t2','--t3','--t4'],SCC=['sc1','sc2','sc3','sc4'],MED=['🥇','🥈','🥉','4️⃣','5️⃣'],TCV=['var(--t1)','var(--t2)','var(--t3)','var(--t4)'];
+let player=null, grade=null, playerClass=null;
+let teams=[], pts=[], curT=0, curQ=0, qs=[], done=false, lbt=null;
+const L=['A','B','C','D'];
+const TC=['--t1','--t2','--t3','--t4'];
+const SCC=['sc1','sc2','sc3','sc4'];
+const MED=['🥇','🥈','🥉','4️⃣','5️⃣'];
+const TCV=['var(--t1)','var(--t2)','var(--t3)','var(--t4)'];
 
 // ── SIGN-IN ───────────────────────────────────────────────────────────────────
 async function doSignIn(){
-  const name=document.getElementById('sin').value.trim();
-  const cls=document.getElementById('sicls').value.trim();
-  const sid=document.getElementById('sisid').value.trim().toUpperCase()||undefined;
-  const err=document.getElementById('sierr');
-  if(!name||!cls){err.classList.add('on');return;}
+  const name = document.getElementById('sin').value.trim();
+  const sid  = document.getElementById('sisid').value.trim().toUpperCase() || undefined;
+  const err  = document.getElementById('sierr');
+  if(!name){ err.classList.add('on'); return; }
   err.classList.remove('on');
-  try{
-    const r=await fetch(`${API}/api/signin`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,classNumber:cls,sessionId:sid})});
-    const d=await r.json();
-    if(d.error)throw new Error(d.error);
-    player={playerId:d.playerId,sessionId:d.sessionId,name:d.name,classNumber:d.classNumber};
-  }catch{
-    const fid=sid||Math.random().toString(36).slice(2,6).toUpperCase();
-    player={playerId:`${name.toLowerCase().replace(/\s+/g,'-')}-${cls}`,sessionId:fid,name,classNumber:cls};
-  }
-  document.getElementById('bn').textContent=player.name;
-  document.getElementById('bc').textContent=player.classNumber;
-  document.getElementById('bsid').textContent=player.sessionId;
+  // Store name & session — class assigned after grade/class selection
+  const fallbackSid = sid || Math.random().toString(36).slice(2,6).toUpperCase();
+  player = { name, sessionId: fallbackSid, playerId: null, classNumber: null };
+  // Try to register with backend (class assigned later)
+  document.getElementById('bn').textContent = name;
+  document.getElementById('bsid').textContent = fallbackSid;
   go('setup-screen');
 }
 
-// ── SETUP ─────────────────────────────────────────────────────────────────────
-function selGrade(g,btn){grade=g;document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
+// ── GRADE SELECTION ───────────────────────────────────────────────────────────
+function selGrade(g, btn){
+  grade = g;
+  document.querySelectorAll('.gbtn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
 
-function startGame(){
-  if(!grade){alert('Please select a grade level!');return;}
-  teams=['t1n','t2n','t3n','t4n'].map((id,i)=>document.getElementById(id).value||`Team ${['Red','Gold','Green','Cyan'][i]}`);
-  pts=[0,0,0,0];curT=0;curQ=0;done=false;
-  qs=shuffle([...QB[grade]]);
-  document.getElementById('lbsid').textContent=player?.sessionId||'—';
-  go('game-screen');renderSB();loadQ();fetchLB();
-  lbt=setInterval(fetchLB,12000);
+  // Show class selection buttons for this grade
+  const classCard = document.getElementById('class-card');
+  const classBtns = document.getElementById('class-btns');
+  classCard.style.display = 'block';
+
+  classBtns.innerHTML = CLASSES[g].map(cls =>
+    `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
+  ).join('');
+
+  // Reset class selection and hide start button
+  playerClass = null;
+  document.getElementById('start-btn').style.display = 'none';
+}
+
+// ── CLASS SELECTION ───────────────────────────────────────────────────────────
+function selClass(cls, btn){
+  playerClass = cls;
+  document.querySelectorAll('#class-btns .gbtn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('start-btn').style.display = 'block';
+}
+
+// ── START GAME ────────────────────────────────────────────────────────────────
+async function startGame(){
+  if(!grade)   { alert('Please select your grade!'); return; }
+  if(!playerClass){ alert('Please select your class!'); return; }
+
+  // Assign class to player
+  player.classNumber = playerClass;
+  player.playerId = `${player.name.toLowerCase().replace(/\s+/g,'-')}-${playerClass}`;
+
+  // Register with backend
+  try{
+    const r = await fetch(`${API}/api/signin`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name: player.name, classNumber: playerClass, sessionId: player.sessionId })
+    });
+    const d = await r.json();
+    if(!d.error) player.playerId = d.playerId;
+  } catch{ /* offline fallback already set */ }
+
+  // Teams = classes for this grade
+  teams = CLASSES[grade];
+  pts   = new Array(teams.length).fill(0);
+  curT  = 0; curQ = 0; done = false;
+
+  // Start curT at the player's own class index so their class goes first
+  const myIdx = teams.indexOf(playerClass);
+  if(myIdx >= 0) curT = myIdx;
+
+  qs = shuffle([...QB[grade]]);
+  document.getElementById('lbsid').textContent = player.sessionId || '—';
+  go('game-screen');
+  renderSB();
+  loadQ();
+  fetchLB();
+  lbt = setInterval(fetchLB, 12000);
 }
 
 // ── GAME ──────────────────────────────────────────────────────────────────────
 function renderSB(){
-  document.getElementById('sb').innerHTML=teams.map((t,i)=>`<div class="sc ${SCC[i]} ${i===curT?'at':''}" id="sc${i}"><div class="scn">${t}</div><div class="scp" id="p${i}">${pts[i]}</div><div class="scl">pts</div></div>`).join('');
+  document.getElementById('sb').innerHTML = teams.map((t,i) =>
+    `<div class="sc ${SCC[i]} ${i===curT?'at':''}" id="sc${i}">
+      <div class="scn">${t}</div>
+      <div class="scp" id="p${i}">${pts[i]}</div>
+      <div class="scl">pts</div>
+    </div>`
+  ).join('');
 }
-function updSB(){teams.forEach((_,i)=>{document.getElementById(`p${i}`).textContent=pts[i];document.getElementById(`sc${i}`).className=`sc ${SCC[i]} ${i===curT?'at':''}`;});}
-function bump(i){const e=document.getElementById(`p${i}`);e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump');}
+
+function updSB(){
+  teams.forEach((_,i) => {
+    document.getElementById(`p${i}`).textContent = pts[i];
+    document.getElementById(`sc${i}`).className = `sc ${SCC[i]} ${i===curT?'at':''}`;
+  });
+}
+
+function bump(i){
+  const e = document.getElementById(`p${i}`);
+  e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump');
+}
 
 function loadQ(){
-  if(curQ>=qs.length){endGame();return;}
-  done=false;
-  const q=qs[curQ];
-  document.getElementById('hudg').textContent=`${grade}TH GRADE`;
-  const ht=document.getElementById('hudt');ht.textContent=teams[curT];ht.style.color=`var(${TC[curT]})`;
-  document.getElementById('hudq').textContent=`Q ${curQ+1}/${qs.length}`;
-  document.getElementById('pb').style.width=(curQ/qs.length*100)+'%';
-  document.getElementById('qcat').textContent=q.cat;
-  document.getElementById('qtxt').textContent=q.q;
-  document.getElementById('qpts').textContent=`+${q.pts} pts`;
-  document.getElementById('ag').innerHTML=q.a.map((ans,i)=>`<button class="abtn" onclick="checkAns(${i})" id="ab${i}"><span class="altr">${L[i]}</span>${ans}</button>`).join('');
+  if(curQ >= qs.length){ endGame(); return; }
+  done = false;
+  const q = qs[curQ];
+  document.getElementById('hudg').textContent = `${grade}TH GRADE`;
+  const ht = document.getElementById('hudt');
+  ht.textContent = teams[curT];
+  ht.style.color = `var(${TC[curT]})`;
+  document.getElementById('hudq').textContent = `Q ${curQ+1}/${qs.length}`;
+  document.getElementById('pb').style.width = (curQ/qs.length*100)+'%';
+  document.getElementById('qcat').textContent = q.cat;
+  document.getElementById('qtxt').textContent = q.q;
+  document.getElementById('qpts').textContent = `+${q.pts} pts`;
+  document.getElementById('ag').innerHTML = q.a.map((ans,i) =>
+    `<button class="abtn" onclick="checkAns(${i})" id="ab${i}">
+      <span class="altr">${L[i]}</span>${ans}
+    </button>`
+  ).join('');
   document.getElementById('nxtbtn').classList.remove('vis');
 }
 
 function checkAns(idx){
-  if(done)return;done=true;
-  const q=qs[curQ];
-  document.querySelectorAll('.abtn').forEach(b=>b.disabled=true);
+  if(done) return;
+  done = true;
+  const q = qs[curQ];
+  document.querySelectorAll('.abtn').forEach(b => b.disabled = true);
   document.getElementById(`ab${q.c}`).classList.add('correct');
-  if(idx===q.c){pts[curT]+=q.pts;updSB();bump(curT);showToast(true,q.pts);postScore(q.pts);}
-  else{document.getElementById(`ab${idx}`).classList.add('wrong');showToast(false,q.pts);}
+  if(idx === q.c){
+    pts[curT] += q.pts;
+    updSB(); bump(curT);
+    showToast(true, q.pts);
+    postScore(q.pts);
+  } else {
+    document.getElementById(`ab${idx}`).classList.add('wrong');
+    showToast(false, q.pts);
+  }
   document.getElementById('nxtbtn').classList.add('vis');
-  setTimeout(fetchLB,900);
+  setTimeout(fetchLB, 900);
 }
 
-function nextTurn(){curQ++;curT=(curT+1)%4;updSB();loadQ();}
+function nextTurn(){
+  curQ++;
+  curT = (curT + 1) % teams.length;
+  updSB();
+  loadQ();
+}
 
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
 async function fetchLB(tid='lbr'){
-  if(!player?.sessionId)return;
+  if(!player?.sessionId) return;
   try{
-    const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
-    const d=await r.json();
-    renderLB(Array.isArray(d)?d.slice(0,5):[],tid);
-  }catch{document.getElementById(tid).innerHTML='<div class="lbempty">Leaderboard offline.</div>';}
+    const r = await fetch(`${API}/api/leaderboard/${player.sessionId}`);
+    const d = await r.json();
+    renderLB(Array.isArray(d) ? d.slice(0,5) : [], tid);
+  } catch {
+    document.getElementById(tid).innerHTML = '<div class="lbempty">Leaderboard offline.</div>';
+  }
 }
-function renderLB(leaders,tid='lbr'){
-  const el=document.getElementById(tid);
-  if(!leaders.length){el.innerHTML='<div class="lbempty">No scores yet — answer correctly to appear here!</div>';return;}
-  el.innerHTML=leaders.map((l,i)=>{const me=l.playerId===player?.playerId;return`<div class="lbrow${me?' me':''}"><span class="lbrank">${MED[i]}</span><span class="lbname">${l.name}${me?' ⭐':''}</span><span class="lbcls">Class ${l.classNumber}</span><span class="lbscore">${l.score}</span></div>`;}).join('');
+
+function renderLB(leaders, tid='lbr'){
+  const el = document.getElementById(tid);
+  if(!leaders.length){
+    el.innerHTML = '<div class="lbempty">No scores yet — answer correctly to appear here!</div>';
+    return;
+  }
+  el.innerHTML = leaders.map((l,i) => {
+    const me = l.playerId === player?.playerId;
+    return `<div class="lbrow${me?' me':''}">
+      <span class="lbrank">${MED[i]}</span>
+      <span class="lbname">${l.name}${me?' ⭐':''}</span>
+      <span class="lbcls">Class ${l.classNumber}</span>
+      <span class="lbscore">${l.score}</span>
+    </div>`;
+  }).join('');
 }
 
 async function postScore(p){
-  if(!player)return;
-  try{await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:p})});}catch{}
+  if(!player) return;
+  try{
+    await fetch(`${API}/api/score`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ sessionId: player.sessionId, playerId: player.playerId, points: p })
+    });
+  } catch{}
 }
 
 // ── END GAME ──────────────────────────────────────────────────────────────────
 function endGame(){
   clearInterval(lbt);
-  const s=teams.map((t,i)=>({name:t,pts:pts[i],i})).sort((a,b)=>b.pts-a.pts);
-  document.getElementById('wtitle').textContent=`🏆 ${s[0].name} Wins!`;
-  document.getElementById('wts').innerHTML=s.map((t,r)=>`<div class="frow"><span class="frank">${MED[r]}</span><span class="fname" style="color:${TCV[t.i]}">${t.name}</span><span class="fpts" style="color:${TCV[t.i]}">${t.pts} pts</span></div>`).join('');
-  go('winner-screen');fetchLB('wlbr');launchC();
+  const s = teams.map((t,i) => ({name:t, pts:pts[i], i})).sort((a,b) => b.pts-a.pts);
+  document.getElementById('wtitle').textContent = `🏆 ${s[0].name} Wins!`;
+  document.getElementById('wts').innerHTML = s.map((t,r) =>
+    `<div class="frow">
+      <span class="frank">${MED[r]}</span>
+      <span class="fname" style="color:${TCV[t.i]}">${t.name}</span>
+      <span class="fpts" style="color:${TCV[t.i]}">${t.pts} pts</span>
+    </div>`
+  ).join('');
+  go('winner-screen');
+  fetchLB('wlbr');
+  launchC();
 }
-function resetGame(){stopC();go('signin-screen');}
+
+function resetGame(){ stopC(); grade=null; playerClass=null; go('signin-screen'); }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
-const CM=['Correct!','Nailed It!','Outstanding!','Brilliant!','Excellent!'],WM=['Oops!','Not Quite!','Almost!','Keep Going!'];
-function showToast(ok,p){
-  const t=document.getElementById('toast');
-  document.getElementById('tico').textContent=ok?['🎉','⭐','🔥','💥','✨'][Math.floor(Math.random()*5)]:['😬','😅','🙈','💀'][Math.floor(Math.random()*4)];
-  document.getElementById('tmsg').textContent=ok?CM[Math.floor(Math.random()*5)]:WM[Math.floor(Math.random()*4)];
-  document.getElementById('tmsg').style.color=ok?'var(--green)':'var(--red)';
-  document.getElementById('tsub').textContent=ok?`+${p} points for ${teams[curT]}!`:'No points this round.';
-  t.className=`toast show ${ok?'tc':'tw'}`;
-  setTimeout(()=>t.className='toast',1600);
+const CM=['Correct!','Nailed It!','Outstanding!','Brilliant!','Excellent!'];
+const WM=['Oops!','Not Quite!','Almost!','Keep Going!'];
+function showToast(ok, p){
+  const t = document.getElementById('toast');
+  document.getElementById('tico').textContent = ok
+    ? ['🎉','⭐','🔥','💥','✨'][Math.floor(Math.random()*5)]
+    : ['😬','😅','🙈','💀'][Math.floor(Math.random()*4)];
+  document.getElementById('tmsg').textContent = ok ? CM[Math.floor(Math.random()*5)] : WM[Math.floor(Math.random()*4)];
+  document.getElementById('tmsg').style.color = ok ? 'var(--green)' : 'var(--red)';
+  document.getElementById('tsub').textContent  = ok ? `+${p} points for ${teams[curT]}!` : 'No points this round.';
+  t.className = `toast show ${ok?'tc':'tw'}`;
+  setTimeout(() => t.className='toast', 1600);
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
-function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function go(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
 
 // ── CONFETTI ──────────────────────────────────────────────────────────────────
-const CC=document.getElementById('cc'),CCX=CC.getContext('2d');let cp=[],craf;
-function launchC(){CC.width=innerWidth;CC.height=innerHeight;cp=Array.from({length:140},()=>({x:Math.random()*CC.width,y:-20,r:Math.random()*8+4,dx:(Math.random()-.5)*4,dy:Math.random()*4+2,rot:Math.random()*360,rv:(Math.random()-.5)*6,c:['#f7c948','#ff5263','#3de87a','#38f9d7','#fff'][Math.floor(Math.random()*5)]}));animC();}
-function animC(){CCX.clearRect(0,0,CC.width,CC.height);cp.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.rot+=p.rv;CCX.save();CCX.translate(p.x,p.y);CCX.rotate(p.rot*Math.PI/180);CCX.fillStyle=p.c;CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);CCX.restore();});cp=cp.filter(p=>p.y<CC.height+20);if(cp.length)craf=requestAnimationFrame(animC);}
-function stopC(){cancelAnimationFrame(craf);CCX.clearRect(0,0,CC.width,CC.height);}
+const CC=document.getElementById('cc'), CCX=CC.getContext('2d');
+let cp=[], craf;
+function launchC(){
+  CC.width=innerWidth; CC.height=innerHeight;
+  cp=Array.from({length:140},()=>({
+    x:Math.random()*CC.width, y:-20, r:Math.random()*8+4,
+    dx:(Math.random()-.5)*4, dy:Math.random()*4+2,
+    rot:Math.random()*360, rv:(Math.random()-.5)*6,
+    c:['#f7c948','#ff5263','#3de87a','#38f9d7','#fff'][Math.floor(Math.random()*5)]
+  }));
+  animC();
+}
+function animC(){
+  CCX.clearRect(0,0,CC.width,CC.height);
+  cp.forEach(p=>{
+    p.x+=p.dx; p.y+=p.dy; p.rot+=p.rv;
+    CCX.save(); CCX.translate(p.x,p.y); CCX.rotate(p.rot*Math.PI/180);
+    CCX.fillStyle=p.c; CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); CCX.restore();
+  });
+  cp=cp.filter(p=>p.y<CC.height+20);
+  if(cp.length) craf=requestAnimationFrame(animC);
+}
+function stopC(){ cancelAnimationFrame(craf); CCX.clearRect(0,0,CC.width,CC.height); }
 
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('signin-screen').classList.contains('active'))doSignIn();});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && document.getElementById('signin-screen').classList.contains('active')) doSignIn();
+});
 </script>
 </body>
 </html>
