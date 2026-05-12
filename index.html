@@ -224,11 +224,10 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   </div>
   <div class="scard" id="mode-card" style="display:none;">
     <h3>Step 2 — Your Role</h3>
-    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Teachers enter a passcode. Students pick Team or Crowd.</p>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Teachers enter passcode. Students join as Crowd.</p>
     <div class="grow">
       <button class="gbtn" onclick="selMode('host',this)" id="mbtn-host">🎤 Host / Teacher</button>
-      <button class="gbtn" onclick="selMode('team',this)" id="mbtn-team">🏆 Main Team</button>
-      <button class="gbtn" onclick="selMode('crowd',this)" id="mbtn-crowd">👥 Crowd</button>
+      <button class="gbtn" onclick="selMode('crowd',this)" id="mbtn-crowd">👥 Crowd / Student</button>
     </div>
     <div id="host-passcode-wrap" style="display:none;margin-top:14px;">
       <label class="flabel">Teacher Passcode</label>
@@ -500,7 +499,7 @@ function selMode(mode,btn){
     document.getElementById('class-card').style.display='none';
     document.getElementById('start-btn').style.display='none';
   } else {
-    // Team or Crowd — set mode immediately, hide passcode, show class selection
+    // Crowd — set mode immediately, hide passcode, show class selection
     playerMode=mode;
     document.getElementById('host-passcode-wrap').style.display='none';
     document.getElementById('class-card').style.display='block';
@@ -519,9 +518,13 @@ function checkPasscode(){
   if(code==='0110'){
     err.classList.remove('on');
     playerMode='host';
-    playerClass=null; // Host has no class
-    document.getElementById('class-card').style.display='none';
-    document.getElementById('start-btn').style.display='block';
+    playerClass=null;
+    // Show class card so host can pick which class they represent
+    document.getElementById('class-card').style.display='block';
+    document.getElementById('class-btns').innerHTML=CLASSES[grade].map(cls=>
+      `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
+    ).join('');
+    document.getElementById('start-btn').style.display='none';
   } else {
     err.classList.add('on');
     document.getElementById('start-btn').style.display='none';
@@ -539,8 +542,8 @@ function selClass(cls,btn){
 // ── START ─────────────────────────────────────────────────────────────────────
 async function startGame(){
   if(!grade||!playerMode){alert('Please complete all steps!');return;}
-  if(playerMode!=='host'&&!playerClass){alert('Please select your class!');return;}
-  player.classNumber=playerClass||'Host';
+  if(!playerClass){alert('Please select your class!');return;}
+  player.classNumber=playerClass;
   player.mode=playerMode;
   player.playerId=`${player.name.toLowerCase().replace(/\s+/g,'-')}-${playerClass}`;
   try{
@@ -669,7 +672,7 @@ function checkAns(idx){
   done=true;
   const q=qs[curQ];
   const isHost=playerMode==='host';
-  const isCrowd=playerMode==='crowd';
+  const isCrowd=playerMode==='crowd'; // host acts as team — points go to class score
 
   document.querySelectorAll('.abtn').forEach(b=>b.disabled=true);
   document.getElementById(`ab${q.c}`).classList.add('correct');
