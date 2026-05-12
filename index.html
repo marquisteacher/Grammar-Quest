@@ -37,22 +37,14 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
 .sbadge{background:rgba(56,249,215,.07);border:1px solid rgba(56,249,215,.2);border-radius:50px;padding:5px 16px;font-size:.75rem;color:var(--cyan);font-weight:700;}
 .scard{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:24px;width:100%;max-width:720px;}
 .scard h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--gold);margin-bottom:12px;}
+.scard p.hint{color:var(--dim);font-size:.8rem;margin-bottom:12px;}
 .grow{display:flex;gap:10px;flex-wrap:wrap;}
 .gbtn{flex:1;min-width:110px;padding:14px;border-radius:13px;border:2px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:all .2s;}
 .gbtn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);}
 .gbtn.sel{background:var(--gold);color:#000;border-color:var(--gold);box-shadow:0 0 22px rgba(247,201,72,.42);}
-.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.tiwrap{position:relative;}
-.tidot{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:9px;height:9px;border-radius:50%;}
-.tinput{width:100%;padding:11px 11px 11px 30px;background:rgba(255,255,255,.06);border:2px solid var(--border);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:700;transition:border-color .2s;}
-.tinput:focus{outline:none;}
-.w1 .tidot{background:var(--t1);}.w1 .tinput:focus{border-color:var(--t1);}
-.w2 .tidot{background:var(--t2);}.w2 .tinput:focus{border-color:var(--t2);}
-.w3 .tidot{background:var(--t3);}.w3 .tinput:focus{border-color:var(--t3);}
-.w4 .tidot{background:var(--t4);}.w4 .tinput:focus{border-color:var(--t4);}
 /* GAME */
 #game-screen{padding:12px;gap:10px;}
-.sb{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:940px;}
+.sb{display:grid;gap:8px;width:100%;max-width:940px;}
 .sc{border-radius:13px;padding:9px 7px;text-align:center;border:2px solid transparent;transition:all .3s;}
 .sc.at{transform:scale(1.05);}
 .sc1{background:rgba(255,82,99,.1);border-color:rgba(255,82,99,.15);}
@@ -65,7 +57,7 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
 .sc4.at{border-color:var(--t4);box-shadow:0 0 22px rgba(56,249,215,.35);}
 .scn{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sc1 .scn{color:var(--t1);}.sc2 .scn{color:var(--t2);}.sc3 .scn{color:var(--t3);}.sc4 .scn{color:var(--t4);}
-.scp{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;line-height:1.1;transition:transform .2s;}
+.scp{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;line-height:1.1;}
 .scp.bump{animation:ptsbump .25s;}
 @keyframes ptsbump{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
 .scl{font-size:.57rem;color:var(--dim);letter-spacing:1px;text-transform:uppercase;}
@@ -89,10 +81,14 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
 .altr{width:26px;height:26px;min-width:26px;background:rgba(255,255,255,.1);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.9rem;}
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
 @keyframes shk{0%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}100%{transform:translateX(0)}}
+/* HOST next btn */
 .nxtbtn{padding:11px 24px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gold),#ff9a3c);color:#000;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:2px;cursor:pointer;transition:all .2s;display:none;box-shadow:0 4px 18px rgba(247,201,72,.3);}
 .nxtbtn.vis{display:block;animation:fup .3s;}
-.nxtbtn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(247,201,72,.5);}
+.nxtbtn:hover{transform:translateY(-2px);}
 @keyframes fup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* crowd answered */
+.crowd-done{background:rgba(61,232,122,.08);border:1px solid rgba(61,232,122,.2);border-radius:14px;padding:20px;text-align:center;width:100%;max-width:940px;display:none;}
+.crowd-done p{color:var(--green);font-weight:900;font-size:1rem;}
 /* LEADERBOARD */
 .lbpanel{background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:15px 17px;width:100%;max-width:940px;}
 .lbhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
@@ -102,7 +98,6 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
 .lbrows{display:flex;flex-direction:column;gap:5px;min-height:36px;}
 .lbrow{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.04);border-radius:9px;padding:7px 11px;animation:sli .3s;}
 @keyframes sli{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
-.lbrow.me{border:1px solid var(--gold);background:rgba(247,201,72,.06);}
 .lbrank{font-family:'Bebas Neue',sans-serif;font-size:1rem;width:20px;text-align:center;color:var(--dim);}
 .lbname{font-weight:900;flex:1;font-size:.88rem;}
 .lbcls{font-size:.68rem;color:var(--dim);background:rgba(255,255,255,.07);padding:2px 7px;border-radius:20px;}
@@ -128,104 +123,57 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
 .frank{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--dim);width:26px;}
 .fname{font-weight:900;flex:1;padding:0 9px;}
 .fpts{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;}
+/* bonus reveal */
+.bonus-reveal{background:var(--panel);border:2px solid var(--cyan);border-radius:18px;padding:24px;width:100%;max-width:480px;text-align:center;display:none;}
+.bonus-reveal h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--cyan);margin-bottom:14px;}
+.brow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.brow:last-child{border-bottom:none;}
+.applybtn{margin-top:16px;padding:13px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--cyan),var(--green));color:#000;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:all .2s;}
+.applybtn:hover{transform:translateY(-2px);}
 .pagain{padding:13px 32px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--gold),#ff9a3c);color:#000;font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 8px 26px rgba(247,201,72,.3);}
 .pagain:hover{transform:translateY(-3px);}
 #cc{position:fixed;inset:0;pointer-events:none;z-index:50;}
-@media(max-width:520px){.sb{grid-template-columns:1fr 1fr;}.agrid{grid-template-columns:1fr;}.tgrid{grid-template-columns:1fr;}}
-<style>
-/* ── MODE BADGES ────────────────────────────────────────────────────────────── */
-.mode-host  { background:rgba(247,201,72,.15); border:1px solid var(--gold); color:var(--gold); }
-.mode-team  { background:rgba(61,232,122,.15); border:1px solid var(--green); color:var(--green); }
-.mode-crowd { background:rgba(56,249,215,.15); border:1px solid var(--cyan); color:var(--cyan); }
-.mode-pill  { border-radius:50px; padding:5px 16px; font-family:'Bebas Neue',sans-serif;
-  letter-spacing:2px; font-size:.85rem; display:inline-block; margin-bottom:6px; }
-
-/* ── CROWD BONUS BAR ─────────────────────────────────────────────────────────── */
-.bonus-bar { background:var(--panel); border:1px solid rgba(56,249,215,.25); border-radius:14px;
-  padding:10px 16px; width:100%; max-width:940px; display:flex; align-items:center;
-  gap:10px; flex-wrap:wrap; }
-.bonus-label { font-family:'Bebas Neue',sans-serif; font-size:.9rem; letter-spacing:2px; color:var(--cyan); }
-.bonus-item  { display:flex; align-items:center; gap:6px; background:rgba(56,249,215,.08);
-  border-radius:8px; padding:4px 12px; }
-.bonus-cls   { font-family:'Bebas Neue',sans-serif; font-size:.9rem; color:var(--text); }
-.bonus-pts   { font-family:'Bebas Neue',sans-serif; font-size:.9rem; color:var(--cyan); }
-
-/* ── HOST CONTROLS ───────────────────────────────────────────────────────────── */
-.host-bar { display:flex; align-items:center; gap:10px; width:100%; max-width:940px;
-  background:rgba(247,201,72,.06); border:1px solid rgba(247,201,72,.2);
-  border-radius:14px; padding:10px 16px; flex-wrap:wrap; }
-.host-label { font-family:'Bebas Neue',sans-serif; font-size:.85rem; letter-spacing:2px;
-  color:var(--gold); flex:1; }
-.host-next { padding:10px 22px; border-radius:10px; border:none;
-  background:linear-gradient(135deg,var(--gold),#ff9a3c); color:#000;
-  font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:2px;
-  cursor:pointer; transition:all .2s; }
-.host-next:hover { transform:translateY(-2px); }
-.host-next:disabled { opacity:.4; cursor:not-allowed; transform:none; }
-
-/* ── WAITING OVERLAY ─────────────────────────────────────────────────────────── */
-.waiting-msg { text-align:center; padding:30px 20px; }
-.waiting-msg .wico { font-size:3rem; animation:spin 2s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-.waiting-msg p { color:var(--dim); font-size:.9rem; margin-top:10px; }
-
-/* ── CROWD ANSWERED ──────────────────────────────────────────────────────────── */
-.answered-msg { text-align:center; padding:20px; background:rgba(61,232,122,.08);
-  border:1px solid rgba(61,232,122,.2); border-radius:14px; }
-.answered-msg .aico { font-size:2.5rem; }
-.answered-msg p { color:var(--green); font-weight:700; margin-top:6px; }
-
-/* ── BONUS REVEAL ────────────────────────────────────────────────────────────── */
-.bonus-reveal { background:var(--panel); border:2px solid var(--cyan);
-  border-radius:20px; padding:28px; width:100%; max-width:500px; text-align:center; }
-.bonus-reveal h3 { font-family:'Bebas Neue',sans-serif; font-size:1.6rem;
-  letter-spacing:3px; color:var(--cyan); margin-bottom:16px; }
-.bonus-row { display:flex; align-items:center; justify-content:space-between;
-  padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06); }
-.bonus-row:last-child { border-bottom:none; }
-.bonus-apply-btn { margin-top:18px; padding:14px 28px; border-radius:12px; border:none;
-  background:linear-gradient(135deg,var(--cyan),var(--green)); color:#000;
-  font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:2px;
-  cursor:pointer; transition:all .2s; box-shadow:0 6px 24px rgba(56,249,215,.3); }
-.bonus-apply-btn:hover { transform:translateY(-2px); }
+@media(max-width:520px){.agrid{grid-template-columns:1fr;}}
 </style>
+</head>
+<body>
 <canvas id="stars"></canvas>
 <canvas id="cc"></canvas>
 
-<!-- ══ SIGN-IN ════════════════════════════════════════════════════════════════ -->
+<!-- ══ SIGN-IN ══ -->
 <div id="signin-screen" class="screen active">
   <div class="logo">Grammar Quest</div>
   <div class="tagline">The Ultimate Classroom Quiz Show</div>
   <div class="card">
     <h2>Sign In to Play</h2>
     <p>Enter your name to join the live leaderboard.</p>
-    <label class="flabel" for="sin">Your Name</label>
+    <label class="flabel">Your Name</label>
     <input class="finput" id="sin" placeholder="e.g. Alex Johnson" maxlength="28" autocomplete="off"/>
     <p class="si-hint">Share the same <code>Session ID</code> with your class to compete together.</p>
-    <label class="flabel" for="sisid">Session ID <span style="color:var(--dim);font-size:.68rem;">(optional)</span></label>
-    <input class="finput" id="sisid" placeholder="e.g. ROOM1 — leave blank for new session" maxlength="12" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;"/>
+    <label class="flabel">Session ID <span style="color:var(--dim);font-size:.68rem;">(optional)</span></label>
+    <input class="finput" id="sisid" placeholder="e.g. ROOM1 — leave blank for new" maxlength="12" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;"/>
     <div class="err" id="sierr">Please enter your name.</div>
     <button class="bigbtn" onclick="doSignIn()">Next →</button>
   </div>
 </div>
 
-<!-- ══ SETUP ══════════════════════════════════════════════════════════════════ -->
+<!-- ══ SETUP ══ -->
 <div id="setup-screen" class="screen">
   <div class="pbadge">👤 <strong id="bn"></strong></div>
   <div class="sbadge">Session: <span id="bsid"></span></div>
   <div class="logo" style="font-size:clamp(1.8rem,5vw,2.8rem);">Grammar Quest</div>
 
-  <!-- STEP 1: Who are you? -->
+  <!-- STEP 1: Role -->
   <div class="scard">
     <h3>Step 1 — Who Are You?</h3>
-    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Teachers control the big screen. Students join from their own phones.</p>
+    <p class="hint">Teachers control the big screen. Students join from their phones.</p>
     <div class="grow" id="role-btns">
       <button class="gbtn" onclick="selRole('host',this)">🎤 Host / Teacher</button>
       <button class="gbtn" onclick="selRole('crowd',this)">📱 Student</button>
     </div>
-    <div id="host-passcode-wrap" style="display:none;margin-top:14px;">
+    <div id="passcode-wrap" style="display:none;margin-top:14px;">
       <label class="flabel">Teacher Passcode</label>
-      <input class="finput" id="host-passcode" type="password" placeholder="Enter passcode" maxlength="4" autocomplete="off"/>
+      <input class="finput" id="passcode" type="password" placeholder="Enter passcode" maxlength="4" style="margin-bottom:4px;"/>
       <div class="err" id="passcode-err">Incorrect passcode. Try again.</div>
     </div>
   </div>
@@ -240,85 +188,59 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
     </div>
   </div>
 
-  <!-- STEP 3: Class — students only -->
+  <!-- STEP 3: Class (students only) -->
   <div class="scard" id="class-card" style="display:none;">
     <h3>Step 3 — Select Your Class</h3>
-    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Your class is your team. Your points help your class win!</p>
+    <p class="hint">Your class is your team. Your correct answers help your class win!</p>
     <div class="grow" id="class-btns"></div>
   </div>
 
-  <button class="bigbtn" style="max-width:720px;display:none;" id="start-btn" onclick="startGame()">🚀 Let's Play!</button>
+  <button class="bigbtn" id="start-btn" style="max-width:720px;display:none;" onclick="startGame()">🚀 Let's Play!</button>
 </div>
 
-<!-- ══ GAME ════════════════════════════════════════════════════════════════════ -->
+<!-- ══ GAME ══ -->
 <div id="game-screen" class="screen">
-  <div style="display:flex;align-items:center;justify-content:space-between;width:100%;max-width:940px;gap:10px;flex-wrap:wrap;">
-    <div class="sb" id="sb" style="flex:1;min-width:0;"></div>
-  </div>
-
-  <!-- Host controls bar — only visible to host -->
-  <div class="host-bar" id="host-bar" style="display:none;">
-    <span class="host-label" id="host-status">⏳ Waiting for answers…</span>
-    <button class="host-next" id="host-next-btn" onclick="hostNextQuestion()">Next Question ▶</button>
-  </div>
-
-  <!-- Crowd bonus tracker — visible to host only -->
-  <div class="bonus-bar" id="bonus-bar" style="display:none;">
-    <span class="bonus-label">👥 Crowd Bonus:</span>
-    <div id="bonus-items"></div>
-  </div>
-
+  <div class="sb" id="sb"></div>
   <div class="hud">
     <span class="hudg" id="hudg"></span>
-    <span class="hudt" id="hudt-wrap">🎤 <b id="hudt"></b>'s Turn</span>
+    <span class="hudt">🎤 <b id="hudt"></b>'s Turn</span>
     <span class="hudq" id="hudq"></span>
   </div>
   <div class="pw"><div class="pb" id="pb"></div></div>
-
-  <!-- Question card -->
   <div class="qcard">
     <div class="qcat" id="qcat"></div>
     <div class="qtxt" id="qtxt"></div>
     <div class="qptb" id="qpts"></div>
   </div>
-
-  <!-- Answer area — shows waiting msg for crowd between questions -->
-  <div id="answer-area" style="width:100%;max-width:940px;">
-    <div class="agrid" id="ag"></div>
-    <div id="answered-wrap" style="display:none;" class="answered-msg">
-      <div class="aico">✅</div>
-      <p>Answer submitted! Waiting for next question…</p>
-    </div>
+  <div class="agrid" id="ag"></div>
+  <!-- Host: Next Question button -->
+  <button class="nxtbtn" id="nxtbtn" onclick="nextTurn()">NEXT QUESTION ▶</button>
+  <!-- Crowd: answered confirmation -->
+  <div class="crowd-done" id="crowd-done">
+    <p>✅ Answer submitted! Waiting for next question…</p>
   </div>
-
-  <button class="nxtbtn" id="nxtbtn" onclick="nextTurn()" style="display:none;">NEXT QUESTION ▶</button>
-
   <div class="lbpanel">
     <div class="lbhdr">
-      <span class="lbtitle">🏅 Live Leaderboard — Top 5</span>
+      <span class="lbtitle">🏅 Live Leaderboard</span>
       <span class="lbsid">Session: <code id="lbsid"></code></span>
     </div>
     <div class="lbrows" id="lbr"><div class="lbempty">Scores appear as you play…</div></div>
   </div>
 </div>
 
-<!-- ══ WINNER ════════════════════════════════════════════════════════════════ -->
+<!-- ══ WINNER ══ -->
 <div id="winner-screen" class="screen">
   <div class="wtrophy">🏆</div>
   <div class="wtitle" id="wtitle"></div>
-  <div class="wcard"><h3>Class Scores</h3><div id="wts"></div></div>
-
-  <!-- Crowd bonus reveal — host only -->
-  <div class="bonus-reveal" id="bonus-reveal" style="display:none;">
+  <div class="wcard"><h3>Final Scores</h3><div id="wts"></div></div>
+  <!-- Host only: crowd bonus reveal -->
+  <div class="bonus-reveal" id="bonus-reveal">
     <h3>👥 Crowd Bonus Points</h3>
-    <div id="bonus-reveal-rows"></div>
-    <button class="bonus-apply-btn" id="bonus-apply-btn" onclick="applyBonus()">
-      🎉 Add Crowd Bonus to Scores!
-    </button>
+    <div id="bonus-rows"></div>
+    <button class="applybtn" onclick="applyBonus()">🎉 Add Crowd Bonus!</button>
   </div>
-
   <div class="wcard">
-    <h3>🏅 Final Leaderboard</h3>
+    <h3>🏅 Session Leaderboard</h3>
     <div class="lbrows" id="wlbr"><div class="lbempty">Loading…</div></div>
   </div>
   <button class="pagain" onclick="resetGame()">🔄 Play Again</button>
@@ -338,127 +260,99 @@ const SC=document.getElementById('stars'),SCX=SC.getContext('2d');
 function drawStars(){SC.width=innerWidth;SC.height=innerHeight;SCX.clearRect(0,0,SC.width,SC.height);for(let i=0;i<170;i++){const x=Math.random()*SC.width,y=Math.random()*SC.height,r=Math.random()*1.7;SCX.beginPath();SCX.arc(x,y,r,0,Math.PI*2);SCX.fillStyle=`rgba(255,255,255,${Math.random()*.65+.08})`;SCX.fill();}}
 window.addEventListener('resize',drawStars);drawStars();
 
+// ── QUESTION BANK (25 per grade — ELL friendly) ───────────────────────────────
 const QB={
   5:[
-    // NOUNS
     {q:"Which word is a NOUN? A noun is a person, place, or thing.",a:["apple","run","happy","slowly"],c:0,cat:"Nouns",pts:100},
     {q:"Which word is a NOUN?\n'The dog is big.'",a:["The","dog","is","big"],c:1,cat:"Nouns",pts:100},
     {q:"Which word is a NOUN?\n'She reads a book.'",a:["She","reads","a","book"],c:3,cat:"Nouns",pts:100},
     {q:"Which of these is a NOUN?",a:["jump","school","fast","eat"],c:1,cat:"Nouns",pts:100},
     {q:"Which of these is NOT a noun?",a:["cat","teacher","run","pencil"],c:2,cat:"Nouns",pts:100},
-    // VERBS
     {q:"Which word is a VERB? A verb is an action word.",a:["cat","happy","runs","big"],c:2,cat:"Verbs",pts:100},
     {q:"Which word is a VERB?\n'The boy eats lunch.'",a:["The","boy","eats","lunch"],c:2,cat:"Verbs",pts:100},
     {q:"Which word is a VERB?\n'She plays football every day.'",a:["She","plays","football","every"],c:1,cat:"Verbs",pts:100},
     {q:"Which of these is a VERB?",a:["school","blue","swim","pencil"],c:2,cat:"Verbs",pts:100},
-    {q:"Fill in the blank: 'Every morning, I ___ breakfast.'\nWhich verb is correct?",a:["eat","eating","ate","eats"],c:0,cat:"Verbs",pts:100},
-    // ADJECTIVES
+    {q:"Fill in the blank: 'Every morning, I ___ breakfast.'",a:["eat","eating","ate","eats"],c:0,cat:"Verbs",pts:100},
     {q:"Which word is an ADJECTIVE? An adjective describes a noun.",a:["run","tall","school","eat"],c:1,cat:"Adjectives",pts:100},
     {q:"Which word is an ADJECTIVE?\n'The big dog is sleeping.'",a:["The","big","dog","sleeping"],c:1,cat:"Adjectives",pts:100},
     {q:"Which word describes the noun?\n'She has a red bag.'",a:["She","has","red","bag"],c:2,cat:"Adjectives",pts:100},
-    // PLURALS
     {q:"What is the plural of 'cat'?",a:["cates","cats","cat","catts"],c:1,cat:"Plurals",pts:100},
     {q:"What is the plural of 'book'?",a:["books","bookes","book","bookies"],c:0,cat:"Plurals",pts:100},
     {q:"What is the plural of 'box'?",a:["boxs","box","boxes","boxies"],c:2,cat:"Plurals",pts:150},
-    // PUNCTUATION
     {q:"Which sentence ends correctly?",a:["I like cats","I like cats.","i like cats.","I like cats,"],c:1,cat:"Punctuation",pts:100},
     {q:"Which sentence is a question?",a:["I am happy.","Come here!","Where is the dog?","She runs fast."],c:2,cat:"Punctuation",pts:100},
-    {q:"Which sentence needs a question mark?",a:["I like pizza","She is tall","What is your name","He runs fast"],c:2,cat:"Punctuation",pts:100},
-    // CAPITALIZATION
     {q:"Which sentence has correct capital letters?",a:["i like school.","I like school.","I Like School.","i Like school."],c:1,cat:"Capitalization",pts:100},
     {q:"Which word should always start with a capital letter?",a:["dog","happy","monday","run"],c:2,cat:"Capitalization",pts:100},
-    // ARTICLES
-    {q:"Fill in the blank: 'I have ___ apple.'\n(apple starts with a vowel sound)",a:["a","an","the","—"],c:1,cat:"Articles",pts:150},
-    {q:"Fill in the blank: 'She has ___ dog.'",a:["an","the","a","—"],c:2,cat:"Articles",pts:100},
-    // PREPOSITIONS
-    {q:"Fill in the blank: 'The book is ___ the table.'\n(The book is on top.)",a:["under","on","in","next"],c:1,cat:"Prepositions",pts:100},
-    {q:"Fill in the blank: 'The cat is ___ the box.'\n(The cat is inside.)",a:["on","behind","in","above"],c:2,cat:"Prepositions",pts:100},
+    {q:"Fill in the blank: 'I have ___ apple.' (apple starts with a vowel)",a:["a","an","the","no"],c:1,cat:"Articles",pts:150},
+    {q:"Fill in the blank: 'She has ___ dog.'",a:["an","the","a","no"],c:2,cat:"Articles",pts:100},
+    {q:"Fill in the blank: 'The book is ___ the table.' (on top)",a:["under","on","in","next"],c:1,cat:"Prepositions",pts:100},
+    {q:"Fill in the blank: 'The cat is ___ the box.' (inside)",a:["on","behind","in","above"],c:2,cat:"Prepositions",pts:100},
+    {q:"Which word is a NOUN?\n'The happy puppy ran quickly.'",a:["happy","ran","quickly","puppy"],c:3,cat:"Nouns",pts:100},
   ],
   6:[
-    // NOUNS — types
-    {q:"Which word is a PROPER noun? A proper noun is the name of a specific place or person.",a:["city","school","London","teacher"],c:2,cat:"Proper Nouns",pts:100},
+    {q:"Which word is a PROPER noun? (name of a specific place or person)",a:["city","school","London","teacher"],c:2,cat:"Proper Nouns",pts:100},
     {q:"Which of these is a proper noun?",a:["dog","park","Monday","book"],c:2,cat:"Proper Nouns",pts:100},
     {q:"'My friend lives in Turkey.' Which word is a proper noun?",a:["My","friend","lives","Turkey"],c:3,cat:"Proper Nouns",pts:100},
-    // VERBS — tenses
     {q:"Which sentence talks about RIGHT NOW (present)?",a:["She played football.","She plays football.","She will play football.","She played yesterday."],c:1,cat:"Verb Tenses",pts:100},
     {q:"Which sentence talks about the PAST?",a:["I eat lunch now.","I will eat lunch.","I ate lunch yesterday.","I am eating lunch."],c:2,cat:"Verb Tenses",pts:100},
     {q:"Fill in the blank: 'Yesterday, she ___ to school.'",a:["walk","walks","walked","walking"],c:2,cat:"Verb Tenses",pts:150},
     {q:"Fill in the blank: 'Every day, he ___ his homework.'",a:["did","does","doing","do"],c:1,cat:"Verb Tenses",pts:100},
-    // ADJECTIVES — comparatives
     {q:"Which sentence compares two things correctly?",a:["She is more tall than him.","She is taller than him.","She is tallest than him.","She is tall than him."],c:1,cat:"Comparatives",pts:150},
     {q:"Fill in the blank: 'This test is ___ than the last one.'",a:["easy","more easier","easier","easiest"],c:2,cat:"Comparatives",pts:150},
-    // SUBJECT & VERB AGREEMENT
     {q:"Which sentence is correct?",a:["She go to school.","She goes to school.","She going to school.","She gone to school."],c:1,cat:"Subject-Verb Agreement",pts:100},
     {q:"Which sentence is correct?",a:["They is happy.","They are happy.","They am happy.","They be happy."],c:1,cat:"Subject-Verb Agreement",pts:100},
-    {q:"Which sentence is correct?",a:["He play football.","He plays football.","He playing football.","He played football every day."],c:1,cat:"Subject-Verb Agreement",pts:100},
-    // PRONOUNS
-    {q:"Which word can replace 'Maria' in this sentence?\n'Maria likes cats.'",a:["He","They","She","It"],c:2,cat:"Pronouns",pts:100},
+    {q:"Which word can replace 'Maria'?\n'Maria likes cats.'",a:["He","They","She","It"],c:2,cat:"Pronouns",pts:100},
     {q:"Which word can replace 'the book'?\n'The book is on the table.'",a:["He","She","They","It"],c:3,cat:"Pronouns",pts:100},
     {q:"Fill in the blank: '___ are my friends.'",a:["He","She","They","It"],c:2,cat:"Pronouns",pts:100},
-    // PUNCTUATION
     {q:"Which sentence uses a comma correctly?",a:["I like cats dogs and fish.","I like cats, dogs, and fish.","I like, cats dogs and fish.","I, like cats dogs and fish."],c:1,cat:"Punctuation",pts:150},
-    {q:"Which sentence is correct?",a:["Where are you going","Where are you going?","where are you going?","Where are you going!"],c:1,cat:"Punctuation",pts:100},
-    // CONJUNCTIONS
-    {q:"Which word joins two sentences?\n'I like cats. I like dogs.' → 'I like cats ___ dogs.'",a:["but","and","so","because"],c:1,cat:"Conjunctions",pts:100},
+    {q:"Which word joins these sentences?\n'I like cats. I like dogs.'",a:["but","and","so","because"],c:1,cat:"Conjunctions",pts:100},
     {q:"Fill in the blank: 'I want to sleep ___ I am very tired.'",a:["and","but","because","or"],c:2,cat:"Conjunctions",pts:150},
     {q:"Fill in the blank: 'I like tea ___ I do not like coffee.'",a:["and","because","or","but"],c:3,cat:"Conjunctions",pts:150},
-    // SENTENCE TYPES
     {q:"Which is a COMPLETE sentence?",a:["The big dog.","Running fast.","The dog runs fast.","In the park."],c:2,cat:"Sentence Structure",pts:100},
     {q:"Which is NOT a complete sentence?",a:["She eats lunch.","The boy runs.","My blue pencil.","We go to school."],c:2,cat:"Sentence Structure",pts:100},
-    // PREPOSITIONS
-    {q:"Fill in the blank: 'She sits ___ her friend in class.'\n(They are side by side.)",a:["behind","above","next to","inside"],c:2,cat:"Prepositions",pts:100},
+    {q:"Fill in the blank: 'She sits ___ her friend.' (side by side)",a:["behind","above","next to","inside"],c:2,cat:"Prepositions",pts:100},
     {q:"Fill in the blank: 'The school is ___ the park and the library.'",a:["inside","between","above","under"],c:1,cat:"Prepositions",pts:150},
-    // CONTRACTIONS
     {q:"What does 'don't' mean?",a:["do not","does not","did not","will not"],c:0,cat:"Contractions",pts:100},
+    {q:"Which sentence is correct?",a:["He play football.","He plays football.","He playing football.","He played football every day."],c:1,cat:"Subject-Verb Agreement",pts:100},
+    {q:"Which sentence is correct?",a:["Where are you going","Where are you going?","where are you going?","Where are you going!"],c:1,cat:"Punctuation",pts:100},
   ],
   7:[
-    // VERB TENSES — expanded
     {q:"Which sentence is in the FUTURE tense?",a:["She ate lunch.","She eats lunch.","She will eat lunch.","She is eating lunch."],c:2,cat:"Verb Tenses",pts:100},
-    {q:"Which sentence is in the PRESENT CONTINUOUS tense?\n(Something happening right now)",a:["She walked to school.","She walks to school.","She is walking to school.","She will walk to school."],c:2,cat:"Verb Tenses",pts:150},
+    {q:"Which sentence is PRESENT CONTINUOUS? (happening right now)",a:["She walked to school.","She walks to school.","She is walking to school.","She will walk to school."],c:2,cat:"Verb Tenses",pts:150},
     {q:"Fill in the blank: 'Look! The dog ___ in the garden right now.'",a:["run","runs","is running","ran"],c:2,cat:"Verb Tenses",pts:150},
     {q:"Fill in the blank: 'Last week, we ___ a movie.'",a:["watch","watches","are watching","watched"],c:3,cat:"Verb Tenses",pts:100},
-    // SUBJECT & VERB AGREEMENT — advanced
     {q:"Which sentence is correct?",a:["The students was late.","The students were late.","The students are late yesterday.","The students be late."],c:1,cat:"Subject-Verb Agreement",pts:150},
     {q:"Which sentence is correct?",a:["Everyone like pizza.","Everyone likes pizza.","Everyone liking pizza.","Everyone liked pizza always."],c:1,cat:"Subject-Verb Agreement",pts:150},
-    // ADJECTIVES & ADVERBS
     {q:"Which word is an ADVERB? An adverb describes a verb.",a:["happy","slowly","big","school"],c:1,cat:"Adverbs",pts:100},
-    {q:"Which word is an ADVERB?\n'She sings beautifully.'",a:["She","sings","beautifully","—"],c:2,cat:"Adverbs",pts:100},
+    {q:"Which word is an ADVERB?\n'She sings beautifully.'",a:["She","sings","beautifully","nothing"],c:2,cat:"Adverbs",pts:100},
     {q:"Which sentence uses an adverb?",a:["She is a fast runner.","She runs fast.","She has fast legs.","She is fast."],c:1,cat:"Adverbs",pts:150},
-    // PRONOUNS — object pronouns
     {q:"Which is correct?\n'She gave the book to ___.'",a:["I","he","him","they"],c:2,cat:"Pronouns",pts:150},
     {q:"Which is correct?\n'The teacher helped ___.'",a:["we","they","I","us"],c:3,cat:"Pronouns",pts:150},
     {q:"Which is correct?\n'Between you and ___, this is a secret.'",a:["I","me","my","mine"],c:1,cat:"Pronouns",pts:200},
-    // CONJUNCTIONS — contrast
-    {q:"Fill in the blank: 'She studied hard ___ she failed the test.'\n(Surprising result)",a:["and","because","but","so"],c:2,cat:"Conjunctions",pts:150},
+    {q:"Fill in the blank: 'She studied hard ___ she failed the test.' (surprising)",a:["and","because","but","so"],c:2,cat:"Conjunctions",pts:150},
     {q:"Fill in the blank: 'He was tired, ___ he kept working.'",a:["because","so","but","and"],c:2,cat:"Conjunctions",pts:150},
-    // QUESTIONS — forming
     {q:"Which is the correct question form?",a:["Where she is going?","Where is she going?","Where going she is?","She is going where?"],c:1,cat:"Question Forms",pts:150},
     {q:"Which is the correct question form?",a:["What you like to eat?","What do you like to eat?","What you do like to eat?","Do what you like to eat?"],c:1,cat:"Question Forms",pts:150},
-    // COUNTABLE & UNCOUNTABLE
     {q:"Which sentence is correct?",a:["I have many homeworks.","I have much homeworks.","I have a lot of homework.","I have many homework."],c:2,cat:"Countable Nouns",pts:200},
     {q:"Which sentence is correct?",a:["She drinks many water.","She drinks much waters.","She drinks a lot of water.","She drinks many waters."],c:2,cat:"Countable Nouns",pts:200},
-    // POSSESSIVES
     {q:"Which sentence shows possession correctly?",a:["The bag of Maria.","Marias bag.","Maria's bag.","The bag Maria."],c:2,cat:"Possessives",pts:150},
     {q:"Which sentence shows possession correctly?",a:["The book of the teacher.","The teachers book.","The teacher's book.","The book teacher's."],c:2,cat:"Possessives",pts:150},
-    // PREPOSITIONS — time
     {q:"Fill in the blank: 'I go to school ___ Monday.'",a:["in","at","on","by"],c:2,cat:"Prepositions",pts:150},
-    {q:"Fill in the blank: School starts ___ 8 oclock.",a:["on","in","by","at"],c:3,cat:"Prepositions",pts:150},
+    {q:"Fill in the blank: 'School starts ___ 8 in the morning.'",a:["on","in","by","at"],c:3,cat:"Prepositions",pts:150},
     {q:"Fill in the blank: 'We have a holiday ___ summer.'",a:["on","at","in","by"],c:2,cat:"Prepositions",pts:150},
-    // SENTENCE BUILDING
     {q:"Which sentence is in the correct order?",a:["Lunch eats she every day.","She every day eats lunch.","She eats lunch every day.","Every day she lunch eats."],c:2,cat:"Sentence Structure",pts:200},
     {q:"Which sentence is in the correct order?",a:["Beautiful is she very.","She is very beautiful.","Very beautiful she is.","Is she very beautiful."],c:1,cat:"Sentence Structure",pts:200},
-
   ]
 };
+
 // ── CLASS MAP ─────────────────────────────────────────────────────────────────
-const CLASSES = { 5:['5A','5B','5C','5D'], 6:['6A','6B','6C'], 7:['7A','7B','7C'] };
+const CLASSES={5:['5A','5B','5C','5D'],6:['6A','6B','6C'],7:['7A','7B','7C']};
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let player=null, grade=null, playerClass=null, playerMode=null;
-let teams=[], pts=[], crowdBonus={}, curT=0, curQ=0, qs=[], done=false;
-let syncTimer=null, lbTimer=null, lastSyncedQ=-1;
+let player=null, playerMode=null, playerClass=null, grade=null;
+let teams=[], pts=[], crowdBonus={};
+let curT=0, curQ=0, qs=[], done=false, lbt=null, syncTimer=null, lastQ=-1;
 const L=['A','B','C','D'];
-const TC=['--t1','--t2','--t3','--t4'];
 const SCC=['sc1','sc2','sc3','sc4'];
 const MED=['🥇','🥈','🥉','4️⃣','5️⃣'];
 const TCV=['var(--t1)','var(--t2)','var(--t3)','var(--t4)'];
@@ -470,10 +364,10 @@ async function doSignIn(){
   const err=document.getElementById('sierr');
   if(!name){err.classList.add('on');return;}
   err.classList.remove('on');
-  const fallbackSid=sid||Math.random().toString(36).slice(2,6).toUpperCase();
-  player={name,sessionId:fallbackSid,playerId:null,classNumber:null,mode:null};
+  const fallback=sid||Math.random().toString(36).slice(2,6).toUpperCase();
+  player={name,sessionId:fallback,playerId:null,classNumber:null};
   document.getElementById('bn').textContent=name;
-  document.getElementById('bsid').textContent=fallbackSid;
+  document.getElementById('bsid').textContent=fallback;
   go('setup-screen');
 }
 
@@ -482,32 +376,31 @@ function selRole(role,btn){
   document.querySelectorAll('#role-btns .gbtn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
   playerMode=null; grade=null; playerClass=null;
-  document.getElementById('passcode-err').classList.remove('on');
   document.getElementById('grade-card').style.display='none';
   document.getElementById('class-card').style.display='none';
   document.getElementById('start-btn').style.display='none';
+  document.getElementById('passcode-err').classList.remove('on');
   if(role==='host'){
-    document.getElementById('host-passcode-wrap').style.display='block';
-    document.getElementById('host-passcode').value='';
-    document.getElementById('host-passcode').focus();
+    document.getElementById('passcode-wrap').style.display='block';
+    document.getElementById('passcode').value='';
+    document.getElementById('passcode').focus();
   } else {
     playerMode='crowd';
-    document.getElementById('host-passcode-wrap').style.display='none';
+    document.getElementById('passcode-wrap').style.display='none';
     document.getElementById('grade-card').style.display='block';
   }
 }
 
-// ── PASSCODE CHECK ─────────────────────────────────────────────────────────────
+// ── PASSCODE ──────────────────────────────────────────────────────────────────
 function checkPasscode(){
-  const code=document.getElementById('host-passcode').value.trim();
-  const err=document.getElementById('passcode-err');
-  if(code==='0110'){
-    err.classList.remove('on');
+  const v=document.getElementById('passcode').value;
+  if(v==='0110'){
+    document.getElementById('passcode-err').classList.remove('on');
     playerMode='host';
-    playerClass='host';
+    playerClass=null;
     document.getElementById('grade-card').style.display='block';
-  } else if(code.length===4){
-    err.classList.add('on');
+  } else if(v.length===4){
+    document.getElementById('passcode-err').classList.add('on');
     document.getElementById('start-btn').style.display='none';
   }
 }
@@ -517,20 +410,22 @@ function selGrade(g,btn){
   grade=g;
   document.querySelectorAll('#grade-card .gbtn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  playerClass=null;
   document.getElementById('class-card').style.display='none';
   document.getElementById('start-btn').style.display='none';
   if(playerMode==='host'){
+    // Host skips class — start button appears immediately
     document.getElementById('start-btn').style.display='block';
   } else {
+    // Student sees class selection
     document.getElementById('class-card').style.display='block';
-    document.getElementById('class-btns').innerHTML=CLASSES[g].map(cls=>
-      `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
+    document.getElementById('class-btns').innerHTML=CLASSES[g].map(c=>
+      `<button class="gbtn" onclick="selClass('${c}',this)">${c}</button>`
     ).join('');
+    playerClass=null;
   }
 }
 
-// ── STEP 3: CLASS (students only) ─────────────────────────────────────────────
+// ── STEP 3: CLASS ─────────────────────────────────────────────────────────────
 function selClass(cls,btn){
   playerClass=cls;
   document.querySelectorAll('#class-btns .gbtn').forEach(b=>b.classList.remove('sel'));
@@ -538,276 +433,50 @@ function selClass(cls,btn){
   document.getElementById('start-btn').style.display='block';
 }
 
-
 // ── START ─────────────────────────────────────────────────────────────────────
 async function startGame(){
   if(!grade||!playerMode){alert('Please complete all steps!');return;}
   if(playerMode==='crowd'&&!playerClass){alert('Please select your class!');return;}
-  player.classNumber=playerClass;
-  player.mode=playerMode;
-  player.playerId=`${player.name.toLowerCase().replace(/\s+/g,'-')}-${playerClass}`;
+
+  player.classNumber = playerMode==='host' ? 'host' : playerClass;
+  player.playerId = playerMode==='host'
+    ? `host-${player.name.toLowerCase().replace(/\s+/g,'-')}`
+    : `${player.name.toLowerCase().replace(/\s+/g,'-')}-${playerClass}`;
+
+  // Register with backend
   try{
-    const r=await fetch(`${API}/api/signin`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:player.name,classNumber:playerClass,sessionId:player.sessionId,mode:playerMode})});
+    const r=await fetch(`${API}/api/signin`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:player.name,classNumber:player.classNumber,sessionId:player.sessionId,mode:playerMode})
+    });
     const d=await r.json();
-    if(!d.error) player.playerId=d.playerId;
+    if(d.playerId) player.playerId=d.playerId;
   }catch{}
 
   teams=CLASSES[grade];
   pts=new Array(teams.length).fill(0);
   crowdBonus={};
   teams.forEach(t=>crowdBonus[t]=0);
-  curT=0; curQ=0; done=false; lastSyncedQ=-1;
+  curT=0; curQ=0; done=false; lastQ=-1;
   qs=shuffle([...QB[grade]]);
 
+  // Set scoreboard grid columns based on team count
+  document.getElementById('sb').style.gridTemplateColumns=`repeat(${teams.length},1fr)`;
   document.getElementById('lbsid').textContent=player.sessionId||'—';
 
-  // Show/hide host controls
-  const isHost=playerMode==='host';
-  document.getElementById('host-bar').style.display=isHost?'flex':'none';
-  document.getElementById('bonus-bar').style.display=isHost?'flex':'none';
-
-  // Crowd members start at waiting state
   go('game-screen');
   renderSB();
 
-  if(isHost){
-    // Host controls the game — load first question and push to Firestore
+  if(playerMode==='host'){
     loadQ();
-    await pushQuestion(0);
+    pushQ(0);
   } else {
-    // Team & crowd — wait for host to push questions
     showWaiting();
     startSync();
   }
 
   fetchLB();
-  lbTimer=setInterval(fetchLB,12000);
-}
-
-// ── HOST: push question state to Firestore ────────────────────────────────────
-async function pushQuestion(idx){
-  try{
-    await fetch(`${API}/api/next-question`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({sessionId:player.sessionId,questionIndex:idx})});
-  }catch{}
-}
-
-// ── HOST: advance to next question ────────────────────────────────────────────
-async function hostNextQuestion(){
-  document.getElementById('host-next-btn').disabled=true;
-  document.getElementById('host-status').textContent='⏳ Waiting for answers…';
-  curQ++;
-  curT=(curT+1)%teams.length;
-  updSB();
-  if(curQ>=qs.length){endGame();return;}
-  loadQ();
-  await pushQuestion(curQ);
-  done=false;
-}
-
-// ── SYNC: non-host devices poll for current question ─────────────────────────
-function startSync(){
-  syncTimer=setInterval(async()=>{
-    try{
-      const r=await fetch(`${API}/api/session/${player.sessionId}`);
-      const d=await r.json();
-      if(d.currentQuestion!==undefined && d.currentQuestion!==lastSyncedQ){
-        lastSyncedQ=d.currentQuestion;
-        curQ=d.currentQuestion;
-        curT=curQ%teams.length;
-        done=false;
-        updSB();
-        if(curQ>=qs.length){endGame();return;}
-        loadQ();
-      }
-    }catch{}
-  },2000); // poll every 2 seconds
-}
-
-// ── LOAD QUESTION ─────────────────────────────────────────────────────────────
-function loadQ(){
-  if(curQ>=qs.length){endGame();return;}
-  done=false;
-  const q=qs[curQ];
-  const isHost=playerMode==='host';
-
-  document.getElementById('hudg').textContent=`${grade}TH GRADE`;
-  const ht=document.getElementById('hudt');
-  ht.textContent=teams[curT];
-  ht.style.color=`var(${TC[curT%4]})`;
-  document.getElementById('hudq').textContent=`Q ${curQ+1}/${qs.length}`;
-  document.getElementById('pb').style.width=(curQ/qs.length*100)+'%';
-  document.getElementById('qcat').textContent=q.cat;
-  document.getElementById('qtxt').textContent=q.q;
-  document.getElementById('qpts').textContent=`+${q.pts} pts`;
-
-  // Answer buttons
-  document.getElementById('ag').innerHTML=q.a.map((ans,i)=>
-    `<button class="abtn" onclick="checkAns(${i})" id="ab${i}">
-      <span class="altr">${L[i]}</span>${ans}
-    </button>`
-  ).join('');
-  document.getElementById('ag').style.display='grid';
-  document.getElementById('answered-wrap').style.display='none';
-  document.getElementById('nxtbtn').classList.remove('vis');
-
-  // Host sees answer buttons but also the next button (disabled until they click)
-  if(isHost){
-    document.getElementById('host-next-btn').disabled=true;
-    document.getElementById('host-status').textContent='⏳ Waiting for answers…';
-  }
-}
-
-function showWaiting(){
-  document.getElementById('qcat').textContent='';
-  document.getElementById('qtxt').innerHTML=`<div class="waiting-msg"><div class="wico">⏳</div><p>Waiting for the teacher to start…</p></div>`;
-  document.getElementById('qpts').textContent='';
-  document.getElementById('ag').innerHTML='';
-}
-
-// ── CHECK ANSWER ──────────────────────────────────────────────────────────────
-function checkAns(idx){
-  if(done)return;
-  done=true;
-  const q=qs[curQ];
-  const isHost=playerMode==='host';
-  const isCrowd=playerMode==='crowd'; // host acts as team — points go to class score
-
-  document.querySelectorAll('.abtn').forEach(b=>b.disabled=true);
-  document.getElementById(`ab${q.c}`).classList.add('correct');
-
-  if(idx===q.c){
-    if(isHost){
-      // Host marks the correct answer for the current team on the big screen
-      // Points go to the class whose turn it is (curT index)
-      pts[curT]+=q.pts;
-      updSB();
-      bump(curT);
-      postClassScore(teams[curT], q.pts); // save to that class's Firestore record
-      showToast(true,q.pts,false);
-    } else {
-      // Crowd — points saved as crowdBonus, revealed at end by host
-      crowdBonus[playerClass]=(crowdBonus[playerClass]||0)+q.pts;
-      postScore(q.pts,'crowdBonus');
-      showToast(true,q.pts,true);
-    }
-  } else {
-    document.getElementById(`ab${idx}`).classList.add('wrong');
-    showToast(false,q.pts,isCrowd);
-  }
-
-  // Crowd — show answered state
-  if(isCrowd){
-    setTimeout(()=>{
-      document.getElementById('ag').style.display='none';
-      document.getElementById('answered-wrap').style.display='block';
-    },1200);
-  }
-
-  // Host — enable next question button
-  if(isHost){
-    document.getElementById('host-next-btn').disabled=false;
-    document.getElementById('host-status').textContent='✅ Ready for next question!';
-    updateBonusBar();
-  }
-
-  setTimeout(fetchLB,900);
-}
-
-// ── BONUS BAR (host sees crowd bonus accumulating) ────────────────────────────
-async function updateBonusBar(){
-  try{
-    const r=await fetch(`${API}/api/class-scores/${player.sessionId}`);
-    const d=await r.json();
-    const items=Object.entries(d).map(([cls,v])=>
-      `<div class="bonus-item"><span class="bonus-cls">${cls}</span><span class="bonus-pts">+${v.crowdBonus||0}</span></div>`
-    ).join('');
-    document.getElementById('bonus-items').innerHTML=items||'<span style="color:var(--dim);font-size:.8rem;">No crowd answers yet</span>';
-  }catch{}
-}
-
-// ── SCORE SUBMISSION ─────────────────────────────────────────────────────────
-// Host saves points directly under a stable class ID — simple and reliable
-async function postClassScore(className, p){
-  if(!player)return;
-  const pid = `team-${className}`; // stable ID e.g. "team-5A"
-  try{
-    // Upsert the class record then add points in one go
-    await fetch(`${API}/api/signin`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        name: className,
-        classNumber: className,
-        sessionId: player.sessionId,
-        mode: 'class'
-      })
-    });
-    await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        sessionId: player.sessionId,
-        playerId:  pid,
-        points:    p,
-        field:     'score'
-      })
-    });
-  }catch(e){ console.error('postClassScore:', e); }
-}
-
-// Crowd members save their own bonus points
-async function postScore(p, field='crowdBonus'){
-  if(!player)return;
-  try{
-    await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        sessionId: player.sessionId,
-        playerId:  player.playerId,
-        points:    p,
-        field
-      })
-    });
-  }catch(e){ console.error('postScore:', e); }
-}
-
-// ── LEADERBOARD ───────────────────────────────────────────────────────────────
-async function fetchLB(tid='lbr'){
-  if(!player?.sessionId)return;
-  try{
-    const r = await fetch(`${API}/api/leaderboard/${player.sessionId}`);
-    const data = await r.json();
-    if(!Array.isArray(data)) throw new Error('Bad response');
-
-    // Both host and students see the same class-vs-class leaderboard
-    // Group all records by class, sum their scores
-    const byClass = {};
-    data.forEach(l=>{
-      if(!l.classNumber || l.classNumber==='host') return;
-      if(!byClass[l.classNumber]) byClass[l.classNumber]={name:l.classNumber,classNumber:l.classNumber,score:0};
-      byClass[l.classNumber].score += (l.score||0);
-    });
-    const leaders = Object.values(byClass)
-      .filter(c=>c.score>0)
-      .sort((a,b)=>b.score-a.score)
-      .slice(0,5);
-    renderLB(leaders, tid);
-  }catch{
-    document.getElementById(tid).innerHTML='<div class="lbempty">Leaderboard offline — check connection.</div>';
-  }
-}
-
-function renderLB(leaders, tid='lbr'){
-  const el = document.getElementById(tid);
-  if(!leaders||!leaders.length){
-    el.innerHTML='<div class="lbempty">No scores yet!</div>';
-    return;
-  }
-  el.innerHTML = leaders.map((l,i)=>
-    `<div class="lbrow">
-      <span class="lbrank">${MED[i]||i+1}</span>
-      <span class="lbname">${l.name||l.classNumber}</span>
-      <span class="lbcls">${playerMode==='host'?'Class':'Class '} ${l.classNumber}</span>
-      <span class="lbscore">${l.score}</span>
-    </div>`
-  ).join('');
+  lbt=setInterval(fetchLB,8000); // refresh every 8s
 }
 
 // ── SCOREBOARD ────────────────────────────────────────────────────────────────
@@ -823,8 +492,8 @@ function renderSB(){
 function updSB(){
   teams.forEach((_,i)=>{
     const pe=document.getElementById(`p${i}`);
-    if(pe) pe.textContent=pts[i];
     const se=document.getElementById(`sc${i}`);
+    if(pe) pe.textContent=pts[i];
     if(se) se.className=`sc ${SCC[i%4]} ${i===curT?'at':''}`;
   });
 }
@@ -834,10 +503,177 @@ function bump(i){
   e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump');
 }
 
+// ── LOAD QUESTION ─────────────────────────────────────────────────────────────
+function loadQ(){
+  if(curQ>=qs.length){endGame();return;}
+  done=false;
+  const q=qs[curQ];
+  document.getElementById('hudg').textContent=`${grade}TH GRADE`;
+  const ht=document.getElementById('hudt');
+  ht.textContent=teams[curT]; ht.style.color=`var(--t${(curT%4)+1})`;
+  document.getElementById('hudq').textContent=`Q ${curQ+1}/${qs.length}`;
+  document.getElementById('pb').style.width=(curQ/qs.length*100)+'%';
+  document.getElementById('qcat').textContent=q.cat;
+  document.getElementById('qtxt').textContent=q.q;
+  document.getElementById('qpts').textContent=`+${q.pts} pts`;
+  document.getElementById('ag').innerHTML=q.a.map((ans,i)=>
+    `<button class="abtn" onclick="checkAns(${i})" id="ab${i}">
+      <span class="altr">${L[i]}</span>${ans}
+    </button>`
+  ).join('');
+  document.getElementById('ag').style.display='grid';
+  document.getElementById('crowd-done').style.display='none';
+  document.getElementById('nxtbtn').classList.remove('vis');
+}
+
+function showWaiting(){
+  document.getElementById('qcat').textContent='';
+  document.getElementById('qtxt').innerHTML='<div style="text-align:center;padding:20px;color:var(--dim);">⏳ Waiting for teacher to start…</div>';
+  document.getElementById('qpts').textContent='';
+  document.getElementById('ag').innerHTML='';
+}
+
+// ── HOST: push question index to backend ──────────────────────────────────────
+async function pushQ(idx){
+  try{
+    await fetch(`${API}/api/next-question`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sessionId:player.sessionId,questionIndex:idx})
+    });
+  }catch{}
+}
+
+// ── CROWD: poll backend for question changes ──────────────────────────────────
+function startSync(){
+  syncTimer=setInterval(async()=>{
+    try{
+      const r=await fetch(`${API}/api/session/${player.sessionId}`);
+      const d=await r.json();
+      if(typeof d.currentQuestion==='number' && d.currentQuestion!==lastQ){
+        lastQ=d.currentQuestion;
+        curQ=d.currentQuestion;
+        curT=curQ%teams.length;
+        done=false;
+        updSB();
+        if(curQ>=qs.length){endGame();return;}
+        loadQ();
+      }
+    }catch{}
+  },2500);
+}
+
+// ── CHECK ANSWER ──────────────────────────────────────────────────────────────
+function checkAns(idx){
+  if(done)return;
+  done=true;
+  const q=qs[curQ];
+  document.querySelectorAll('.abtn').forEach(b=>b.disabled=true);
+  document.getElementById(`ab${q.c}`).classList.add('correct');
+
+  if(idx===q.c){
+    if(playerMode==='host'){
+      // Host marks correct — award points to current team
+      pts[curT]+=q.pts;
+      updSB();
+      bump(curT);
+      saveClassScore(teams[curT],q.pts);
+      showToast(true,q.pts);
+    } else {
+      // Crowd — save as bonus for their class
+      crowdBonus[playerClass]=(crowdBonus[playerClass]||0)+q.pts;
+      saveCrowdBonus(q.pts);
+      showToast(true,q.pts);
+    }
+  } else {
+    document.getElementById(`ab${idx}`).classList.add('wrong');
+    showToast(false,q.pts);
+  }
+
+  // Host: show Next Question button
+  if(playerMode==='host'){
+    document.getElementById('nxtbtn').classList.add('vis');
+  }
+  // Crowd: show answered confirmation
+  if(playerMode==='crowd'){
+    setTimeout(()=>{
+      document.getElementById('ag').style.display='none';
+      document.getElementById('crowd-done').style.display='block';
+    },1200);
+  }
+
+  setTimeout(fetchLB,1000);
+}
+
+function nextTurn(){
+  curQ++;
+  curT=(curT+1)%teams.length;
+  updSB();
+  if(curQ>=qs.length){endGame();return;}
+  loadQ();
+  pushQ(curQ);
+}
+
+// ── SCORE SAVING ──────────────────────────────────────────────────────────────
+// Host saves points under the class name so leaderboard shows class totals
+async function saveClassScore(className,pts){
+  try{
+    // Upsert class record
+    await fetch(`${API}/api/signin`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:className,classNumber:className,sessionId:player.sessionId,mode:'class'})});
+    // Add points
+    await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sessionId:player.sessionId,playerId:`class-${className}`,points:pts,field:'score'})});
+  }catch{}
+}
+
+// Crowd saves bonus
+async function saveCrowdBonus(pts){
+  try{
+    await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:pts,field:'crowdBonus'})});
+  }catch{}
+}
+
+// ── LEADERBOARD — same logic as original working version ──────────────────────
+async function fetchLB(tid='lbr'){
+  if(!player?.sessionId)return;
+  try{
+    const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
+    const d=await r.json();
+    if(!Array.isArray(d))return;
+
+    // Group by class, sum scores — works for both host and crowd views
+    const byClass={};
+    d.forEach(l=>{
+      if(!l.classNumber||l.classNumber==='host')return;
+      if(!byClass[l.classNumber])byClass[l.classNumber]={name:l.classNumber,score:0};
+      byClass[l.classNumber].score+=(l.score||0);
+    });
+    const leaders=Object.values(byClass).filter(c=>c.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+    renderLB(leaders,tid);
+  }catch{
+    const el=document.getElementById(tid);
+    if(el)el.innerHTML='<div class="lbempty">Leaderboard offline.</div>';
+  }
+}
+
+function renderLB(leaders,tid='lbr'){
+  const el=document.getElementById(tid);
+  if(!el)return;
+  if(!leaders.length){el.innerHTML='<div class="lbempty">No scores yet — answer correctly to appear!</div>';return;}
+  el.innerHTML=leaders.map((l,i)=>
+    `<div class="lbrow">
+      <span class="lbrank">${MED[i]||i+1}</span>
+      <span class="lbname">${l.name}</span>
+      <span class="lbscore">${l.score}</span>
+    </div>`
+  ).join('');
+}
+
 // ── END GAME ──────────────────────────────────────────────────────────────────
 function endGame(){
+  clearInterval(lbt);
   clearInterval(syncTimer);
-  clearInterval(lbTimer);
   const s=teams.map((t,i)=>({name:t,pts:pts[i],i})).sort((a,b)=>b.pts-a.pts);
   document.getElementById('wtitle').textContent=`🏆 ${s[0].name} Wins!`;
   document.getElementById('wts').innerHTML=s.map((t,r)=>
@@ -848,10 +684,8 @@ function endGame(){
     </div>`
   ).join('');
 
-  // Show crowd bonus reveal to host only
-  if(playerMode==='host'){
-    showBonusReveal();
-  }
+  // Show bonus reveal only to host
+  if(playerMode==='host') showBonusReveal();
 
   go('winner-screen');
   fetchLB('wlbr');
@@ -860,71 +694,55 @@ function endGame(){
 
 async function showBonusReveal(){
   try{
-    const r=await fetch(`${API}/api/class-scores/${player.sessionId}`);
+    const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
     const d=await r.json();
-    const hasBonus=Object.values(d).some(v=>(v.crowdBonus||0)>0);
+    // Sum crowd bonus per class
+    const bonusByClass={};
+    d.forEach(l=>{
+      if(!l.classNumber||l.classNumber==='host')return;
+      bonusByClass[l.classNumber]=(bonusByClass[l.classNumber]||0)+(l.crowdBonus||0);
+    });
+    const hasBonus=Object.values(bonusByClass).some(v=>v>0);
     if(!hasBonus)return;
     document.getElementById('bonus-reveal').style.display='block';
-    document.getElementById('bonus-reveal-rows').innerHTML=Object.entries(d).map(([cls,v])=>
-      `<div class="bonus-row">
-        <span style="font-weight:900">${cls}</span>
-        <span style="color:var(--cyan);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;">+${v.crowdBonus||0} crowd pts</span>
-      </div>`
+    document.getElementById('bonus-rows').innerHTML=Object.entries(bonusByClass).map(([cls,b])=>
+      `<div class="brow"><span style="font-weight:900">${cls}</span><span style="color:var(--cyan);font-family:'Bebas Neue',sans-serif">+${b} pts</span></div>`
     ).join('');
   }catch{}
 }
 
 async function applyBonus(){
-  document.getElementById('bonus-apply-btn').disabled=true;
-  document.getElementById('bonus-apply-btn').textContent='Adding…';
+  document.querySelector('.applybtn').textContent='Adding…';
   try{
     const r=await fetch(`${API}/api/apply-bonus`,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({sessionId:player.sessionId})});
     const d=await r.json();
     if(d.bonusByClass){
-      // Update local pts display
-      teams.forEach((t,i)=>{
-        if(d.bonusByClass[t]) pts[i]+=(d.bonusByClass[t]||0);
-      });
-      // Re-render winner scores
+      teams.forEach((t,i)=>{if(d.bonusByClass[t])pts[i]+=(d.bonusByClass[t]||0);});
       const s=teams.map((t,i)=>({name:t,pts:pts[i],i})).sort((a,b)=>b.pts-a.pts);
       document.getElementById('wtitle').textContent=`🏆 ${s[0].name} Wins!`;
       document.getElementById('wts').innerHTML=s.map((t,r)=>
-        `<div class="frow">
-          <span class="frank">${MED[r]}</span>
-          <span class="fname" style="color:${TCV[t.i%4]}">${t.name}</span>
-          <span class="fpts" style="color:${TCV[t.i%4]}">${t.pts} pts</span>
-        </div>`
+        `<div class="frow"><span class="frank">${MED[r]}</span><span class="fname" style="color:${TCV[t.i%4]}">${t.name}</span><span class="fpts" style="color:${TCV[t.i%4]}">${t.pts} pts</span></div>`
       ).join('');
     }
     document.getElementById('bonus-reveal').style.display='none';
     fetchLB('wlbr');
     launchC();
-  }catch{
-    document.getElementById('bonus-apply-btn').disabled=false;
-    document.getElementById('bonus-apply-btn').textContent='Try Again';
-  }
+  }catch{document.querySelector('.applybtn').textContent='Try Again';}
 }
 
-function resetGame(){
-  stopC();
-  clearInterval(syncTimer);
-  clearInterval(lbTimer);
-  grade=null; playerClass=null; playerMode=null;
-  go('signin-screen');
-}
+function resetGame(){stopC();clearInterval(lbt);clearInterval(syncTimer);grade=null;playerMode=null;playerClass=null;go('signin-screen');}
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
 const CM=['Correct!','Nailed It!','Outstanding!','Brilliant!','Excellent!'];
 const WM=['Oops!','Not Quite!','Almost!','Keep Going!'];
-function showToast(ok,p,isCrowd){
+function showToast(ok,p){
   const t=document.getElementById('toast');
   document.getElementById('tico').textContent=ok?['🎉','⭐','🔥','💥','✨'][Math.floor(Math.random()*5)]:['😬','😅','🙈','💀'][Math.floor(Math.random()*4)];
   document.getElementById('tmsg').textContent=ok?CM[Math.floor(Math.random()*5)]:WM[Math.floor(Math.random()*4)];
   document.getElementById('tmsg').style.color=ok?'var(--green)':'var(--red)';
-  document.getElementById('tsub').textContent=ok
-    ?(isCrowd?`+${p} crowd bonus for ${playerClass}!`:`+${p} points for ${teams[curT]}!`)
-    :'No points this round.';
+  const who=playerMode==='crowd'?`bonus for ${playerClass}!`:`points for ${teams[curT]}!`;
+  document.getElementById('tsub').textContent=ok?`+${p} ${who}`:'No points this round.';
   t.className=`toast show ${ok?'tc':'tw'}`;
   setTimeout(()=>t.className='toast',1600);
 }
@@ -939,18 +757,8 @@ function launchC(){CC.width=innerWidth;CC.height=innerHeight;cp=Array.from({leng
 function animC(){CCX.clearRect(0,0,CC.width,CC.height);cp.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.rot+=p.rv;CCX.save();CCX.translate(p.x,p.y);CCX.rotate(p.rot*Math.PI/180);CCX.fillStyle=p.c;CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);CCX.restore();});cp=cp.filter(p=>p.y<CC.height+20);if(cp.length)craf=requestAnimationFrame(animC);}
 function stopC(){cancelAnimationFrame(craf);CCX.clearRect(0,0,CC.width,CC.height);}
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.getElementById('signin-screen').classList.contains('active'))doSignIn();
-  if(e.key==='Enter'&&document.getElementById('setup-screen').classList.contains('active')){
-    const pw=document.getElementById('host-passcode-wrap');
-    if(pw&&pw.style.display!=='none') checkPasscode();
-  }
-});
-// Passcode input live check
-document.addEventListener('DOMContentLoaded',()=>{
-  const pi=document.getElementById('host-passcode');
-  if(pi) pi.addEventListener('input', checkPasscode);
-});
+document.getElementById('passcode').addEventListener('input',checkPasscode);
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('signin-screen').classList.contains('active'))doSignIn();});
 </script>
 </body>
 </html>
