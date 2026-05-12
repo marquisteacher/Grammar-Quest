@@ -224,9 +224,10 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   </div>
   <div class="scard" id="mode-card" style="display:none;">
     <h3>Step 2 — Your Role</h3>
-    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Teachers enter passcode. Students join as Crowd.</p>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Teacher enters passcode. Team players sit at the main screen. Crowd joins from their own phones.</p>
     <div class="grow">
       <button class="gbtn" onclick="selMode('host',this)" id="mbtn-host">🎤 Host / Teacher</button>
+      <button class="gbtn" onclick="selMode('team',this)" id="mbtn-team">🏆 Team Player</button>
       <button class="gbtn" onclick="selMode('crowd',this)" id="mbtn-crowd">👥 Crowd / Student</button>
     </div>
     <div id="host-passcode-wrap" style="display:none;margin-top:14px;">
@@ -489,25 +490,24 @@ function selMode(mode,btn){
   document.querySelectorAll('#mode-card .gbtn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
   playerMode=null;
+  playerClass=null;
   document.getElementById('passcode-err').classList.remove('on');
+  document.getElementById('class-card').style.display='none';
+  document.getElementById('start-btn').style.display='none';
 
   if(mode==='host'){
-    // Show passcode input — do not advance until correct code entered
+    // Show passcode — host skips class selection entirely
     document.getElementById('host-passcode-wrap').style.display='block';
     document.getElementById('host-passcode').value='';
     document.getElementById('host-passcode').focus();
-    document.getElementById('class-card').style.display='none';
-    document.getElementById('start-btn').style.display='none';
   } else {
-    // Crowd — set mode immediately, hide passcode, show class selection
+    // Team player or Crowd — set mode, hide passcode, show class selection
     playerMode=mode;
     document.getElementById('host-passcode-wrap').style.display='none';
     document.getElementById('class-card').style.display='block';
     document.getElementById('class-btns').innerHTML=CLASSES[grade].map(cls=>
       `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
     ).join('');
-    playerClass=null;
-    document.getElementById('start-btn').style.display='none';
   }
 }
 
@@ -675,17 +675,20 @@ function checkAns(idx){
   document.getElementById(`ab${q.c}`).classList.add('correct');
 
   if(idx===q.c){
-    if(isCrowd){
-      // Crowd points go to crowdBonus for their class
-      crowdBonus[playerClass]=(crowdBonus[playerClass]||0)+q.pts;
-      postScore(q.pts,'crowdBonus');
-      showToast(true,q.pts,true);
-    } else {
-      // Team or host answering — goes to main team score
+    if(isHost){
+      // Host is moderator only — no points, not on leaderboard, just advance
+      showToast(true,q.pts,false);
+    } else if(playerMode==='team'){
+      // Team player — points go straight to class main score on the big screen
       const ti=teams.indexOf(playerClass);
       if(ti>=0){pts[ti]+=q.pts; updSB(); bump(ti);}
       postScore(q.pts,'score');
       showToast(true,q.pts,false);
+    } else {
+      // Crowd — points saved as crowdBonus only, revealed at end by host
+      crowdBonus[playerClass]=(crowdBonus[playerClass]||0)+q.pts;
+      postScore(q.pts,'crowdBonus');
+      showToast(true,q.pts,true);
     }
   } else {
     document.getElementById(`ab${idx}`).classList.add('wrong');
@@ -744,8 +747,10 @@ async function fetchLB(tid='lbr'){
 }
 function renderLB(leaders,tid='lbr'){
   const el=document.getElementById(tid);
-  if(!leaders.length){el.innerHTML='<div class="lbempty">No scores yet!</div>';return;}
-  el.innerHTML=leaders.map((l,i)=>{
+  // Filter out host entries (classNumber='Host') and zero scores
+  const filtered=leaders.filter(l=>l.classNumber!=='Host'&&l.score>0);
+  if(!filtered.length){el.innerHTML='<div class="lbempty">No scores yet!</div>';return;}
+  el.innerHTML=filtered.map((l,i)=>{
     const me=l.playerId===player?.playerId;
     return`<div class="lbrow${me?' me':''}">
       <span class="lbrank">${MED[i]}</span>
