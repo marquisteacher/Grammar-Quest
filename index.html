@@ -132,12 +132,67 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
 .pagain:hover{transform:translateY(-3px);}
 #cc{position:fixed;inset:0;pointer-events:none;z-index:50;}
 @media(max-width:520px){.sb{grid-template-columns:1fr 1fr;}.agrid{grid-template-columns:1fr;}.tgrid{grid-template-columns:1fr;}}
+<style>
+/* ── MODE BADGES ────────────────────────────────────────────────────────────── */
+.mode-host  { background:rgba(247,201,72,.15); border:1px solid var(--gold); color:var(--gold); }
+.mode-team  { background:rgba(61,232,122,.15); border:1px solid var(--green); color:var(--green); }
+.mode-crowd { background:rgba(56,249,215,.15); border:1px solid var(--cyan); color:var(--cyan); }
+.mode-pill  { border-radius:50px; padding:5px 16px; font-family:'Bebas Neue',sans-serif;
+  letter-spacing:2px; font-size:.85rem; display:inline-block; margin-bottom:6px; }
+
+/* ── CROWD BONUS BAR ─────────────────────────────────────────────────────────── */
+.bonus-bar { background:var(--panel); border:1px solid rgba(56,249,215,.25); border-radius:14px;
+  padding:10px 16px; width:100%; max-width:940px; display:flex; align-items:center;
+  gap:10px; flex-wrap:wrap; }
+.bonus-label { font-family:'Bebas Neue',sans-serif; font-size:.9rem; letter-spacing:2px; color:var(--cyan); }
+.bonus-item  { display:flex; align-items:center; gap:6px; background:rgba(56,249,215,.08);
+  border-radius:8px; padding:4px 12px; }
+.bonus-cls   { font-family:'Bebas Neue',sans-serif; font-size:.9rem; color:var(--text); }
+.bonus-pts   { font-family:'Bebas Neue',sans-serif; font-size:.9rem; color:var(--cyan); }
+
+/* ── HOST CONTROLS ───────────────────────────────────────────────────────────── */
+.host-bar { display:flex; align-items:center; gap:10px; width:100%; max-width:940px;
+  background:rgba(247,201,72,.06); border:1px solid rgba(247,201,72,.2);
+  border-radius:14px; padding:10px 16px; flex-wrap:wrap; }
+.host-label { font-family:'Bebas Neue',sans-serif; font-size:.85rem; letter-spacing:2px;
+  color:var(--gold); flex:1; }
+.host-next { padding:10px 22px; border-radius:10px; border:none;
+  background:linear-gradient(135deg,var(--gold),#ff9a3c); color:#000;
+  font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:2px;
+  cursor:pointer; transition:all .2s; }
+.host-next:hover { transform:translateY(-2px); }
+.host-next:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+
+/* ── WAITING OVERLAY ─────────────────────────────────────────────────────────── */
+.waiting-msg { text-align:center; padding:30px 20px; }
+.waiting-msg .wico { font-size:3rem; animation:spin 2s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.waiting-msg p { color:var(--dim); font-size:.9rem; margin-top:10px; }
+
+/* ── CROWD ANSWERED ──────────────────────────────────────────────────────────── */
+.answered-msg { text-align:center; padding:20px; background:rgba(61,232,122,.08);
+  border:1px solid rgba(61,232,122,.2); border-radius:14px; }
+.answered-msg .aico { font-size:2.5rem; }
+.answered-msg p { color:var(--green); font-weight:700; margin-top:6px; }
+
+/* ── BONUS REVEAL ────────────────────────────────────────────────────────────── */
+.bonus-reveal { background:var(--panel); border:2px solid var(--cyan);
+  border-radius:20px; padding:28px; width:100%; max-width:500px; text-align:center; }
+.bonus-reveal h3 { font-family:'Bebas Neue',sans-serif; font-size:1.6rem;
+  letter-spacing:3px; color:var(--cyan); margin-bottom:16px; }
+.bonus-row { display:flex; align-items:center; justify-content:space-between;
+  padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06); }
+.bonus-row:last-child { border-bottom:none; }
+.bonus-apply-btn { margin-top:18px; padding:14px 28px; border-radius:12px; border:none;
+  background:linear-gradient(135deg,var(--cyan),var(--green)); color:#000;
+  font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:2px;
+  cursor:pointer; transition:all .2s; box-shadow:0 6px 24px rgba(56,249,215,.3); }
+.bonus-apply-btn:hover { transform:translateY(-2px); }
 </style>
-</head>
-<body>
 <canvas id="stars"></canvas>
 <canvas id="cc"></canvas>
 
+<!-- ══ SIGN-IN ════════════════════════════════════════════════════════════════ -->
 <div id="signin-screen" class="screen active">
   <div class="logo">Grammar Quest</div>
   <div class="tagline">The Ultimate Classroom Quiz Show</div>
@@ -146,19 +201,19 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
     <p>Enter your name to join the live leaderboard.</p>
     <label class="flabel" for="sin">Your Name</label>
     <input class="finput" id="sin" placeholder="e.g. Alex Johnson" maxlength="28" autocomplete="off"/>
-    <p class="si-hint">Playing with your whole class? Everyone use the same <code>Session ID</code> to share one leaderboard. Leave blank to start fresh.</p>
+    <p class="si-hint">Share the same <code>Session ID</code> with your class to compete together.</p>
     <label class="flabel" for="sisid">Session ID <span style="color:var(--dim);font-size:.68rem;">(optional)</span></label>
-    <input class="finput" id="sisid" placeholder="e.g. ROOM1 — or leave blank" maxlength="12" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;"/>
+    <input class="finput" id="sisid" placeholder="e.g. ROOM1 — leave blank for new session" maxlength="12" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;"/>
     <div class="err" id="sierr">Please enter your name.</div>
     <button class="bigbtn" onclick="doSignIn()">Next →</button>
   </div>
 </div>
 
+<!-- ══ SETUP ══════════════════════════════════════════════════════════════════ -->
 <div id="setup-screen" class="screen">
   <div class="pbadge">👤 <strong id="bn"></strong></div>
   <div class="sbadge">Session: <span id="bsid"></span></div>
   <div class="logo" style="font-size:clamp(1.8rem,5vw,2.8rem);">Grammar Quest</div>
-
   <div class="scard">
     <h3>Step 1 — Select Your Grade</h3>
     <div class="grow">
@@ -167,31 +222,66 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
       <button class="gbtn" onclick="selGrade(7,this)">7th Grade</button>
     </div>
   </div>
-
   <div class="scard" id="class-card" style="display:none;">
     <h3>Step 2 — Select Your Class</h3>
-    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">This is your team. All students in the same class compete together.</p>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Your class is your team. All classmates' points combine!</p>
     <div class="grow" id="class-btns"></div>
   </div>
-
-  <button class="bigbtn" style="max-width:720px;display:none;" id="start-btn" onclick="startGame()">🚀 Start the Show!</button>
+  <div class="scard" id="mode-card" style="display:none;">
+    <h3>Step 3 — Your Role</h3>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Are you on the main team device or in the crowd?</p>
+    <div class="grow">
+      <button class="gbtn" onclick="selMode('host',this)" id="mbtn-host">🎤 Host / Teacher</button>
+      <button class="gbtn" onclick="selMode('team',this)" id="mbtn-team">🏆 Main Team</button>
+      <button class="gbtn" onclick="selMode('crowd',this)" id="mbtn-crowd">👥 Crowd</button>
+    </div>
+  </div>
+  <button class="bigbtn" style="max-width:720px;display:none;" id="start-btn" onclick="startGame()">🚀 Let's Play!</button>
 </div>
 
+<!-- ══ GAME ════════════════════════════════════════════════════════════════════ -->
 <div id="game-screen" class="screen">
-  <div class="sb" id="sb"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;width:100%;max-width:940px;gap:10px;flex-wrap:wrap;">
+    <div class="sb" id="sb" style="flex:1;min-width:0;"></div>
+  </div>
+
+  <!-- Host controls bar — only visible to host -->
+  <div class="host-bar" id="host-bar" style="display:none;">
+    <span class="host-label" id="host-status">⏳ Waiting for answers…</span>
+    <button class="host-next" id="host-next-btn" onclick="hostNextQuestion()">Next Question ▶</button>
+  </div>
+
+  <!-- Crowd bonus tracker — visible to host only -->
+  <div class="bonus-bar" id="bonus-bar" style="display:none;">
+    <span class="bonus-label">👥 Crowd Bonus:</span>
+    <div id="bonus-items"></div>
+  </div>
+
   <div class="hud">
     <span class="hudg" id="hudg"></span>
-    <span class="hudt">🎤 <b id="hudt"></b>'s Turn</span>
+    <span class="hudt" id="hudt-wrap">🎤 <b id="hudt"></b>'s Turn</span>
     <span class="hudq" id="hudq"></span>
   </div>
   <div class="pw"><div class="pb" id="pb"></div></div>
+
+  <!-- Question card -->
   <div class="qcard">
     <div class="qcat" id="qcat"></div>
     <div class="qtxt" id="qtxt"></div>
     <div class="qptb" id="qpts"></div>
   </div>
-  <div class="agrid" id="ag"></div>
-  <button class="nxtbtn" id="nxtbtn" onclick="nextTurn()">NEXT QUESTION ▶</button>
+
+  <!-- Answer area — shows waiting msg for crowd between questions -->
+  <div id="answer-area" style="width:100%;max-width:940px;">
+    <div class="agrid" id="ag"></div>
+    <div id="answered-wrap" style="display:none;" class="answered-msg">
+      <div class="aico">✅</div>
+      <p>Answer submitted! Waiting for next question…</p>
+    </div>
+  </div>
+
+  <button class="nxtbtn" id="nxtbtn" onclick="nextTurn()" style="display:none;">NEXT QUESTION ▶</button>
+
   <div class="lbpanel">
     <div class="lbhdr">
       <span class="lbtitle">🏅 Live Leaderboard — Top 5</span>
@@ -201,12 +291,23 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   </div>
 </div>
 
+<!-- ══ WINNER ════════════════════════════════════════════════════════════════ -->
 <div id="winner-screen" class="screen">
   <div class="wtrophy">🏆</div>
   <div class="wtitle" id="wtitle"></div>
   <div class="wcard"><h3>Class Scores</h3><div id="wts"></div></div>
+
+  <!-- Crowd bonus reveal — host only -->
+  <div class="bonus-reveal" id="bonus-reveal" style="display:none;">
+    <h3>👥 Crowd Bonus Points</h3>
+    <div id="bonus-reveal-rows"></div>
+    <button class="bonus-apply-btn" id="bonus-apply-btn" onclick="applyBonus()">
+      🎉 Add Crowd Bonus to Scores!
+    </button>
+  </div>
+
   <div class="wcard">
-    <h3>🏅 Session Leaderboard — Top 5</h3>
+    <h3>🏅 Final Leaderboard</h3>
     <div class="lbrows" id="wlbr"><div class="lbempty">Loading…</div></div>
   </div>
   <button class="pagain" onclick="resetGame()">🔄 Play Again</button>
@@ -217,9 +318,14 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   <div class="tmsg" id="tmsg"></div>
   <div class="tsub" id="tsub"></div>
 </div>
+
 <script>
 const API = 'https://grammar-quest.onrender.com';
 
+// ── STARS ─────────────────────────────────────────────────────────────────────
+const SC=document.getElementById('stars'),SCX=SC.getContext('2d');
+function drawStars(){SC.width=innerWidth;SC.height=innerHeight;SCX.clearRect(0,0,SC.width,SC.height);for(let i=0;i<170;i++){const x=Math.random()*SC.width,y=Math.random()*SC.height,r=Math.random()*1.7;SCX.beginPath();SCX.arc(x,y,r,0,Math.PI*2);SCX.fillStyle=`rgba(255,255,255,${Math.random()*.65+.08})`;SCX.fill();}}
+window.addEventListener('resize',drawStars);drawStars();
 
 const QB={
   5:[
@@ -330,19 +436,16 @@ const QB={
     // SENTENCE BUILDING
     {q:"Which sentence is in the correct order?",a:["Lunch eats she every day.","She every day eats lunch.","She eats lunch every day.","Every day she lunch eats."],c:2,cat:"Sentence Structure",pts:200},
     {q:"Which sentence is in the correct order?",a:["Beautiful is she very.","She is very beautiful.","Very beautiful she is.","Is she very beautiful."],c:1,cat:"Sentence Structure",pts:200},
+
   ]
 };
-
-// ── CLASS MAP — grade → ordered classes (= teams) ────────────────────────────
-const CLASSES = {
-  5: ['5A','5B','5C','5D'],
-  6: ['6A','6B','6C'],
-  7: ['7A','7B','7C']
-};
+// ── CLASS MAP ─────────────────────────────────────────────────────────────────
+const CLASSES = { 5:['5A','5B','5C','5D'], 6:['6A','6B','6C'], 7:['7A','7B','7C'] };
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let player=null, grade=null, playerClass=null;
-let teams=[], pts=[], curT=0, curQ=0, qs=[], done=false, lbt=null;
+let player=null, grade=null, playerClass=null, playerMode=null;
+let teams=[], pts=[], crowdBonus={}, curT=0, curQ=0, qs=[], done=false;
+let syncTimer=null, lbTimer=null, lastSyncedQ=-1;
 const L=['A','B','C','D'];
 const TC=['--t1','--t2','--t3','--t4'];
 const SCC=['sc1','sc2','sc3','sc4'];
@@ -351,176 +454,262 @@ const TCV=['var(--t1)','var(--t2)','var(--t3)','var(--t4)'];
 
 // ── SIGN-IN ───────────────────────────────────────────────────────────────────
 async function doSignIn(){
-  const name = document.getElementById('sin').value.trim();
-  const sid  = document.getElementById('sisid').value.trim().toUpperCase() || undefined;
-  const err  = document.getElementById('sierr');
-  if(!name){ err.classList.add('on'); return; }
+  const name=document.getElementById('sin').value.trim();
+  const sid=document.getElementById('sisid').value.trim().toUpperCase()||undefined;
+  const err=document.getElementById('sierr');
+  if(!name){err.classList.add('on');return;}
   err.classList.remove('on');
-  // Store name & session — class assigned after grade/class selection
-  const fallbackSid = sid || Math.random().toString(36).slice(2,6).toUpperCase();
-  player = { name, sessionId: fallbackSid, playerId: null, classNumber: null };
-  // Try to register with backend (class assigned later)
-  document.getElementById('bn').textContent = name;
-  document.getElementById('bsid').textContent = fallbackSid;
+  const fallbackSid=sid||Math.random().toString(36).slice(2,6).toUpperCase();
+  player={name,sessionId:fallbackSid,playerId:null,classNumber:null,mode:null};
+  document.getElementById('bn').textContent=name;
+  document.getElementById('bsid').textContent=fallbackSid;
   go('setup-screen');
 }
 
-// ── GRADE SELECTION ───────────────────────────────────────────────────────────
-function selGrade(g, btn){
-  grade = g;
-  document.querySelectorAll('.gbtn').forEach(b => b.classList.remove('sel'));
+// ── GRADE ─────────────────────────────────────────────────────────────────────
+function selGrade(g,btn){
+  grade=g;
+  document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-
-  // Show class selection buttons for this grade
-  const classCard = document.getElementById('class-card');
-  const classBtns = document.getElementById('class-btns');
-  classCard.style.display = 'block';
-
-  classBtns.innerHTML = CLASSES[g].map(cls =>
+  const cc=document.getElementById('class-card');
+  cc.style.display='block';
+  document.getElementById('class-btns').innerHTML=CLASSES[g].map(cls=>
     `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
   ).join('');
-
-  // Reset class selection and hide start button
-  playerClass = null;
-  document.getElementById('start-btn').style.display = 'none';
+  playerClass=null; playerMode=null;
+  document.getElementById('mode-card').style.display='none';
+  document.getElementById('start-btn').style.display='none';
 }
 
-// ── CLASS SELECTION ───────────────────────────────────────────────────────────
-function selClass(cls, btn){
-  playerClass = cls;
-  document.querySelectorAll('#class-btns .gbtn').forEach(b => b.classList.remove('sel'));
+// ── CLASS ─────────────────────────────────────────────────────────────────────
+function selClass(cls,btn){
+  playerClass=cls;
+  document.querySelectorAll('#class-btns .gbtn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  document.getElementById('start-btn').style.display = 'block';
+  document.getElementById('mode-card').style.display='block';
+  playerMode=null;
+  document.getElementById('start-btn').style.display='none';
 }
 
-// ── START GAME ────────────────────────────────────────────────────────────────
+// ── MODE ──────────────────────────────────────────────────────────────────────
+function selMode(mode,btn){
+  playerMode=mode;
+  document.querySelectorAll('#mode-card .gbtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('start-btn').style.display='block';
+}
+
+// ── START ─────────────────────────────────────────────────────────────────────
 async function startGame(){
-  if(!grade)   { alert('Please select your grade!'); return; }
-  if(!playerClass){ alert('Please select your class!'); return; }
-
-  // Assign class to player
-  player.classNumber = playerClass;
-  player.playerId = `${player.name.toLowerCase().replace(/\s+/g,'-')}-${playerClass}`;
-
-  // Register with backend
+  if(!grade||!playerClass||!playerMode){alert('Please complete all steps!');return;}
+  player.classNumber=playerClass;
+  player.mode=playerMode;
+  player.playerId=`${player.name.toLowerCase().replace(/\s+/g,'-')}-${playerClass}`;
   try{
-    const r = await fetch(`${API}/api/signin`,{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ name: player.name, classNumber: playerClass, sessionId: player.sessionId })
-    });
-    const d = await r.json();
-    if(!d.error) player.playerId = d.playerId;
-  } catch{ /* offline fallback already set */ }
+    const r=await fetch(`${API}/api/signin`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:player.name,classNumber:playerClass,sessionId:player.sessionId,mode:playerMode})});
+    const d=await r.json();
+    if(!d.error) player.playerId=d.playerId;
+  }catch{}
 
-  // Teams = classes for this grade
-  teams = CLASSES[grade];
-  pts   = new Array(teams.length).fill(0);
-  curT  = 0; curQ = 0; done = false;
+  teams=CLASSES[grade];
+  pts=new Array(teams.length).fill(0);
+  crowdBonus={};
+  teams.forEach(t=>crowdBonus[t]=0);
+  curT=0; curQ=0; done=false; lastSyncedQ=-1;
+  qs=shuffle([...QB[grade]]);
 
-  // Start curT at the player's own class index so their class goes first
-  const myIdx = teams.indexOf(playerClass);
-  if(myIdx >= 0) curT = myIdx;
+  document.getElementById('lbsid').textContent=player.sessionId||'—';
 
-  qs = shuffle([...QB[grade]]);
-  document.getElementById('lbsid').textContent = player.sessionId || '—';
+  // Show/hide host controls
+  const isHost=playerMode==='host';
+  document.getElementById('host-bar').style.display=isHost?'flex':'none';
+  document.getElementById('bonus-bar').style.display=isHost?'flex':'none';
+
+  // Crowd members start at waiting state
   go('game-screen');
   renderSB();
-  loadQ();
+
+  if(isHost){
+    // Host controls the game — load first question and push to Firestore
+    loadQ();
+    await pushQuestion(0);
+  } else {
+    // Team & crowd — wait for host to push questions
+    showWaiting();
+    startSync();
+  }
+
   fetchLB();
-  lbt = setInterval(fetchLB, 12000);
+  lbTimer=setInterval(fetchLB,12000);
 }
 
-// ── GAME ──────────────────────────────────────────────────────────────────────
-function renderSB(){
-  document.getElementById('sb').innerHTML = teams.map((t,i) =>
-    `<div class="sc ${SCC[i]} ${i===curT?'at':''}" id="sc${i}">
-      <div class="scn">${t}</div>
-      <div class="scp" id="p${i}">${pts[i]}</div>
-      <div class="scl">pts</div>
-    </div>`
-  ).join('');
+// ── HOST: push question state to Firestore ────────────────────────────────────
+async function pushQuestion(idx){
+  try{
+    await fetch(`${API}/api/next-question`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sessionId:player.sessionId,questionIndex:idx})});
+  }catch{}
 }
 
-function updSB(){
-  teams.forEach((_,i) => {
-    document.getElementById(`p${i}`).textContent = pts[i];
-    document.getElementById(`sc${i}`).className = `sc ${SCC[i]} ${i===curT?'at':''}`;
-  });
+// ── HOST: advance to next question ────────────────────────────────────────────
+async function hostNextQuestion(){
+  document.getElementById('host-next-btn').disabled=true;
+  document.getElementById('host-status').textContent='⏳ Waiting for answers…';
+  curQ++;
+  curT=(curT+1)%teams.length;
+  updSB();
+  if(curQ>=qs.length){endGame();return;}
+  loadQ();
+  await pushQuestion(curQ);
+  done=false;
 }
 
-function bump(i){
-  const e = document.getElementById(`p${i}`);
-  e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump');
+// ── SYNC: non-host devices poll for current question ─────────────────────────
+function startSync(){
+  syncTimer=setInterval(async()=>{
+    try{
+      const r=await fetch(`${API}/api/session/${player.sessionId}`);
+      const d=await r.json();
+      if(d.currentQuestion!==undefined && d.currentQuestion!==lastSyncedQ){
+        lastSyncedQ=d.currentQuestion;
+        curQ=d.currentQuestion;
+        curT=curQ%teams.length;
+        done=false;
+        updSB();
+        if(curQ>=qs.length){endGame();return;}
+        loadQ();
+      }
+    }catch{}
+  },2000); // poll every 2 seconds
 }
 
+// ── LOAD QUESTION ─────────────────────────────────────────────────────────────
 function loadQ(){
-  if(curQ >= qs.length){ endGame(); return; }
-  done = false;
-  const q = qs[curQ];
-  document.getElementById('hudg').textContent = `${grade}TH GRADE`;
-  const ht = document.getElementById('hudt');
-  ht.textContent = teams[curT];
-  ht.style.color = `var(${TC[curT]})`;
-  document.getElementById('hudq').textContent = `Q ${curQ+1}/${qs.length}`;
-  document.getElementById('pb').style.width = (curQ/qs.length*100)+'%';
-  document.getElementById('qcat').textContent = q.cat;
-  document.getElementById('qtxt').textContent = q.q;
-  document.getElementById('qpts').textContent = `+${q.pts} pts`;
-  document.getElementById('ag').innerHTML = q.a.map((ans,i) =>
+  if(curQ>=qs.length){endGame();return;}
+  done=false;
+  const q=qs[curQ];
+  const isHost=playerMode==='host';
+
+  document.getElementById('hudg').textContent=`${grade}TH GRADE`;
+  const ht=document.getElementById('hudt');
+  ht.textContent=teams[curT];
+  ht.style.color=`var(${TC[curT%4]})`;
+  document.getElementById('hudq').textContent=`Q ${curQ+1}/${qs.length}`;
+  document.getElementById('pb').style.width=(curQ/qs.length*100)+'%';
+  document.getElementById('qcat').textContent=q.cat;
+  document.getElementById('qtxt').textContent=q.q;
+  document.getElementById('qpts').textContent=`+${q.pts} pts`;
+
+  // Answer buttons
+  document.getElementById('ag').innerHTML=q.a.map((ans,i)=>
     `<button class="abtn" onclick="checkAns(${i})" id="ab${i}">
       <span class="altr">${L[i]}</span>${ans}
     </button>`
   ).join('');
+  document.getElementById('ag').style.display='grid';
+  document.getElementById('answered-wrap').style.display='none';
   document.getElementById('nxtbtn').classList.remove('vis');
+
+  // Host sees answer buttons but also the next button (disabled until they click)
+  if(isHost){
+    document.getElementById('host-next-btn').disabled=true;
+    document.getElementById('host-status').textContent='⏳ Waiting for answers…';
+  }
 }
 
+function showWaiting(){
+  document.getElementById('qcat').textContent='';
+  document.getElementById('qtxt').innerHTML=`<div class="waiting-msg"><div class="wico">⏳</div><p>Waiting for the teacher to start…</p></div>`;
+  document.getElementById('qpts').textContent='';
+  document.getElementById('ag').innerHTML='';
+}
+
+// ── CHECK ANSWER ──────────────────────────────────────────────────────────────
 function checkAns(idx){
-  if(done) return;
-  done = true;
-  const q = qs[curQ];
-  document.querySelectorAll('.abtn').forEach(b => b.disabled = true);
+  if(done)return;
+  done=true;
+  const q=qs[curQ];
+  const isHost=playerMode==='host';
+  const isCrowd=playerMode==='crowd';
+
+  document.querySelectorAll('.abtn').forEach(b=>b.disabled=true);
   document.getElementById(`ab${q.c}`).classList.add('correct');
-  if(idx === q.c){
-    pts[curT] += q.pts;
-    updSB(); bump(curT);
-    showToast(true, q.pts);
-    postScore(q.pts);
+
+  if(idx===q.c){
+    if(isCrowd){
+      // Crowd points go to crowdBonus for their class
+      crowdBonus[playerClass]=(crowdBonus[playerClass]||0)+q.pts;
+      postScore(q.pts,'crowdBonus');
+      showToast(true,q.pts,true);
+    } else {
+      // Team or host answering — goes to main team score
+      const ti=teams.indexOf(playerClass);
+      if(ti>=0){pts[ti]+=q.pts; updSB(); bump(ti);}
+      postScore(q.pts,'score');
+      showToast(true,q.pts,false);
+    }
   } else {
     document.getElementById(`ab${idx}`).classList.add('wrong');
-    showToast(false, q.pts);
+    showToast(false,q.pts,isCrowd);
   }
-  document.getElementById('nxtbtn').classList.add('vis');
-  setTimeout(fetchLB, 900);
+
+  // Crowd — show answered state
+  if(isCrowd){
+    setTimeout(()=>{
+      document.getElementById('ag').style.display='none';
+      document.getElementById('answered-wrap').style.display='block';
+    },1200);
+  }
+
+  // Host — enable next question button
+  if(isHost){
+    document.getElementById('host-next-btn').disabled=false;
+    document.getElementById('host-status').textContent='✅ Ready for next question!';
+    updateBonusBar();
+  }
+
+  setTimeout(fetchLB,900);
 }
 
-function nextTurn(){
-  curQ++;
-  curT = (curT + 1) % teams.length;
-  updSB();
-  loadQ();
+// ── BONUS BAR (host sees crowd bonus accumulating) ────────────────────────────
+async function updateBonusBar(){
+  try{
+    const r=await fetch(`${API}/api/class-scores/${player.sessionId}`);
+    const d=await r.json();
+    const items=Object.entries(d).map(([cls,v])=>
+      `<div class="bonus-item"><span class="bonus-cls">${cls}</span><span class="bonus-pts">+${v.crowdBonus||0}</span></div>`
+    ).join('');
+    document.getElementById('bonus-items').innerHTML=items||'<span style="color:var(--dim);font-size:.8rem;">No crowd answers yet</span>';
+  }catch{}
+}
+
+// ── SCORE SUBMISSION ──────────────────────────────────────────────────────────
+async function postScore(p,field='score'){
+  if(!player)return;
+  try{
+    await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:p,field})});
+  }catch{}
 }
 
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
 async function fetchLB(tid='lbr'){
-  if(!player?.sessionId) return;
+  if(!player?.sessionId)return;
   try{
-    const r = await fetch(`${API}/api/leaderboard/${player.sessionId}`);
-    const d = await r.json();
-    renderLB(Array.isArray(d) ? d.slice(0,5) : [], tid);
-  } catch {
-    document.getElementById(tid).innerHTML = '<div class="lbempty">Leaderboard offline.</div>';
+    const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
+    const d=await r.json();
+    renderLB(Array.isArray(d)?d.slice(0,5):[],tid);
+  }catch{
+    document.getElementById(tid).innerHTML='<div class="lbempty">Leaderboard offline.</div>';
   }
 }
-
-function renderLB(leaders, tid='lbr'){
-  const el = document.getElementById(tid);
-  if(!leaders.length){
-    el.innerHTML = '<div class="lbempty">No scores yet — answer correctly to appear here!</div>';
-    return;
-  }
-  el.innerHTML = leaders.map((l,i) => {
-    const me = l.playerId === player?.playerId;
-    return `<div class="lbrow${me?' me':''}">
+function renderLB(leaders,tid='lbr'){
+  const el=document.getElementById(tid);
+  if(!leaders.length){el.innerHTML='<div class="lbempty">No scores yet!</div>';return;}
+  el.innerHTML=leaders.map((l,i)=>{
+    const me=l.playerId===player?.playerId;
+    return`<div class="lbrow${me?' me':''}">
       <span class="lbrank">${MED[i]}</span>
       <span class="lbname">${l.name}${me?' ⭐':''}</span>
       <span class="lbcls">Class ${l.classNumber}</span>
@@ -529,91 +718,136 @@ function renderLB(leaders, tid='lbr'){
   }).join('');
 }
 
-async function postScore(p){
-  if(!player) return;
-  try{
-    await fetch(`${API}/api/score`,{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ sessionId: player.sessionId, playerId: player.playerId, points: p })
-    });
-  } catch{}
+// ── SCOREBOARD ────────────────────────────────────────────────────────────────
+function renderSB(){
+  document.getElementById('sb').innerHTML=teams.map((t,i)=>
+    `<div class="sc ${SCC[i%4]} ${i===curT?'at':''}" id="sc${i}">
+      <div class="scn">${t}</div>
+      <div class="scp" id="p${i}">${pts[i]}</div>
+      <div class="scl">pts</div>
+    </div>`
+  ).join('');
+}
+function updSB(){
+  teams.forEach((_,i)=>{
+    const pe=document.getElementById(`p${i}`);
+    if(pe) pe.textContent=pts[i];
+    const se=document.getElementById(`sc${i}`);
+    if(se) se.className=`sc ${SCC[i%4]} ${i===curT?'at':''}`;
+  });
+}
+function bump(i){
+  const e=document.getElementById(`p${i}`);
+  if(!e)return;
+  e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump');
 }
 
 // ── END GAME ──────────────────────────────────────────────────────────────────
 function endGame(){
-  clearInterval(lbt);
-  const s = teams.map((t,i) => ({name:t, pts:pts[i], i})).sort((a,b) => b.pts-a.pts);
-  document.getElementById('wtitle').textContent = `🏆 ${s[0].name} Wins!`;
-  document.getElementById('wts').innerHTML = s.map((t,r) =>
+  clearInterval(syncTimer);
+  clearInterval(lbTimer);
+  const s=teams.map((t,i)=>({name:t,pts:pts[i],i})).sort((a,b)=>b.pts-a.pts);
+  document.getElementById('wtitle').textContent=`🏆 ${s[0].name} Wins!`;
+  document.getElementById('wts').innerHTML=s.map((t,r)=>
     `<div class="frow">
       <span class="frank">${MED[r]}</span>
-      <span class="fname" style="color:${TCV[t.i]}">${t.name}</span>
-      <span class="fpts" style="color:${TCV[t.i]}">${t.pts} pts</span>
+      <span class="fname" style="color:${TCV[t.i%4]}">${t.name}</span>
+      <span class="fpts" style="color:${TCV[t.i%4]}">${t.pts} pts</span>
     </div>`
   ).join('');
+
+  // Show crowd bonus reveal to host only
+  if(playerMode==='host'){
+    showBonusReveal();
+  }
+
   go('winner-screen');
   fetchLB('wlbr');
   launchC();
 }
 
-function resetGame(){ stopC(); grade=null; playerClass=null; go('signin-screen'); }
+async function showBonusReveal(){
+  try{
+    const r=await fetch(`${API}/api/class-scores/${player.sessionId}`);
+    const d=await r.json();
+    const hasBonus=Object.values(d).some(v=>(v.crowdBonus||0)>0);
+    if(!hasBonus)return;
+    document.getElementById('bonus-reveal').style.display='block';
+    document.getElementById('bonus-reveal-rows').innerHTML=Object.entries(d).map(([cls,v])=>
+      `<div class="bonus-row">
+        <span style="font-weight:900">${cls}</span>
+        <span style="color:var(--cyan);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;">+${v.crowdBonus||0} crowd pts</span>
+      </div>`
+    ).join('');
+  }catch{}
+}
+
+async function applyBonus(){
+  document.getElementById('bonus-apply-btn').disabled=true;
+  document.getElementById('bonus-apply-btn').textContent='Adding…';
+  try{
+    const r=await fetch(`${API}/api/apply-bonus`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sessionId:player.sessionId})});
+    const d=await r.json();
+    if(d.bonusByClass){
+      // Update local pts display
+      teams.forEach((t,i)=>{
+        if(d.bonusByClass[t]) pts[i]+=(d.bonusByClass[t]||0);
+      });
+      // Re-render winner scores
+      const s=teams.map((t,i)=>({name:t,pts:pts[i],i})).sort((a,b)=>b.pts-a.pts);
+      document.getElementById('wtitle').textContent=`🏆 ${s[0].name} Wins!`;
+      document.getElementById('wts').innerHTML=s.map((t,r)=>
+        `<div class="frow">
+          <span class="frank">${MED[r]}</span>
+          <span class="fname" style="color:${TCV[t.i%4]}">${t.name}</span>
+          <span class="fpts" style="color:${TCV[t.i%4]}">${t.pts} pts</span>
+        </div>`
+      ).join('');
+    }
+    document.getElementById('bonus-reveal').style.display='none';
+    fetchLB('wlbr');
+    launchC();
+  }catch{
+    document.getElementById('bonus-apply-btn').disabled=false;
+    document.getElementById('bonus-apply-btn').textContent='Try Again';
+  }
+}
+
+function resetGame(){
+  stopC();
+  clearInterval(syncTimer);
+  clearInterval(lbTimer);
+  grade=null; playerClass=null; playerMode=null;
+  go('signin-screen');
+}
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
 const CM=['Correct!','Nailed It!','Outstanding!','Brilliant!','Excellent!'];
 const WM=['Oops!','Not Quite!','Almost!','Keep Going!'];
-function showToast(ok, p){
-  const t = document.getElementById('toast');
-  document.getElementById('tico').textContent = ok
-    ? ['🎉','⭐','🔥','💥','✨'][Math.floor(Math.random()*5)]
-    : ['😬','😅','🙈','💀'][Math.floor(Math.random()*4)];
-  document.getElementById('tmsg').textContent = ok ? CM[Math.floor(Math.random()*5)] : WM[Math.floor(Math.random()*4)];
-  document.getElementById('tmsg').style.color = ok ? 'var(--green)' : 'var(--red)';
-  document.getElementById('tsub').textContent  = ok ? `+${p} points for ${teams[curT]}!` : 'No points this round.';
-  t.className = `toast show ${ok?'tc':'tw'}`;
-  setTimeout(() => t.className='toast', 1600);
+function showToast(ok,p,isCrowd){
+  const t=document.getElementById('toast');
+  document.getElementById('tico').textContent=ok?['🎉','⭐','🔥','💥','✨'][Math.floor(Math.random()*5)]:['😬','😅','🙈','💀'][Math.floor(Math.random()*4)];
+  document.getElementById('tmsg').textContent=ok?CM[Math.floor(Math.random()*5)]:WM[Math.floor(Math.random()*4)];
+  document.getElementById('tmsg').style.color=ok?'var(--green)':'var(--red)';
+  document.getElementById('tsub').textContent=ok
+    ?(isCrowd?`+${p} crowd bonus for ${playerClass}!`:`+${p} points for ${teams[curT]}!`)
+    :'No points this round.';
+  t.className=`toast show ${ok?'tc':'tw'}`;
+  setTimeout(()=>t.className='toast',1600);
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
-function go(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-function shuffle(a){
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 // ── CONFETTI ──────────────────────────────────────────────────────────────────
-const CC=document.getElementById('cc'), CCX=CC.getContext('2d');
-let cp=[], craf;
-function launchC(){
-  CC.width=innerWidth; CC.height=innerHeight;
-  cp=Array.from({length:140},()=>({
-    x:Math.random()*CC.width, y:-20, r:Math.random()*8+4,
-    dx:(Math.random()-.5)*4, dy:Math.random()*4+2,
-    rot:Math.random()*360, rv:(Math.random()-.5)*6,
-    c:['#f7c948','#ff5263','#3de87a','#38f9d7','#fff'][Math.floor(Math.random()*5)]
-  }));
-  animC();
-}
-function animC(){
-  CCX.clearRect(0,0,CC.width,CC.height);
-  cp.forEach(p=>{
-    p.x+=p.dx; p.y+=p.dy; p.rot+=p.rv;
-    CCX.save(); CCX.translate(p.x,p.y); CCX.rotate(p.rot*Math.PI/180);
-    CCX.fillStyle=p.c; CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); CCX.restore();
-  });
-  cp=cp.filter(p=>p.y<CC.height+20);
-  if(cp.length) craf=requestAnimationFrame(animC);
-}
-function stopC(){ cancelAnimationFrame(craf); CCX.clearRect(0,0,CC.width,CC.height); }
+const CC=document.getElementById('cc'),CCX=CC.getContext('2d');let cp=[],craf;
+function launchC(){CC.width=innerWidth;CC.height=innerHeight;cp=Array.from({length:140},()=>({x:Math.random()*CC.width,y:-20,r:Math.random()*8+4,dx:(Math.random()-.5)*4,dy:Math.random()*4+2,rot:Math.random()*360,rv:(Math.random()-.5)*6,c:['#f7c948','#ff5263','#3de87a','#38f9d7','#fff'][Math.floor(Math.random()*5)]}));animC();}
+function animC(){CCX.clearRect(0,0,CC.width,CC.height);cp.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.rot+=p.rv;CCX.save();CCX.translate(p.x,p.y);CCX.rotate(p.rot*Math.PI/180);CCX.fillStyle=p.c;CCX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);CCX.restore();});cp=cp.filter(p=>p.y<CC.height+20);if(cp.length)craf=requestAnimationFrame(animC);}
+function stopC(){cancelAnimationFrame(craf);CCX.clearRect(0,0,CC.width,CC.height);}
 
-document.addEventListener('keydown', e=>{
-  if(e.key==='Enter' && document.getElementById('signin-screen').classList.contains('active')) doSignIn();
-});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('signin-screen').classList.contains('active'))doSignIn();});
 </script>
 </body>
 </html>
