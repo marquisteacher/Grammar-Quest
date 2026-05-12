@@ -679,16 +679,15 @@ function checkAns(idx){
 
   if(idx===q.c){
     if(isHost){
-      // Host is moderator only — no points, not on leaderboard, just advance
-      showToast(true,q.pts,false);
-    } else if(playerMode==='team'){
-      // Team player — points go straight to class main score on the big screen
-      const ti=teams.indexOf(playerClass);
-      if(ti>=0){pts[ti]+=q.pts; updSB(); bump(ti);}
-      postScore(q.pts,'score');
+      // Host marks the correct answer for the current team on the big screen
+      // Points go to the class whose turn it is (curT index)
+      pts[curT]+=q.pts;
+      updSB();
+      bump(curT);
+      postClassScore(teams[curT], q.pts); // save to that class's Firestore record
       showToast(true,q.pts,false);
     } else {
-      // Crowd — points saved as crowdBonus only, revealed at end by host
+      // Crowd — points saved as crowdBonus, revealed at end by host
       crowdBonus[playerClass]=(crowdBonus[playerClass]||0)+q.pts;
       postScore(q.pts,'crowdBonus');
       showToast(true,q.pts,true);
@@ -737,13 +736,42 @@ async function postScore(p,field='score'){
   }catch{}
 }
 
+// Host saves points under a shared class-level record so leaderboard reflects it
+async function postClassScore(className, p){
+  if(!player)return;
+  const classPlayerId=`class-${className.toLowerCase()}`;
+  try{
+    // First ensure class player exists in session
+    await fetch(`${API}/api/signin`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:className,classNumber:className,sessionId:player.sessionId,mode:'class'})});
+    // Then add points
+    await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sessionId:player.sessionId,playerId:`${className.toLowerCase()}-${className}`,points:p,field:'score'})});
+  }catch{}
+}
+
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
 async function fetchLB(tid='lbr'){
   if(!player?.sessionId)return;
   try{
-    const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
-    const d=await r.json();
-    renderLB(Array.isArray(d)?d.slice(0,5):[],tid);
+    if(playerMode==='host'){
+      // Host sees class-level scores on the leaderboard
+      const r=await fetch(`${API}/api/class-scores/${player.sessionId}`);
+      const d=await r.json();
+      // Convert class scores object to sorted array
+      const leaders=Object.entries(d)
+        .filter(([cls])=>cls!=='host')
+        .map(([cls,v])=>({name:cls,classNumber:cls,score:v.score||0,playerId:`class-${cls}`}))
+        .sort((a,b)=>b.score-a.score)
+        .slice(0,5)
+        .map((l,i)=>({...l,rank:i+1}));
+      renderLB(leaders,tid);
+    } else {
+      // Students see individual leaderboard
+      const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
+      const d=await r.json();
+      renderLB(Array.isArray(d)?d.slice(0,5):[],tid);
+    }
   }catch{
     document.getElementById(tid).innerHTML='<div class="lbempty">Leaderboard offline.</div>';
   }
