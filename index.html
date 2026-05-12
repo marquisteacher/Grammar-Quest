@@ -214,21 +214,14 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
   <div class="pbadge">👤 <strong id="bn"></strong></div>
   <div class="sbadge">Session: <span id="bsid"></span></div>
   <div class="logo" style="font-size:clamp(1.8rem,5vw,2.8rem);">Grammar Quest</div>
+
+  <!-- STEP 1: Who are you? -->
   <div class="scard">
-    <h3>Step 1 — Select Your Grade</h3>
-    <div class="grow">
-      <button class="gbtn" onclick="selGrade(5,this)">5th Grade</button>
-      <button class="gbtn" onclick="selGrade(6,this)">6th Grade</button>
-      <button class="gbtn" onclick="selGrade(7,this)">7th Grade</button>
-    </div>
-  </div>
-  <div class="scard" id="mode-card" style="display:none;">
-    <h3>Step 2 — Your Role</h3>
-    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Teacher enters passcode. Team players sit at the main screen. Crowd joins from their own phones.</p>
-    <div class="grow">
-      <button class="gbtn" onclick="selMode('host',this)" id="mbtn-host">🎤 Host / Teacher</button>
-      <button class="gbtn" onclick="selMode('team',this)" id="mbtn-team">🏆 Team Player</button>
-      <button class="gbtn" onclick="selMode('crowd',this)" id="mbtn-crowd">👥 Crowd / Student</button>
+    <h3>Step 1 — Who Are You?</h3>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Teachers control the big screen. Students join from their own phones.</p>
+    <div class="grow" id="role-btns">
+      <button class="gbtn" onclick="selRole('host',this)">🎤 Host / Teacher</button>
+      <button class="gbtn" onclick="selRole('crowd',this)">📱 Student</button>
     </div>
     <div id="host-passcode-wrap" style="display:none;margin-top:14px;">
       <label class="flabel">Teacher Passcode</label>
@@ -236,11 +229,24 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
       <div class="err" id="passcode-err">Incorrect passcode. Try again.</div>
     </div>
   </div>
+
+  <!-- STEP 2: Grade -->
+  <div class="scard" id="grade-card" style="display:none;">
+    <h3>Step 2 — Select Grade</h3>
+    <div class="grow">
+      <button class="gbtn" onclick="selGrade(5,this)">5th Grade</button>
+      <button class="gbtn" onclick="selGrade(6,this)">6th Grade</button>
+      <button class="gbtn" onclick="selGrade(7,this)">7th Grade</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Class — students only -->
   <div class="scard" id="class-card" style="display:none;">
     <h3>Step 3 — Select Your Class</h3>
-    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Your class is your team. All classmates' points combine!</p>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Your class is your team. Your points help your class win!</p>
     <div class="grow" id="class-btns"></div>
   </div>
+
   <button class="bigbtn" style="max-width:720px;display:none;" id="start-btn" onclick="startGame()">🚀 Let's Play!</button>
 </div>
 
@@ -471,75 +477,72 @@ async function doSignIn(){
   go('setup-screen');
 }
 
-// ── GRADE ─────────────────────────────────────────────────────────────────────
-function selGrade(g,btn){
-  grade=g;
-  document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('sel'));
+// ── STEP 1: ROLE ──────────────────────────────────────────────────────────────
+function selRole(role,btn){
+  document.querySelectorAll('#role-btns .gbtn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  // Show role selection (Step 2) — class selection comes after for non-hosts
-  document.getElementById('mode-card').style.display='block';
-  document.getElementById('class-card').style.display='none';
-  playerClass=null; playerMode=null;
-  document.getElementById('start-btn').style.display='none';
-  document.getElementById('host-passcode-wrap').style.display='none';
+  playerMode=null; grade=null; playerClass=null;
   document.getElementById('passcode-err').classList.remove('on');
-}
-
-// ── MODE ──────────────────────────────────────────────────────────────────────
-function selMode(mode,btn){
-  document.querySelectorAll('#mode-card .gbtn').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');
-  playerMode=null;
-  playerClass=null;
-  document.getElementById('passcode-err').classList.remove('on');
+  document.getElementById('grade-card').style.display='none';
   document.getElementById('class-card').style.display='none';
   document.getElementById('start-btn').style.display='none';
-
-  if(mode==='host'){
-    // Show passcode — host skips class selection entirely
+  if(role==='host'){
     document.getElementById('host-passcode-wrap').style.display='block';
     document.getElementById('host-passcode').value='';
     document.getElementById('host-passcode').focus();
   } else {
-    // Team player or Crowd — set mode, hide passcode, show class selection
-    playerMode=mode;
+    playerMode='crowd';
     document.getElementById('host-passcode-wrap').style.display='none';
-    document.getElementById('class-card').style.display='block';
-    document.getElementById('class-btns').innerHTML=CLASSES[grade].map(cls=>
-      `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
-    ).join('');
+    document.getElementById('grade-card').style.display='block';
   }
 }
 
-// ── PASSCODE CHECK ────────────────────────────────────────────────────────────
+// ── PASSCODE CHECK ─────────────────────────────────────────────────────────────
 function checkPasscode(){
   const code=document.getElementById('host-passcode').value.trim();
   const err=document.getElementById('passcode-err');
   if(code==='0110'){
     err.classList.remove('on');
     playerMode='host';
-    playerClass='Host';
-    // Host skips class selection — go straight to Start
-    document.getElementById('class-card').style.display='none';
-    document.getElementById('start-btn').style.display='block';
-  } else {
+    playerClass='host';
+    document.getElementById('grade-card').style.display='block';
+  } else if(code.length===4){
     err.classList.add('on');
     document.getElementById('start-btn').style.display='none';
   }
 }
 
-// ── CLASS ─────────────────────────────────────────────────────────────────────
+// ── STEP 2: GRADE ─────────────────────────────────────────────────────────────
+function selGrade(g,btn){
+  grade=g;
+  document.querySelectorAll('#grade-card .gbtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  playerClass=null;
+  document.getElementById('class-card').style.display='none';
+  document.getElementById('start-btn').style.display='none';
+  if(playerMode==='host'){
+    document.getElementById('start-btn').style.display='block';
+  } else {
+    document.getElementById('class-card').style.display='block';
+    document.getElementById('class-btns').innerHTML=CLASSES[g].map(cls=>
+      `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
+    ).join('');
+  }
+}
+
+// ── STEP 3: CLASS (students only) ─────────────────────────────────────────────
 function selClass(cls,btn){
   playerClass=cls;
   document.querySelectorAll('#class-btns .gbtn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  if(playerMode) document.getElementById('start-btn').style.display='block';
+  document.getElementById('start-btn').style.display='block';
 }
+
 
 // ── START ─────────────────────────────────────────────────────────────────────
 async function startGame(){
   if(!grade||!playerMode){alert('Please complete all steps!');return;}
-  if(playerMode!=='host'&&!playerClass){alert('Please select your class!');return;}
+  if(playerMode==='crowd'&&!playerClass){alert('Please select your class!');return;}
   player.classNumber=playerClass;
   player.mode=playerMode;
   player.playerId=`${player.name.toLowerCase().replace(/\s+/g,'-')}-${playerClass}`;
