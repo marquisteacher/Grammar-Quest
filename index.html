@@ -776,25 +776,19 @@ async function fetchLB(tid='lbr'){
     const data = await r.json();
     if(!Array.isArray(data)) throw new Error('Bad response');
 
-    if(playerMode==='host'){
-      // Host leaderboard: group by class, sum scores, show class totals
-      const byClass = {};
-      data.forEach(l=>{
-        if(!l.classNumber||l.classNumber==='host') return;
-        if(!byClass[l.classNumber]) byClass[l.classNumber]={name:l.classNumber,classNumber:l.classNumber,score:0};
-        byClass[l.classNumber].score += (l.score||0);
-      });
-      const leaders = Object.values(byClass)
-        .sort((a,b)=>b.score-a.score)
-        .slice(0,5);
-      renderLB(leaders, tid);
-    } else {
-      // Student leaderboard: individual scores, filter out host/class entries
-      const filtered = data
-        .filter(l=>l.classNumber&&l.classNumber!=='host'&&!l.classNumber.match(/^[5-7][A-D]$/)&&l.score>0)
-        .slice(0,5);
-      renderLB(filtered, tid);
-    }
+    // Both host and students see the same class-vs-class leaderboard
+    // Group all records by class, sum their scores
+    const byClass = {};
+    data.forEach(l=>{
+      if(!l.classNumber || l.classNumber==='host') return;
+      if(!byClass[l.classNumber]) byClass[l.classNumber]={name:l.classNumber,classNumber:l.classNumber,score:0};
+      byClass[l.classNumber].score += (l.score||0);
+    });
+    const leaders = Object.values(byClass)
+      .filter(c=>c.score>0)
+      .sort((a,b)=>b.score-a.score)
+      .slice(0,5);
+    renderLB(leaders, tid);
   }catch{
     document.getElementById(tid).innerHTML='<div class="lbempty">Leaderboard offline — check connection.</div>';
   }
