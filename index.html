@@ -518,13 +518,10 @@ function checkPasscode(){
   if(code==='0110'){
     err.classList.remove('on');
     playerMode='host';
-    playerClass=null;
-    // Show class card so host can pick which class they represent
-    document.getElementById('class-card').style.display='block';
-    document.getElementById('class-btns').innerHTML=CLASSES[grade].map(cls=>
-      `<button class="gbtn" onclick="selClass('${cls}',this)">${cls}</button>`
-    ).join('');
-    document.getElementById('start-btn').style.display='none';
+    playerClass='Host';
+    // Host skips class selection — go straight to Start
+    document.getElementById('class-card').style.display='none';
+    document.getElementById('start-btn').style.display='block';
   } else {
     err.classList.add('on');
     document.getElementById('start-btn').style.display='none';
@@ -542,7 +539,7 @@ function selClass(cls,btn){
 // ── START ─────────────────────────────────────────────────────────────────────
 async function startGame(){
   if(!grade||!playerMode){alert('Please complete all steps!');return;}
-  if(!playerClass){alert('Please select your class!');return;}
+  if(playerMode!=='host'&&!playerClass){alert('Please select your class!');return;}
   player.classNumber=playerClass;
   player.mode=playerMode;
   player.playerId=`${player.name.toLowerCase().replace(/\s+/g,'-')}-${playerClass}`;
