@@ -49,13 +49,17 @@ app.post('/api/signin', async (req, res) => {
       });
     }
 
-    const playerId = name.trim().toLowerCase().replace(/\s+/g, '-') + '-' + classNumber.trim();
+    // Class-level records use stable "team-ClassName" ID so host can always find them
+    const playerId = mode === 'class'
+      ? `team-${classNumber.trim()}`
+      : name.trim().toLowerCase().replace(/\s+/g, '-') + '-' + classNumber.trim();
+
     await playerRef(sid, playerId).set({
-      name:        name.trim(),
+      name:        mode === 'class' ? classNumber.trim() : name.trim(),
       classNumber: classNumber.trim(),
       score:       0,
       crowdBonus:  0,
-      mode:        mode || 'player', // 'host' | 'team' | 'crowd'
+      mode:        mode || 'crowd',
       updatedAt:   admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
 
