@@ -627,9 +627,13 @@ async function saveClassScore(className, p){
   }catch(e){console.error('saveClassScore:',e);}
 }
 
-// Crowd saves bonus under their own player ID — classNumber is already set correctly
+// Crowd saves to BOTH score (shows on leaderboard) and crowdBonus (revealed at end)
 async function saveCrowdBonus(pts){
   try{
+    // Save to score so it appears on the live leaderboard
+    await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:pts,field:'score'})});
+    // Also save to crowdBonus so host can reveal the class bonus at game end
     await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:pts,field:'crowdBonus'})});
   }catch(e){console.error('saveCrowdBonus:',e);}
