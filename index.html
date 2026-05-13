@@ -226,6 +226,13 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color
     </div>
     <div class="lbrows" id="lbr"><div class="lbempty">Scores appear as you play…</div></div>
   </div>
+  <!-- Crowd bonus tracker — visible to all, updates live -->
+  <div class="lbpanel" id="bonus-tracker" style="display:none;">
+    <div class="lbhdr">
+      <span class="lbtitle" style="color:var(--cyan);">👥 Crowd Bonus Accumulating</span>
+    </div>
+    <div class="lbrows" id="bonus-live-rows"><div class="lbempty">Answer correctly to build your class bonus!</div></div>
+  </div>
 </div>
 
 <!-- ══ WINNER ══ -->
@@ -476,7 +483,8 @@ async function startGame(){
   }
 
   fetchLB();
-  lbt=setInterval(fetchLB,8000); // refresh every 8s
+  fetchBonus();
+  lbt=setInterval(()=>{fetchLB();fetchBonus();},8000);
 }
 
 // ── SCOREBOARD ────────────────────────────────────────────────────────────────
@@ -601,7 +609,7 @@ function checkAns(idx){
     },1200);
   }
 
-  setTimeout(fetchLB,1000);
+  setTimeout(()=>{fetchLB();fetchBonus();},1000);
 }
 
 function nextTurn(){
@@ -616,6 +624,34 @@ function nextTurn(){
 // ── SCORE SAVING ──────────────────────────────────────────────────────────────
 // Host saves points directly under the class name as the player ID
 // This guarantees /api/class-scores groups it correctly
+// Fetch and display live crowd bonus for all students
+async function fetchBonus(){
+  if(!player?.sessionId)return;
+  try{
+    const r=await fetch(`${API}/api/class-scores/${player.sessionId}`);
+    const d=await r.json();
+    const tracker=document.getElementById('bonus-tracker');
+    const rows=document.getElementById('bonus-live-rows');
+    if(!tracker||!rows)return;
+    const entries=Object.entries(d).filter(([,v])=>(v.crowdBonus||0)>0);
+    if(entries.length===0){
+      tracker.style.display='none';
+      return;
+    }
+    tracker.style.display='block';
+    rows.innerHTML=entries
+      .sort((a,b)=>(b[1].crowdBonus||0)-(a[1].crowdBonus||0))
+      .map(([cls,v],i)=>`
+        <div class="lbrow">
+          <span class="lbrank">${MED[i]||i+1}</span>
+          <span class="lbname">${cls}</span>
+          <span class="lbcls">Crowd Bonus</span>
+          <span class="lbscore" style="color:var(--cyan);">+${v.crowdBonus}</span>
+        </div>`
+      ).join('');
+  }catch(e){console.error('fetchBonus:',e);}
+}
+
 async function saveClassScore(className, p){
   try{
     // Register class record if needed (only creates if not exists — no score reset)
@@ -643,13 +679,14 @@ async function saveCrowdBonus(pts){
 async function fetchLB(tid='lbr'){
   if(!player?.sessionId)return;
   try{
-    // Use class-scores endpoint — already grouped, no limit issue
-    const r=await fetch(`${API}/api/class-scores/${player.sessionId}`);
+    const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
     const d=await r.json();
-    const leaders=Object.entries(d)
-      .map(([cls,v])=>({name:cls,score:v.score||0}))
-      .filter(c=>c.score>0)
-      .sort((a,b)=>b.score-a.score)
+    if(!Array.isArray(d))return;
+
+    // Filter out host entries, sort by score, top 5 individual students
+    const leaders=d
+      .filter(l=>l.classNumber&&l.classNumber!=='host'&&(l.score||0)>0)
+      .sort((a,b)=>(b.score||0)-(a.score||0))
       .slice(0,5);
     renderLB(leaders,tid);
   }catch(e){
@@ -662,14 +699,19 @@ async function fetchLB(tid='lbr'){
 function renderLB(leaders,tid='lbr'){
   const el=document.getElementById(tid);
   if(!el)return;
-  if(!leaders.length){el.innerHTML='<div class="lbempty">No scores yet — answer correctly to appear!</div>';return;}
-  el.innerHTML=leaders.map((l,i)=>
-    `<div class="lbrow">
+  if(!leaders.length){
+    el.innerHTML='<div class="lbempty">No scores yet — answer correctly to appear!</div>';
+    return;
+  }
+  el.innerHTML=leaders.map((l,i)=>{
+    const isMe=l.playerId===player?.playerId;
+    return`<div class="lbrow${isMe?' me':''}" >
       <span class="lbrank">${MED[i]||i+1}</span>
-      <span class="lbname">${l.name}</span>
-      <span class="lbscore">${l.score}</span>
-    </div>`
-  ).join('');
+      <span class="lbname">${l.name}${isMe?' ⭐':''}</span>
+      <span class="lbcls">${l.classNumber}</span>
+      <span class="lbscore">${l.score||0}</span>
+    </div>`;
+  }).join('');
 }
 
 // ── END GAME ──────────────────────────────────────────────────────────────────
