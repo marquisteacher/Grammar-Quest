@@ -614,20 +614,25 @@ function nextTurn(){
 }
 
 // ── SCORE SAVING ──────────────────────────────────────────────────────────────
-// Host saves points — uses player's own ID with their class so leaderboard groups correctly
+// Host saves points directly under the class name as the player ID
+// This guarantees /api/class-scores groups it correctly
 async function saveClassScore(className, p){
   try{
+    // Register class record if needed (only creates if not exists — no score reset)
+    await fetch(`${API}/api/signin`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:className,classNumber:className,sessionId:player.sessionId,mode:'class'})});
+    // Now safely increment score
     await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:p,field:'score'})});
+      body:JSON.stringify({sessionId:player.sessionId,playerId:`${className.toLowerCase()}-${className}`,points:p,field:'score'})});
   }catch(e){console.error('saveClassScore:',e);}
 }
 
-// Crowd saves bonus
+// Crowd saves bonus under their own player ID — classNumber is already set correctly
 async function saveCrowdBonus(pts){
   try{
     await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:pts,field:'crowdBonus'})});
-  }catch{}
+  }catch(e){console.error('saveCrowdBonus:',e);}
 }
 
 // ── LEADERBOARD — same logic as original working version ──────────────────────
