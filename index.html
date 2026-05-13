@@ -614,16 +614,12 @@ function nextTurn(){
 }
 
 // ── SCORE SAVING ──────────────────────────────────────────────────────────────
-// Host saves points under the class name so leaderboard shows class totals
-async function saveClassScore(className,pts){
+// Host saves points — uses player's own ID with their class so leaderboard groups correctly
+async function saveClassScore(className, p){
   try{
-    // Upsert class record
-    await fetch(`${API}/api/signin`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:className,classNumber:className,sessionId:player.sessionId,mode:'class'})});
-    // Add points
     await fetch(`${API}/api/score`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({sessionId:player.sessionId,playerId:`class-${className}`,points:pts,field:'score'})});
-  }catch{}
+      body:JSON.stringify({sessionId:player.sessionId,playerId:player.playerId,points:p,field:'score'})});
+  }catch(e){console.error('saveClassScore:',e);}
 }
 
 // Crowd saves bonus
@@ -638,20 +634,17 @@ async function saveCrowdBonus(pts){
 async function fetchLB(tid='lbr'){
   if(!player?.sessionId)return;
   try{
-    const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
+    // Use class-scores endpoint — already grouped, no limit issue
+    const r=await fetch(`${API}/api/class-scores/${player.sessionId}`);
     const d=await r.json();
-    if(!Array.isArray(d))return;
-
-    // Group by class, sum scores — works for both host and crowd views
-    const byClass={};
-    d.forEach(l=>{
-      if(!l.classNumber||l.classNumber==='host')return;
-      if(!byClass[l.classNumber])byClass[l.classNumber]={name:l.classNumber,score:0};
-      byClass[l.classNumber].score+=(l.score||0);
-    });
-    const leaders=Object.values(byClass).filter(c=>c.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+    const leaders=Object.entries(d)
+      .map(([cls,v])=>({name:cls,score:v.score||0}))
+      .filter(c=>c.score>0)
+      .sort((a,b)=>b.score-a.score)
+      .slice(0,5);
     renderLB(leaders,tid);
-  }catch{
+  }catch(e){
+    console.error('fetchLB:',e);
     const el=document.getElementById(tid);
     if(el)el.innerHTML='<div class="lbempty">Leaderboard offline.</div>';
   }
@@ -694,21 +687,17 @@ function endGame(){
 
 async function showBonusReveal(){
   try{
-    const r=await fetch(`${API}/api/leaderboard/${player.sessionId}`);
+    const r=await fetch(`${API}/api/class-scores/${player.sessionId}`);
     const d=await r.json();
-    // Sum crowd bonus per class
-    const bonusByClass={};
-    d.forEach(l=>{
-      if(!l.classNumber||l.classNumber==='host')return;
-      bonusByClass[l.classNumber]=(bonusByClass[l.classNumber]||0)+(l.crowdBonus||0);
-    });
-    const hasBonus=Object.values(bonusByClass).some(v=>v>0);
+    const hasBonus=Object.values(d).some(v=>(v.crowdBonus||0)>0);
     if(!hasBonus)return;
     document.getElementById('bonus-reveal').style.display='block';
-    document.getElementById('bonus-rows').innerHTML=Object.entries(bonusByClass).map(([cls,b])=>
-      `<div class="brow"><span style="font-weight:900">${cls}</span><span style="color:var(--cyan);font-family:'Bebas Neue',sans-serif">+${b} pts</span></div>`
-    ).join('');
-  }catch{}
+    document.getElementById('bonus-rows').innerHTML=Object.entries(d)
+      .filter(([,v])=>(v.crowdBonus||0)>0)
+      .map(([cls,v])=>
+        `<div class="brow"><span style="font-weight:900">${cls}</span><span style="color:var(--cyan);font-family:'Bebas Neue',sans-serif">+${v.crowdBonus} pts</span></div>`
+      ).join('');
+  }catch(e){console.error('showBonusReveal:',e);}
 }
 
 async function applyBonus(){
