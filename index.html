@@ -683,9 +683,15 @@ async function fetchLB(tid='lbr'){
     const d=await r.json();
     if(!Array.isArray(d))return;
 
-    // Filter out host entries, sort by score, top 5 individual students
+    // Show individual students only — filter out host and class-level team records
+    // Class records have name === classNumber (e.g. "5A"/"5A"), students have real names
     const leaders=d
-      .filter(l=>l.classNumber&&l.classNumber!=='host'&&(l.score||0)>0)
+      .filter(l=>
+        l.classNumber &&
+        l.classNumber !== 'host' &&
+        l.name !== l.classNumber &&  // excludes class-level team score records
+        (l.score||0) > 0
+      )
       .sort((a,b)=>(b.score||0)-(a.score||0))
       .slice(0,5);
     renderLB(leaders,tid);
